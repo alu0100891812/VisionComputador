@@ -26,6 +26,14 @@ public class Image {
         return panel;
 	}
 	
+	public Image RGBtoGray() {
+		BufferedImage GrayImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
+		Graphics g = GrayImage.getGraphics();  
+		g.drawImage(image, 0, 0, null);  
+		g.dispose();
+		return new Image(GrayImage);
+	}
+	
 	public int getRed(int x, int y) {
 	    return (image.getRGB(x, y) >> 16) & 0xFF;
 	}
@@ -36,5 +44,17 @@ public class Image {
 	
 	public int getGreen(int x, int y) {
 	    return (image.getRGB(x, y) >> 0) & 0xFF;
+	}
+	
+	public int getWidth() {
+		return image.getWidth();
+	}
+	
+	public int getHeight() {
+		return image.getHeight();
+	}
+	
+	public void setColor(int x, int y, int rgb) {
+		image.setRGB(x, y, rgb);
 	}
 }
