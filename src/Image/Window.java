@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -13,12 +12,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Window {
 	private JFrame frame;
-	private Image image;
 	private JMenuBar menuBar;
+	private JTabbedPane tabs;
+	private Image image;
 	
 	public Window() {
 		frame = new JFrame("Image");
@@ -51,6 +52,10 @@ public class Window {
 	    editMenu.add(ConvertToGrayItem);
 
 	    frame.setJMenuBar(menuBar);
+	    
+	    tabs = new JTabbedPane();
+	    tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+	    frame.add(tabs);	    
 	}
 	
 	private void setUpOpenItem(JMenuItem item) {
@@ -69,7 +74,7 @@ public class Window {
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 					try {
 						image = new Image(ImageIO.read(filePicker.getSelectedFile()));
-						frame.add(image.drawImage(0, 0, 600, 350));
+						tabs.addTab("Original", image);
 						JMenuItem item = getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -92,12 +97,8 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				if(image != null) {
 					Image img = image.RGBtoGray();
-					JFrame fr = new JFrame();
-					fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				    fr.setSize(900, 500);
-				    fr.setLocationRelativeTo(null);
-					fr.add(img.drawImage(0, 0, 600, 350));
-					fr.setVisible(true);
+					tabs.addTab("Gray", img);
+					tabs.setSelectedIndex(tabs.getTabCount() - 1);
 				}else{
 					JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);

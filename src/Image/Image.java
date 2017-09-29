@@ -5,25 +5,19 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-public class Image {
+public class Image extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 	
 	public Image(BufferedImage buffImage) {
 		image = buffImage;
 	}
 	
-	public JPanel drawImage(int x, int y, int width, int height) {
-		JPanel panel = new JPanel() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(image, x, y, width, height, null);
-                g.dispose();
-            }
-        };
-        return panel;
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(image, 20, 20, this.getSize().width-40, this.getSize().height-40, null);
+       	g.dispose();
 	}
 	
 	public Image RGBtoGray() {
