@@ -1,16 +1,11 @@
 package Image;
 
-import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Scanner;
 
 public class Histogram {
-	private JPanel panel;
 	
 	public Histogram() {
-		panel = new JPanel();
 	}
 	
 	public void draw(Image image) {
@@ -18,11 +13,9 @@ public class Histogram {
 		int[] contador = new int[256];
 		int max = 0;
 		int min = pixel.length;
-		byte n = 0;
+		int n = 0;
 		for(int i = 0; i < pixel.length; i++) {
-			n = pixel[i];
-			if ((n>255)||(n < 0))
-				System.out.println("Error");
+			n = pixel[i] & 0xFF;
 			contador[n] += 1;
 		}
 		for(int j = 0; j < 256; j++) {
@@ -32,6 +25,7 @@ public class Histogram {
 				min = contador[j];
 			}			
 		}
+		
 		int height = image.getSize().height;
 		int yPos = 20;
 		int xPos = 20;		

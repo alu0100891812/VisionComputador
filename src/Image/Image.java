@@ -3,7 +3,6 @@ package Image;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
 
 import javax.swing.JPanel;
 
@@ -31,15 +30,15 @@ public class Image extends JPanel {
 	}
 	
 	public int getRed(int x, int y) {
-	    return (image.getRGB(x, y) >> 16) & 0xFF;
-	}
-	
-	public int getBlue(int x, int y) {
-	    return (image.getRGB(x, y) >> 8) & 0xFF;
+	    return (image.getRGB(x, y) & 0x00FF0000) >> 16 ;
 	}
 	
 	public int getGreen(int x, int y) {
-	    return (image.getRGB(x, y) >> 0) & 0xFF;
+		return (image.getRGB(x, y) & 0x0000FF00) >> 8 ;
+	}
+	
+	public int getBlue(int x, int y) {
+		return (image.getRGB(x, y) & 0x000000FF);
 	}
 	
 	public int getWidth() {

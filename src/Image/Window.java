@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -40,6 +41,7 @@ public class Window {
 	    menuBar.add(fileMenu);
 	    
 	    JMenuItem OpenFileItem = new JMenuItem("Open File", KeyEvent.VK_O);
+	    OpenFileItem.setIcon(new ImageIcon("openFile.png"));
 	    setUpOpenItem(OpenFileItem);
 	    fileMenu.add(OpenFileItem);
 	    
