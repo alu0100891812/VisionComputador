@@ -20,6 +20,7 @@ public class Window {
 	private JMenuBar menuBar;
 	private JTabbedPane tabs;
 	private Image image;
+	private Histogram histograma;
 	
 	public Window() {
 		frame = new JFrame("Image");
@@ -50,6 +51,12 @@ public class Window {
 	    ConvertToGrayItem.setEnabled(false);
 	    setUpConvertToGray(ConvertToGrayItem);
 	    editMenu.add(ConvertToGrayItem);
+	    
+	    JMenuItem HistogramItem = new JMenuItem("Histogram", KeyEvent.VK_H);
+	    HistogramItem.setEnabled(false);
+	    setUpHistogram(HistogramItem);
+	    editMenu.add(HistogramItem);
+	    
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -99,8 +106,31 @@ public class Window {
 					Image img = image.RGBtoGray();
 					tabs.addTab("Gray", img);
 					tabs.setSelectedIndex(tabs.getTabCount() - 1);
+					JMenuItem item = getItem("Edit", "Histogram");
+					if(item != null) {
+						item.setEnabled(true);
+					}					
 				}else{
-					JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
+					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
+	
+	private void setUpHistogram(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(image != null) {
+					Image img = image.RGBtoGray();
+					tabs.addTab("Histogram", img);
+					histograma = new Histogram();
+					histograma.draw(img);
+					img.repaint();
+					tabs.setSelectedIndex(tabs.getTabCount() - 1);
+				}else{
+					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}

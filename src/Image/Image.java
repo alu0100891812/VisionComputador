@@ -2,6 +2,8 @@ package Image;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JPanel;
 
@@ -50,5 +52,10 @@ public class Image extends JPanel {
 	
 	public void setColor(int x, int y, int rgb) {
 		image.setRGB(x, y, rgb);
+	}
+	
+	public byte[] getVector() {
+		byte[] vector = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		return vector;
 	}
 }
