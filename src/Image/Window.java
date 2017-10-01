@@ -7,10 +7,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -18,7 +18,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Window {
 	private JFrame frame;
-	private JMenuBar menuBar;
+	private MenuBar menuBar;
 	private JTabbedPane tabs;
 	private Image image;
 	private Histogram histograma;
@@ -34,7 +34,7 @@ public class Window {
 	}
 	
 	private void setUpMenu() {
-		menuBar = new JMenuBar();
+		menuBar = new MenuBar();
 
 		JMenu fileMenu = new JMenu("File");
 	    fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -50,11 +50,13 @@ public class Window {
 	    menuBar.add(editMenu);
 	    
 	    JMenuItem ConvertToGrayItem = new JMenuItem("Convert to Gray", KeyEvent.VK_G);
+	    ConvertToGrayItem.setIcon(new ImageIcon("RGBtoGray.png"));
 	    ConvertToGrayItem.setEnabled(false);
 	    setUpConvertToGray(ConvertToGrayItem);
 	    editMenu.add(ConvertToGrayItem);
 	    
 	    JMenuItem HistogramItem = new JMenuItem("Histogram", KeyEvent.VK_H);
+	    HistogramItem.setIcon(new ImageIcon("histogram.png"));
 	    HistogramItem.setEnabled(false);
 	    setUpHistogram(HistogramItem);
 	    editMenu.add(HistogramItem);
@@ -84,7 +86,19 @@ public class Window {
 					try {
 						image = new Image(ImageIO.read(filePicker.getSelectedFile()));
 						tabs.addTab("Original", image);
-						JMenuItem item = getItem("Edit", "Convert to Gray");
+						int index = tabs.getTabCount() -1;
+						JButton button = new JButton();
+						button.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								tabs.remove(index);
+							}
+						});
+						tabs.setTabComponentAt(index, CloseableTab.createTab("Original", button));
+						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
 						}
@@ -106,9 +120,21 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				if(image != null) {
 					Image img = image.RGBtoGray();
-					tabs.addTab("Gray", img);
-					tabs.setSelectedIndex(tabs.getTabCount() - 1);
-					JMenuItem item = getItem("Edit", "Histogram");
+					tabs.addTab("Convert to Gray", img);
+					int index = tabs.getTabCount() -1;
+					JButton button = new JButton();
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							JMenuItem item = menuBar.getItem("Edit", "Histogram");
+							if(item != null) {
+								item.setEnabled(false);
+							}
+							tabs.remove(index);
+						}
+					});
+					tabs.setTabComponentAt(index, CloseableTab.createTab("Convert to Gray", button));
+					JMenuItem item = menuBar.getItem("Edit", "Histogram");
 					if(item != null) {
 						item.setEnabled(true);
 					}					
@@ -130,7 +156,15 @@ public class Window {
 					histograma = new Histogram();
 					histograma.draw(img);
 					img.repaint();
-					tabs.setSelectedIndex(tabs.getTabCount() - 1);
+					int index = tabs.getTabCount() -1;
+					JButton button = new JButton();
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(index);
+						}
+					});
+					tabs.setTabComponentAt(index, CloseableTab.createTab("Histogram", button));
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -139,30 +173,5 @@ public class Window {
 		});
 	}
 	
-	public JMenu getMenu(String menu) {
-		JMenu result = null;
-		
-		for(int i=0; i<menuBar.getMenuCount(); i++) {
-			if(menuBar.getMenu(i).getText().equalsIgnoreCase(menu)) {
-				result = menuBar.getMenu(i);
-				break;
-			}
-		}		
-		return result;
-	}
 	
-	public JMenuItem getItem(String menu, String item) {
-		JMenu menuObj = getMenu(menu);
-		JMenuItem result = null;
-		
-		if(menuObj != null) {
-			for(int i=0; i<menuObj.getItemCount(); i++) {
-				if(menuObj.getItem(i).getText().equalsIgnoreCase(item)) {
-					result = menuObj.getItem(i);
-					break;
-				}
-			}
-		}		
-		return result;
-	}
 }
