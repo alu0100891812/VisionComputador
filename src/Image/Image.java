@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 public class Image extends JPanel {
 	private static final long serialVersionUID = 1L;
+	
 	private BufferedImage image;
 	
 	public Image(BufferedImage buffImage) {
@@ -17,8 +18,8 @@ public class Image extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 20, 20, this.getSize().width-40, this.getSize().height-40, null);
-       	g.dispose();
+		g.drawImage(image, 20, 20, image.getWidth(), image.getHeight(), null);
+		g.dispose();
 	}
 	
 	public Image RGBtoGray() {
@@ -41,12 +42,20 @@ public class Image extends JPanel {
 		return (image.getRGB(x, y) & 0x000000FF);
 	}
 	
-	public int getWidth() {
+	public int getImageWidth() {
 		return image.getWidth();
 	}
 	
-	public int getHeight() {
+	public int getImageHeight() {
 		return image.getHeight();
+	}
+	
+	public int getWidth() {
+		return this.getSize().width;	
+	}
+	
+	public int getHeight() {
+		return this.getSize().height;	
 	}
 	
 	public void setColor(int x, int y, int rgb) {

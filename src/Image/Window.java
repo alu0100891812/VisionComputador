@@ -19,8 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Window {
 	private JFrame frame;
 	private MenuBar menuBar;
-	private JTabbedPane tabs;
-	private Image image;
+	private Tabs tabs;
 	private Histogram histograma;
 	
 	public Window() {
@@ -61,10 +60,16 @@ public class Window {
 	    setUpHistogram(HistogramItem);
 	    editMenu.add(HistogramItem);
 	    
+	    JMenuItem HistogramAccumulatedItem = new JMenuItem("Histogram Accumulated", KeyEvent.VK_H);
+	    HistogramAccumulatedItem.setIcon(new ImageIcon("histogramAccumulated.png"));
+	    HistogramAccumulatedItem.setEnabled(false);
+	    setUpHistogramAccumulated(HistogramAccumulatedItem);
+	    editMenu.add(HistogramAccumulatedItem);
+	    
 
 	    frame.setJMenuBar(menuBar);
 	    
-	    tabs = new JTabbedPane();
+	    tabs = new Tabs();
 	    tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 	    frame.add(tabs);	    
 	}
@@ -84,9 +89,6 @@ public class Window {
 	    		
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 					try {
-						image = new Image(ImageIO.read(filePicker.getSelectedFile()));
-						tabs.addTab("Original", image);
-						int index = tabs.getTabCount() -1;
 						JButton button = new JButton();
 						button.addActionListener(new ActionListener() {
 							@Override
@@ -94,10 +96,10 @@ public class Window {
 								JMenuItem[] items = menuBar.getMenuItems("Edit");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
-								tabs.remove(index);
+								tabs.remove("Original");
 							}
 						});
-						tabs.setTabComponentAt(index, CloseableTab.createTab("Original", button));
+						tabs.addImageTab("Original", new Image(ImageIO.read(filePicker.getSelectedFile())), button);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -118,10 +120,9 @@ public class Window {
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(image != null) {
-					Image img = image.RGBtoGray();
-					tabs.addTab("Convert to Gray", img);
-					int index = tabs.getTabCount() -1;
+				Image original = tabs.getImage("Original");
+				if(original != null) {					
+					Image gray = original.RGBtoGray();
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
@@ -130,14 +131,22 @@ public class Window {
 							if(item != null) {
 								item.setEnabled(false);
 							}
-							tabs.remove(index);
+							item = menuBar.getItem("Edit", "Histogram Accumulated");
+							if(item != null) {
+								item.setEnabled(false);
+							}
+							tabs.remove("Convert to Gray");
 						}
 					});
-					tabs.setTabComponentAt(index, CloseableTab.createTab("Convert to Gray", button));
+					tabs.addImageTab("Convert to Gray", gray, button);
 					JMenuItem item = menuBar.getItem("Edit", "Histogram");
 					if(item != null) {
 						item.setEnabled(true);
-					}					
+					}		
+					item = menuBar.getItem("Edit", "Histogram Accumulated");
+					if(item != null) {
+						item.setEnabled(true);
+					}
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -150,21 +159,17 @@ public class Window {
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(image != null) {
-					Image img = image.RGBtoGray();
-					tabs.addTab("Histogram", img);
-					histograma = new Histogram();
-					histograma.draw(img);
-					img.repaint();
-					int index = tabs.getTabCount() -1;
+				Image gray = tabs.getImage("Convert to Gray");
+				if(gray != null) {				
+					histograma = new Histogram(gray, false);
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(index);
+							tabs.remove("Histogram");
 						}
 					});
-					tabs.setTabComponentAt(index, CloseableTab.createTab("Histogram", button));
+					tabs.addHistogramTab("Histogram", histograma, button);
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -173,5 +178,26 @@ public class Window {
 		});
 	}
 	
-	
+	private void setUpHistogramAccumulated(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Image gray = tabs.getImage("Convert to Gray");
+				if(gray != null) {				
+					histograma = new Histogram(gray, true);
+					JButton button = new JButton();
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove("Histogram Accumulated");
+						}
+					});
+					tabs.addHistogramTab("Histogram Accumulated", histograma, button);
+				}else{
+					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
 }
