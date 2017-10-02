@@ -53,6 +53,13 @@ public class Tabs extends JTabbedPane {
 		images.addElement(new Pair<Image, String>(image, title));
 	}
 	
+	public void addImageTab(String title, ImageTab image, JButton button) {
+		this.addTab(title, image);
+		int index = this.getTabCount() -1;
+		this.setTabComponentAt(index, CloseableTab.createTab(title, button));
+		this.setSelectedIndex(index);
+	}
+	
 	public void addHistogramTab(String title, Histogram histogram, JButton button) {
 		this.addTab(title, histogram);
 		int index = this.getTabCount() -1;

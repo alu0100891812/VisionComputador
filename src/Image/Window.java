@@ -99,7 +99,7 @@ public class Window {
 								tabs.remove("Original");
 							}
 						});
-						tabs.addImageTab("Original", new Image(ImageIO.read(filePicker.getSelectedFile())), button);
+						tabs.addImageTab("Original", new ImageTab(new Image(ImageIO.read(filePicker.getSelectedFile()))), button);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
