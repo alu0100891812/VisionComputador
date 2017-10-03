@@ -3,25 +3,25 @@ package Image;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class ImageTab extends JPanel {
+public class HistogramTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private Image image;
+	private Histogram histogram;
 	private JPanel infoPanel;
 	
-	public ImageTab(BufferedImage image) {
-		setUpInfo(image);
+	public HistogramTab(Histogram histogram) {
+		this.histogram = histogram;
+		setUpInfo();
 		this.setLayout(new BorderLayout());
-		this.add(this.image, BorderLayout.CENTER);
+		this.add(this.histogram, BorderLayout.CENTER);
 		this.add(infoPanel, BorderLayout.LINE_END);
 	}
 	
-	private void setUpInfo(BufferedImage buffImage) {
+	private void setUpInfo() {
 		infoPanel = new JPanel() {
 			private static final long serialVersionUID = 1L;
 			
@@ -29,17 +29,15 @@ public class ImageTab extends JPanel {
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				
-				g.drawString(image.getMousePixel(), 40, 40);
+				//g.drawString(image.getMousePixel(), 40, 40);
 				g.dispose();
 			}
 		};
-		image = new Image(buffImage, infoPanel);
-		image.setInfo(infoPanel);
 		infoPanel.setBorder(new EmptyBorder(0,3,0,3));
 		infoPanel.setPreferredSize(new Dimension(300, getHeight()));
 	}
 	
-	public Image getImage() {
-		return image;
+	public Histogram getHistogram() {
+		return histogram;
 	}
 }

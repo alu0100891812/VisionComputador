@@ -3,6 +3,7 @@ package Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -99,7 +100,7 @@ public class Window {
 								tabs.remove("Original");
 							}
 						});
-						tabs.addImageTab("Original", new ImageTab(new Image(ImageIO.read(filePicker.getSelectedFile()))), button);
+						tabs.addImageTab("Original", new ImageTab(ImageIO.read(filePicker.getSelectedFile())), button);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -122,7 +123,7 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				Image original = tabs.getImage("Original");
 				if(original != null) {					
-					Image gray = original.RGBtoGray();
+					BufferedImage gray = original.RGBtoGray();
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
@@ -138,7 +139,7 @@ public class Window {
 							tabs.remove("Convert to Gray");
 						}
 					});
-					tabs.addImageTab("Convert to Gray", gray, button);
+					tabs.addImageTab("Convert to Gray", new ImageTab(gray), button);
 					JMenuItem item = menuBar.getItem("Edit", "Histogram");
 					if(item != null) {
 						item.setEnabled(true);
@@ -169,7 +170,7 @@ public class Window {
 							tabs.remove("Histogram");
 						}
 					});
-					tabs.addHistogramTab("Histogram", histograma, button);
+					tabs.addHistogramTab("Histogram", new HistogramTab(histograma), button);
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -192,7 +193,7 @@ public class Window {
 							tabs.remove("Histogram Accumulated");
 						}
 					});
-					tabs.addHistogramTab("Histogram Accumulated", histograma, button);
+					tabs.addHistogramTab("Histogram Accumulated", new HistogramTab(histograma), button);
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);

@@ -14,11 +14,16 @@ public class Image extends JPanel implements MouseMotionListener {
 	
 	private BufferedImage image;
 	private Point MousePosition;
-	private JPanel info;
+	private JPanel infoPanel;
 	private int marginY, marginX;
 	
 	public Image(BufferedImage buffImage) {
+		new Image(buffImage, new JPanel());
+	}
+	
+	public Image(BufferedImage buffImage, JPanel info) {
 		image = buffImage;
+		infoPanel = info;
 		marginX = 20;
 		marginY = 20;
 		MousePosition = new Point();
@@ -32,12 +37,12 @@ public class Image extends JPanel implements MouseMotionListener {
 		g.dispose();
 	}
 	
-	public Image RGBtoGray() {
+	public BufferedImage RGBtoGray() {
 		BufferedImage GrayImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);  
 		Graphics g = GrayImage.getGraphics();  
 		g.drawImage(image, 0, 0, null);  
 		g.dispose();
-		return new Image(GrayImage);
+		return GrayImage;
 	}
 	
 	public String getMousePixel() {
@@ -52,7 +57,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	}
 	
 	public void setInfo(JPanel info) {
-		this.info = info;
+		infoPanel = info;
 	}
 	
 	public int getRed(int x, int y) {
@@ -103,7 +108,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		int y = arg0.getY();
 		if(x >= marginX && x <= (image.getWidth() + marginX) && y >= marginY && y <= (image.getHeight() + marginY)) {
 			MousePosition.setLocation(x, y);		
-			info.repaint();
+			infoPanel.repaint();
 		}
 	}
 }
