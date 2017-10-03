@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -45,6 +47,11 @@ public class Window {
 	    setUpOpenItem(OpenFileItem);
 	    fileMenu.add(OpenFileItem);
 	    
+	    JMenuItem SaveFileItem = new JMenuItem("Save File", KeyEvent.VK_S);
+	    SaveFileItem.setIcon(new ImageIcon("openFile.png"));
+	    setUpSaveItem(SaveFileItem);
+	    fileMenu.add(SaveFileItem);
+	    
 	    JMenu editMenu = new JMenu("Edit");
 	    editMenu.setMnemonic(KeyEvent.VK_E);
 	    menuBar.add(editMenu);
@@ -82,6 +89,7 @@ public class Window {
 	    		String username = System.getProperty("user.name");
 	    		String path = "C:\\Users\\" + username + "\\Downloads";
 	    		JFileChooser filePicker = new JFileChooser(path);
+	    		filePicker.setDialogTitle("Select a image to open");
 	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
@@ -100,7 +108,8 @@ public class Window {
 								tabs.remove("Original");
 							}
 						});
-						tabs.addImageTab("Original", new ImageTab(ImageIO.read(filePicker.getSelectedFile())), button);
+						File file = filePicker.getSelectedFile();
+						tabs.addImageTab("Original", new ImageTab(ImageIO.read(file), file.getName(), false), button);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -111,6 +120,39 @@ public class Window {
 	    			frame.setVisible(true);	    			
 	    		}else if(result == JFileChooser.ERROR_OPTION) {
 	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    		}
+	    	}
+	    });
+	}
+	
+	private void setUpSaveItem(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		String username = System.getProperty("user.name");
+	    		String path = "C:\\Users\\" + username + "\\Downloads";
+	    		JFileChooser filePicker = new JFileChooser(path);
+	    		filePicker.setDialogTitle("Select a image to save");
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG", "jpeg"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPG", "jpg"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF", "tiff"));
+	    		int result = filePicker.showSaveDialog(frame);
+	    		
+	    		if(result == JFileChooser.APPROVE_OPTION) {
+						try {
+							boolean res = ImageIO.write(tabs.getImage("Convert to Gray").getBufferedImage(), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath() + "." + filePicker.getFileFilter().getDescription().toLowerCase()));
+							if(!res) {
+								JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+	    		}else if(result == JFileChooser.ERROR_OPTION) {
+	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 	    		}
 	    	}
@@ -139,7 +181,7 @@ public class Window {
 							tabs.remove("Convert to Gray");
 						}
 					});
-					tabs.addImageTab("Convert to Gray", new ImageTab(gray), button);
+					tabs.addImageTab("Convert to Gray", new ImageTab(gray, tabs.getImageTab("Original").getImageName(), true), button);
 					JMenuItem item = menuBar.getItem("Edit", "Histogram");
 					if(item != null) {
 						item.setEnabled(true);

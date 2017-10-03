@@ -1,7 +1,9 @@
 package Image;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -13,8 +15,12 @@ public class ImageTab extends JPanel {
 	
 	private Image image;
 	private JPanel infoPanel;
+	private String name;
+	private boolean gray;
 	
-	public ImageTab(BufferedImage image) {
+	public ImageTab(BufferedImage image, String name, boolean gray) {
+		this.name = name;
+		this.gray = gray;
 		setUpInfo(image);
 		this.setLayout(new BorderLayout());
 		this.add(this.image, BorderLayout.CENTER);
@@ -29,7 +35,33 @@ public class ImageTab extends JPanel {
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				
-				g.drawString(image.getMousePixel(), 40, 40);
+				Font font = g.getFont();
+				g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
+				g.drawString("Pixel Position:", 40, 130);
+				g.drawString("Pixel Color:", 40, 150);
+				g.drawString("Image name:", 40, 40);
+				g.drawString("Image extension:", 40, 60);
+				g.drawString("Image width:", 40, 80);
+				g.drawString("Image height:", 40, 100);
+				g.drawString(name.substring(0, name.lastIndexOf('.')), 180, 40);
+				g.drawString(name.substring(name.lastIndexOf('.') + 1), 180, 60);
+				g.drawString(image.getImageWidth() + "px", 180, 80);
+				g.drawString(image.getImageHeight() + "px", 180, 100);
+				g.setFont(font);
+				int mX = image.getMousePixel().x;
+				int mY = image.getMousePixel().y;
+				Color color = image.getRGB(mX-1, mY-1);
+				color = color == null ? new Color(255, 255, 255) : color;
+				g.drawString("(" + mX + ", " + mY + ")", 160, 128);
+				if(gray) {
+					g.drawString(color.getRed() + "", 160, 148);
+				}else {
+					g.drawString(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue(), 160, 148);
+				}
+				g.setColor(color);
+				g.fillRect(245, 107, 50, 50);
+				g.setColor(Color.BLACK);
+				g.drawRect(244, 106, 51, 51);
 				g.dispose();
 			}
 		};
@@ -41,5 +73,9 @@ public class ImageTab extends JPanel {
 	
 	public Image getImage() {
 		return image;
+	}
+	
+	public String getImageName() {
+		return name;
 	}
 }

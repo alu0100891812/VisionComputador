@@ -31,6 +31,17 @@ public class Tabs extends JTabbedPane {
 		return null;
 	}
 	
+	public ImageTab getImageTab(String name) {
+		if(images != null) {
+			for(Pair<ImageTab, String> image : images) {
+				if(image.getRight().equalsIgnoreCase(name)) {
+					return image.getLeft();
+				}
+			}			
+		}
+		return null;
+	}
+	
 	public Histogram getHistogram(String name) {
 		if(histograms != null) {
 			for(Pair<HistogramTab, String> histogram : histograms) {

@@ -1,5 +1,6 @@
 package Image;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -45,15 +46,8 @@ public class Image extends JPanel implements MouseMotionListener {
 		return GrayImage;
 	}
 	
-	public String getMousePixel() {
-		String result = "Pixel in position: "; 
-		Double x = new Double(MousePosition.getX()-marginX < 0 ? 0 : MousePosition.getX()-marginX);
-		Double y = new Double(MousePosition.getY()-marginY < 0 ? 0 : MousePosition.getY()-marginY);
-		result = result.concat(x.toString() + ", " + y.toString());
-		result = result.concat("\nPixel color: ");
-		result = result.concat(getRed(x.intValue(), y.intValue()) + ", " + getGreen(x.intValue(), y.intValue()) + ", " + getBlue(x.intValue(), y.intValue()));
-		
-		return result;
+	public Point getMousePixel() { 
+		return MousePosition;
 	}
 	
 	public void setInfo(JPanel info) {
@@ -70,6 +64,12 @@ public class Image extends JPanel implements MouseMotionListener {
 	
 	public int getBlue(int x, int y) {
 		return (image.getRGB(x, y) & 0x000000FF);
+	}
+	
+	public Color getRGB(int x, int y) {
+		if(x >= 0 && y >= 0 && x < image.getWidth() && y < image.getHeight())
+			return new Color(image.getRGB(x, y));
+		return null;
 	}
 	
 	public int getImageWidth() {
@@ -92,6 +92,10 @@ public class Image extends JPanel implements MouseMotionListener {
 		image.setRGB(x, y, rgb);
 	}
 	
+	public BufferedImage getBufferedImage() {
+		return image;
+	}
+	
 	public byte[] getVector() {
 		byte[] vector = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		return vector;
@@ -106,8 +110,8 @@ public class Image extends JPanel implements MouseMotionListener {
 	public void mouseMoved(MouseEvent arg0) {
 		int x = arg0.getX();
 		int y = arg0.getY();
-		if(x >= marginX && x <= (image.getWidth() + marginX) && y >= marginY && y <= (image.getHeight() + marginY)) {
-			MousePosition.setLocation(x, y);		
+		if(x > marginX && x <= (image.getWidth() + marginX) && y > marginY && y <= (image.getHeight() + marginY)) {
+			MousePosition.setLocation(x - marginX, y - marginY);		
 			infoPanel.repaint();
 		}
 	}

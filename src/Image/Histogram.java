@@ -33,7 +33,7 @@ public class Histogram extends JPanel {
 		double blockHeight = ((float)max)/((float)height - (margin * 2));
 		double barHeight;
 		
-		g.setColor(Color.RED);
+		g.setColor(Color.BLACK);
 		g.drawString(new Integer(max).toString(), xPos - (new Integer(max).toString().length()/2 * 5), 15);
 		g.drawString("0", xPos - 10, yPos + 10);
 		g.drawString("255", width - (margin + 2) - 10, yPos + 15);
@@ -42,14 +42,14 @@ public class Histogram extends JPanel {
 		g2.rotate(Math.toRadians(-90));
 		g2.drawString("Repetitions", -(height/2) - 25, 13);
 		
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(Color.BLUE);
 		for(int k = 0; k < contador.length; k++) {
 			barHeight = ((double)contador[k])/blockHeight;
 			g.drawRect(xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
 			xPos += barWidth;
 		}
 		
-		g.setColor(Color.RED);
+		g.setColor(Color.BLACK);
 		g.fillRect(margin - 2, height - margin - 2, width - ((margin + 2) * 2), 2);
 		g.fillRect(margin - 2, (height - margin - 2) - (height - ((margin + 2) * 2)), 2, height - ((margin + 2) * 2));
 		
