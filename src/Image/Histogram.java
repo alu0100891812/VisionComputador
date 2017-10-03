@@ -3,6 +3,7 @@ package Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -24,8 +25,8 @@ public class Histogram extends JPanel {
 		int[] contador = accumulated ? getHistogramAccumulated() : getHistogram();
 		
 		final int margin = 20;
-		final int height = image.getSize().height;
-		final int width = image.getSize().width;
+		final int height = this.getSize().height;
+		final int width = this.getSize().width;
 		final int max = getMax(contador);
 		int yPos = height - margin - 2;
 		int xPos = margin - 2;		
@@ -95,6 +96,15 @@ public class Histogram extends JPanel {
 			}			
 		}
 		return max;
+	}
+	
+	public BufferedImage converToImage() {
+		BufferedImage finalImage = new BufferedImage(this.getSize().width, this.getSize().height, BufferedImage.TYPE_INT_ARGB);  
+		Graphics g = finalImage.getGraphics();  
+		this.paintComponent(g); 
+		g.dispose();
+		
+		return finalImage;
 	}
 }
 

@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -48,7 +47,7 @@ public class Window {
 	    fileMenu.add(OpenFileItem);
 	    
 	    JMenuItem SaveFileItem = new JMenuItem("Save File", KeyEvent.VK_S);
-	    SaveFileItem.setIcon(new ImageIcon("openFile.png"));
+	    SaveFileItem.setIcon(new ImageIcon("saveFile.png"));
 	    setUpSaveItem(SaveFileItem);
 	    fileMenu.add(SaveFileItem);
 	    
@@ -132,6 +131,17 @@ public class Window {
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		String username = System.getProperty("user.name");
 	    		String path = "C:\\Users\\" + username + "\\Downloads";
+	    		
+	    		if(tabs.getTabCount() > 1) {
+	    			JFrame select = new JFrame();
+	    			for(int i=0; i<tabs.getTabCount(); i++) {
+	    				select.add(new JButton());
+	    			}
+	    		    select.setSize(250, 250);
+	    		    select.setLocationRelativeTo(null);
+	    		    select.setVisible(true);
+	    		}
+	    		
 	    		JFileChooser filePicker = new JFileChooser(path);
 	    		filePicker.setDialogTitle("Select a image to save");
 	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
