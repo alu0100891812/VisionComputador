@@ -1,8 +1,11 @@
 package Image;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -46,10 +49,11 @@ public class Window {
 	    setUpOpenItem(OpenFileItem);
 	    fileMenu.add(OpenFileItem);
 	    
-	    JMenuItem SaveFileItem = new JMenuItem("Save File", KeyEvent.VK_S);
-	    SaveFileItem.setIcon(new ImageIcon("saveFile.png"));
-	    setUpSaveItem(SaveFileItem);
-	    fileMenu.add(SaveFileItem);
+	    JMenu SaveFileSubmenu = new JMenu("Save File");
+	    SaveFileSubmenu.setMnemonic(KeyEvent.VK_S);
+	    SaveFileSubmenu.setIcon(new ImageIcon("saveFile.png"));
+	    SaveFileSubmenu.setEnabled(false);
+	    fileMenu.add(SaveFileSubmenu);
 	    
 	    JMenu editMenu = new JMenu("Edit");
 	    editMenu.setMnemonic(KeyEvent.VK_E);
@@ -82,6 +86,7 @@ public class Window {
 	}
 	
 	private void setUpOpenItem(JMenuItem item) {
+		String tabName = "Original Image";
 		item.addActionListener(new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
@@ -104,11 +109,11 @@ public class Window {
 								JMenuItem[] items = menuBar.getMenuItems("Edit");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
-								tabs.remove("Original");
+								tabs.remove(tabName);
 							}
 						});
 						File file = filePicker.getSelectedFile();
-						tabs.addImageTab("Original", new ImageTab(ImageIO.read(file), file.getName(), false), button);
+						tabs.addImageTab(tabName, new ImageTab(ImageIO.read(file), file.getName(), false), button);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -125,80 +130,43 @@ public class Window {
 	    });
 	}
 	
-	private void setUpSaveItem(JMenuItem item) {
-		item.addActionListener(new ActionListener() {
-	    	@Override
-	    	public void actionPerformed(ActionEvent arg0) {
-	    		String username = System.getProperty("user.name");
-	    		String path = "C:\\Users\\" + username + "\\Downloads";
-	    		
-	    		if(tabs.getTabCount() > 1) {
-	    			JFrame select = new JFrame();
-	    			for(int i=0; i<tabs.getTabCount(); i++) {
-	    				select.add(new JButton());
-	    			}
-	    		    select.setSize(250, 250);
-	    		    select.setLocationRelativeTo(null);
-	    		    select.setVisible(true);
-	    		}
-	    		
-	    		JFileChooser filePicker = new JFileChooser(path);
-	    		filePicker.setDialogTitle("Select a image to save");
-	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG", "jpeg"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPG", "jpg"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF", "tiff"));
-	    		int result = filePicker.showSaveDialog(frame);
-	    		
-	    		if(result == JFileChooser.APPROVE_OPTION) {
-						try {
-							boolean res = ImageIO.write(tabs.getImage("Convert to Gray").getBufferedImage(), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath() + "." + filePicker.getFileFilter().getDescription().toLowerCase()));
-							if(!res) {
-								JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
-				    					"Error", JOptionPane.ERROR_MESSAGE);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-	    		}else if(result == JFileChooser.ERROR_OPTION) {
-	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
-	    					"Error", JOptionPane.ERROR_MESSAGE);
-	    		}
-	    	}
-	    });
-	}
-	
 	private void setUpConvertToGray(JMenuItem item) {
+		String tabName = "Gray Image";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image original = tabs.getImage("Original");
+				Image original = tabs.getImage("Original Image");
 				if(original != null) {					
+					item.setEnabled(false);
 					BufferedImage gray = original.RGBtoGray();
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							JMenuItem item = menuBar.getItem("Edit", "Histogram");
-							if(item != null) {
-								item.setEnabled(false);
+							JMenuItem itemBar = menuBar.getItem("Edit", "Histogram");
+							if(itemBar != null) {
+								itemBar.setEnabled(false);
 							}
-							item = menuBar.getItem("Edit", "Histogram Accumulated");
-							if(item != null) {
-								item.setEnabled(false);
+							itemBar = menuBar.getItem("Edit", "Histogram Accumulated");
+							if(itemBar != null) {
+								itemBar.setEnabled(false);
 							}
-							tabs.remove("Convert to Gray");
+							tabs.remove(tabName);
 						}
 					});
-					tabs.addImageTab("Convert to Gray", new ImageTab(gray, tabs.getImageTab("Original").getImageName(), true), button);
-					JMenuItem item = menuBar.getItem("Edit", "Histogram");
-					if(item != null) {
-						item.setEnabled(true);
+					tabs.addImageTab(tabName, new ImageTab(gray, tabs.getImageTab("Original Image").getImageName(), true), button);
+					addToSaveItem(tabName, new ImageIcon("RGBtoGray.png"), KeyEvent.VK_G);
+					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+					if(itemBar != null) {
+						itemBar.setEnabled(true);
+					}
+					itemBar = menuBar.getItem("Edit", "Histogram");
+					if(itemBar != null) {
+						itemBar.setEnabled(true);
 					}		
-					item = menuBar.getItem("Edit", "Histogram Accumulated");
-					if(item != null) {
-						item.setEnabled(true);
+					itemBar = menuBar.getItem("Edit", "Histogram Accumulated");
+					if(itemBar != null) {
+						itemBar.setEnabled(true);
 					}
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
@@ -209,20 +177,23 @@ public class Window {
 	}
 	
 	private void setUpHistogram(JMenuItem item) {
+		String tabName = "Histogram";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image gray = tabs.getImage("Convert to Gray");
+				Image gray = tabs.getImage("Gray Image");
 				if(gray != null) {				
+					item.setEnabled(false);
 					histograma = new Histogram(gray, false);
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove("Histogram");
+							tabs.remove(tabName);
 						}
 					});
-					tabs.addHistogramTab("Histogram", new HistogramTab(histograma), button);
+					tabs.addHistogramTab(tabName, new HistogramTab(histograma), button);
+					addToSaveItem(tabName, new ImageIcon("histogram.png"), KeyEvent.VK_H);
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -232,25 +203,68 @@ public class Window {
 	}
 	
 	private void setUpHistogramAccumulated(JMenuItem item) {
+		String tabName = "Histogram Accumulated";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image gray = tabs.getImage("Convert to Gray");
+				Image gray = tabs.getImage("Gray Image");
 				if(gray != null) {				
+					item.setEnabled(false);
 					histograma = new Histogram(gray, true);
 					JButton button = new JButton();
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove("Histogram Accumulated");
+							tabs.remove(tabName);
 						}
 					});
-					tabs.addHistogramTab("Histogram Accumulated", new HistogramTab(histograma), button);
+					tabs.addHistogramTab(tabName, new HistogramTab(histograma), button);
+					addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_H);
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
+	}
+	
+	private void addToSaveItem(String name, ImageIcon icon, int keyEvent) {
+		JMenu menu = (JMenu) menuBar.getItem("File", "Save File");
+		JMenuItem exampleItem = new JMenuItem(name);
+		exampleItem.setMnemonic(keyEvent);
+		if(icon != null)
+			exampleItem.setIcon(icon);
+		exampleItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JMenuItem source = (JMenuItem)e.getSource();
+				String tabName = source.getText();
+				
+				JFileChooser filePicker = new JFileChooser("C:\\Users\\" + System.getProperty("user.name") + "\\Downloads");
+	    		filePicker.setDialogTitle("Select a image to save");
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG", "jpeg"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPG", "jpg"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF", "tiff"));
+	    		int result = filePicker.showSaveDialog(frame);
+	    		
+	    		if(result == JFileChooser.APPROVE_OPTION) {
+						try {
+							boolean res = ImageIO.write(tabs.getBuffImage(tabName), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath() + "." + filePicker.getFileFilter().getDescription().toLowerCase()));
+							if(!res) {
+								JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+							}
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						}
+	    		}else if(result == JFileChooser.ERROR_OPTION) {
+	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    		}
+			}
+		});;
+		menu.add(exampleItem);
 	}
 }

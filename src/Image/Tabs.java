@@ -1,5 +1,6 @@
 package Image;
 
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -10,6 +11,7 @@ public class Tabs extends JTabbedPane {
 	
 	private Vector<Pair<ImageTab, String>> images;
 	private Vector<Pair<HistogramTab, String>> histograms;
+	private Vector<String> tabNames;
 	
 	public void remove(String name) {
 		for(int i=0; i<this.getTabCount(); i++) {
@@ -27,6 +29,24 @@ public class Tabs extends JTabbedPane {
 					return image.getLeft().getImage();
 				}
 			}			
+		}
+		return null;
+	}
+	
+	public BufferedImage getBuffImage(String name) {
+		if(images != null) {
+			for(Pair<ImageTab, String> image : images) {
+				if(image.getRight().equalsIgnoreCase(name)) {
+					return image.getLeft().getImage().getBufferedImage();
+				}
+			}			
+		}
+		if(histograms != null) {
+			for(Pair<HistogramTab, String> histogram : histograms) {
+				if(histogram.getRight().equalsIgnoreCase(name)) {
+					return histogram.getLeft().getHistogram().converToImage();
+				}
+			}
 		}
 		return null;
 	}
@@ -62,6 +82,10 @@ public class Tabs extends JTabbedPane {
 		if(images == null) 
 			images = new Vector<Pair<ImageTab, String>>();
 		images.addElement(new Pair<ImageTab, String>(image, title));
+		
+		if(tabNames == null)
+			tabNames = new Vector<String>();
+		tabNames.addElement(title);
 	}
 	
 	public void addHistogramTab(String title, HistogramTab histogram, JButton button) {
@@ -73,5 +97,15 @@ public class Tabs extends JTabbedPane {
 		if(histograms == null) 
 			histograms = new Vector<Pair<HistogramTab, String>>();
 		histograms.addElement(new Pair<HistogramTab, String>(histogram, title));
+		
+		if(tabNames == null)
+			tabNames = new Vector<String>();
+		tabNames.addElement(title);
+	}
+	
+	public String[] getTabsNames() {
+		String[] names = new String[tabNames.size()];
+		names = tabNames.toArray(names);
+		return names;
 	}
 }
