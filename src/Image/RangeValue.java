@@ -11,25 +11,31 @@ public class RangeValue {
 			panel = new JPanel();
 	}
 		
-	public void calculateRange(Image image) {
+	public String calculateRange(Image image) {
 		byte[] pixel = image.getVector();
-		int[] contador = new int[256];
-		int max = 0;
-		byte maxvalor = 0;
-		int min = 256;
-		byte minvalor = (byte) 256;
-		
+		int[] count = new int[256];
+		int maxvalue = 0;
+		int minvalue = 0;
+		String range = "";
+				
 		for(int i = 0; i < pixel.length; i++) {
-			contador[pixel[i]]++;
+			count[pixel[i] & 0xFF]++;
 		}
-		for(int j = 0; j < contador.length; j++) {
-			if(contador[j] > max) {
-				max = contador[j];
-				maxvalor = (byte) j;
-			} else if (contador[j] < min) {
-				min = contador[j];
-				minvalor = (byte) j;
-			}			
+		
+		for(int j = 0; j < count.length; j++) {
+			if(count[j] != 0) {
+				minvalue = j;
+				break;
+			}
 		}
+		
+		for(int j = count.length-1; j > 0; j--) {
+			if(count[j] != 0) {
+				maxvalue = j;
+				break;
+			}
+		}
+		range = "[ " + minvalue + " - " + maxvalue + " ]";
+		return range;
 	}
 }

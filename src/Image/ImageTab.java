@@ -43,10 +43,12 @@ public class ImageTab extends JPanel {
 				g.drawString("Image extension:", 40, 60);
 				g.drawString("Image width:", 40, 80);
 				g.drawString("Image height:", 40, 100);
+				g.drawString("Range Value:", 40, 170);
 				g.drawString(name.substring(0, name.lastIndexOf('.')), 180, 40);
 				g.drawString(name.substring(name.lastIndexOf('.') + 1), 180, 60);
 				g.drawString(image.getImageWidth() + "px", 180, 80);
 				g.drawString(image.getImageHeight() + "px", 180, 100);
+				g.drawString(new RangeValue().calculateRange(image), 180, 168);
 				g.setFont(font);
 				int mX = image.getMousePixel().x;
 				int mY = image.getMousePixel().y;

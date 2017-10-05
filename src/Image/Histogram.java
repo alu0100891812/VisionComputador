@@ -22,12 +22,12 @@ public class Histogram extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		int[] contador = accumulated ? getHistogramAccumulated() : getHistogram();
+		int[] count = accumulated ? getHistogramAccumulated() : getHistogram();
 		
 		final int margin = 20;
 		final int height = this.getSize().height;
 		final int width = this.getSize().width;
-		final int max = getMax(contador);
+		final int max = getMax(count);
 		int yPos = height - margin - 2;
 		int xPos = margin - 2;		
 		float barWidth = ((float)width - (margin * 2))/256;
@@ -44,8 +44,8 @@ public class Histogram extends JPanel {
 		g2.drawString("Repetitions", -(height/2) - 25, 13);
 		
 		g.setColor(Color.BLUE);
-		for(int k = 0; k < contador.length; k++) {
-			barHeight = ((double)contador[k])/blockHeight;
+		for(int k = 0; k < count.length; k++) {
+			barHeight = ((double)count[k])/blockHeight;
 			g.drawRect(xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
 			xPos += barWidth;
 		}
@@ -59,23 +59,23 @@ public class Histogram extends JPanel {
 	
 	private int[] getHistogram() {
 		byte[] pixel = image.getVector();
-		int[] contador = new int[256];
+		int[] count = new int[256];
 		for(int i = 0; i < pixel.length; i++) {
-			contador[pixel[i] & 0xFF] += 1;
+			count[pixel[i] & 0xFF] += 1;
 		}
-		return contador;
+		return count;
 	}
 	
 	private int[] getHistogramAccumulated() {
 		byte[] pixel = image.getVector();
-		int[] contador = new int[256];
+		int[] count = new int[256];
 		for(int i = 0; i < pixel.length; i++) {
-			contador[pixel[i] & 0xFF] += 1;
+			count[pixel[i] & 0xFF] += 1;
 		}
-		for(int i=1; i<contador.length; i++) {
-			contador[i] += contador[i-1];
+		for(int i=1; i<count.length; i++) {
+			count[i] += count[i-1];
 		}
-		return contador;
+		return count;
 	}
 	
 	private static int getMin(int[] vector) {
