@@ -115,4 +115,18 @@ public class Image extends JPanel implements MouseMotionListener {
 			infoPanel.repaint();
 		}
 	}
+	
+	public float getEntropy() {
+		byte[] pixel = getVector();
+		int[] count = new int[256];
+		float cont = 0;
+		for(int i = 0; i < pixel.length; i++) {
+			count[pixel[i] & 0xFF] += 1;
+		}
+		for(int i=0; i<count.length; i++) {
+			if(count[i] != 0) cont++;
+		}
+		return cont/256;
+	}
+
 }

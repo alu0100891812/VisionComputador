@@ -43,22 +43,28 @@ public class ImageTab extends JPanel {
 				g.drawString("Image extension:", 40, 60);
 				g.drawString("Image width:", 40, 80);
 				g.drawString("Image height:", 40, 100);
-				g.drawString("Range Value:", 40, 170);
+				if(gray) {
+					g.drawString("Range Value:", 40, 170);
+					g.drawString("Image entropy:", 40, 190);
+				}
 				g.drawString(name.substring(0, name.lastIndexOf('.')), 180, 40);
 				g.drawString(name.substring(name.lastIndexOf('.') + 1), 180, 60);
 				g.drawString(image.getImageWidth() + "px", 180, 80);
 				g.drawString(image.getImageHeight() + "px", 180, 100);
-				g.drawString(new RangeValue().calculateRange(image), 180, 168);
 				g.setFont(font);
+				if(gray) {
+					g.drawString(new RangeValue().calculateRange(image), 160, 170);
+					g.drawString(image.getEntropy() + "", 160, 190);
+				}
 				int mX = image.getMousePixel().x;
 				int mY = image.getMousePixel().y;
 				Color color = image.getRGB(mX-1, mY-1);
 				color = color == null ? new Color(255, 255, 255) : color;
 				g.drawString("(" + mX + ", " + mY + ")", 160, 128);
 				if(gray) {
-					g.drawString(color.getRed() + "", 160, 148);
+					g.drawString(color.getRed() + "", 160, 150);
 				}else {
-					g.drawString(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue(), 160, 148);
+					g.drawString(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue(), 160, 150);
 				}
 				g.setColor(color);
 				g.fillRect(245, 107, 50, 50);
