@@ -57,7 +57,7 @@ public class ImageTab extends JPanel {
 				if(gray) {
 					g.drawString(new RangeValue().calculateRange(image), 160, 170);
 					g.drawString(image.getEntropy() + "", 160, 190);
-					g.drawString(image.getBrightness() + "", 170, 210);
+					g.drawString(image.getBrightness() + "", 180, 210);
 					g.drawString(image.getContrast() + "", 160, 230);
 				}
 				int mX = image.getMousePixel().x;

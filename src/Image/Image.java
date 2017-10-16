@@ -119,7 +119,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	
 	
 	//Media
-	public double getBrightness() {
+	public int getBrightness() {
 		byte[] pixel = getVector();
 		int[] count = new int[256];
 		for(int i = 0; i < pixel.length; i++) {
@@ -132,11 +132,12 @@ public class Image extends JPanel implements MouseMotionListener {
 			acc += histogram[i]*i;
 		}
 		acc = acc / pixelNum;
-		return acc;
+		acc = Math.round(acc);
+		return (int)acc;
 	}
 	
 	//Desviación típica: Raiz cuadrada de la varianza
-	public double getContrast() {
+	public int getContrast() {
 		byte[] pixel = getVector();
 		double media = getBrightness();
 		int pixelNum = pixel.length;
@@ -147,7 +148,8 @@ public class Image extends JPanel implements MouseMotionListener {
 		}	
 		varianza = varianza / pixelNum;
 		desvTipica = Math.sqrt(varianza);
-		return desvTipica;
+		desvTipica = Math.round(desvTipica);
+		return (int)desvTipica;
 	}
 	
 	public float getEntropy() {
