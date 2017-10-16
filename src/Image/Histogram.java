@@ -94,8 +94,8 @@ public class Histogram extends JPanel {
 			histogramAcc[i] = histogramAcc[i]/pixelNum;
 		}
 		return histogramAcc;
-	}
-	
+	}	
+		
 	private static int getMin(int[] vector) {
 		int min = Integer.MAX_VALUE;
 		for(int j = 0; j < 256; j++) {
