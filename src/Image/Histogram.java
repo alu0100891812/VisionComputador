@@ -29,7 +29,7 @@ public class Histogram extends JPanel {
 		final int width = this.getSize().width;
 		final int max = getMax(count);
 		int yPos = height - margin - 2;
-		int xPos = margin - 2;		
+		int xPos = margin - 2;	
 		float barWidth = ((float)width - (margin * 2))/256;
 		double blockHeight = ((float)max)/((float)height - (margin * 2));
 		double barHeight;
@@ -72,10 +72,28 @@ public class Histogram extends JPanel {
 		for(int i = 0; i < pixel.length; i++) {
 			count[pixel[i] & 0xFF] += 1;
 		}
-		for(int i=1; i<count.length; i++) {
+		for(int i = 1; i<count.length; i++) {
 			count[i] += count[i-1];
 		}
 		return count;
+	}
+	
+	private int[] getHistogramNormalized() {
+		int[] histogram = getHistogram();
+		int pixelNum = this.getSize().height * this.getSize().width;
+		for(int i = 0; i < histogram.length; i++) {
+			histogram[i] = histogram[i]/pixelNum;
+		}
+		return histogram;
+	}
+	
+	private int[] getHistogramAccNormalized() {
+		int[] histogramAcc = getHistogramAccumulated();
+		int pixelNum = this.getSize().height * this.getSize().width;
+		for(int i = 0; i < histogramAcc.length; i++) {
+			histogramAcc[i] = histogramAcc[i]/pixelNum;
+		}
+		return histogramAcc;
 	}
 	
 	private static int getMin(int[] vector) {
