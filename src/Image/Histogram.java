@@ -72,20 +72,10 @@ public class Histogram extends JPanel {
 		for(int i = 0; i < pixel.length; i++) {
 			count[pixel[i] & 0xFF] += 1;
 		}
-		for(int i = 1; i<count.length; i++) {
+		for(int i = 1; i < count.length; i++) {
 			count[i] += count[i-1];
 		}
 		return count;
-	}
-	
-	private float[] getHistogramNormalized() {
-		int[] histogram = getHistogram();
-		float[] histogramNorm = new float[histogram.length];
-		int pixelNum = image.getVector().length;
-		for(int i = 0; i < histogram.length; i++) {
-			histogramNorm[i] = histogram[i]/pixelNum;
-		}
-		return histogramNorm;
 	}
 	
 	private float[] getHistogramAccNormalized() {
@@ -97,29 +87,27 @@ public class Histogram extends JPanel {
 		}
 		return histogramAccNorm;
 	}
-	
+		
 	private int[] getHistogramEcualized() {
-		float[] histogramNorm = getHistogramNormalized();
-		int[] histogramEc = new int[histogramNorm.length];
+		float[] histogramAccNorm = getHistogramAccNormalized();
+		int[] histogramEc = new int[histogramAccNorm.length];
 		int m = 256;
 		float aux = 0;
-		for(int i = 0; i < histogramNorm.length; i++) {
-			aux = histogramNorm[i] * m;
+		for(int i = 0; i < histogramAccNorm.length; i++) {
+			aux = histogramAccNorm[i] * m;
 			histogramEc[i] = Math.max(0, (Math.round(aux)-1));
 		}
 		return histogramEc;
 	}
 	
-	private int[] getHistogramAccEcualized() {
-		float[] histogramAccNorm = getHistogramAccNormalized();
-		int[] histogramAccEc = new int[histogramAccNorm.length];
-		int m = 256;
-		float aux = 0;
-		for(int i = 0; i < histogramAccNorm.length; i++) {
-			aux = histogramAccNorm[i] * m;
-			histogramAccEc[i] = Math.max(0, (Math.round(aux)-1));
+	private int[] getHistogramEcualizedAcc() {
+		int[] histogramEc = getHistogramEcualized();
+		int[] histogramEcAcc = new int [histogramEc.length];
+		histogramEcAcc[0] = histogramEc[0];
+		for(int i = 1; i < histogramEc.length; i++) {
+			histogramEcAcc[i] = histogramEc[i] + histogramEc[i-1];
 		}
-		return histogramAccEc;
+		return histogramEcAcc;
 	}
 		
 	private static int getMin(int[] vector) {
