@@ -88,24 +88,14 @@ public class Histogram extends JPanel {
 		return histogramAccNorm;
 	}
 		
-	private int[] getHistogramEcualized() {
+	private int[] getHistogramEcualizedAcc() {
 		float[] histogramAccNorm = getHistogramAccNormalized();
-		int[] histogramEc = new int[histogramAccNorm.length];
+		int[] histogramEcAcc = new int[histogramAccNorm.length];
 		int m = 256;
 		float aux = 0;
 		for(int i = 0; i < histogramAccNorm.length; i++) {
 			aux = histogramAccNorm[i] * m;
-			histogramEc[i] = Math.max(0, (Math.round(aux)-1));
-		}
-		return histogramEc;
-	}
-	
-	private int[] getHistogramEcualizedAcc() {
-		int[] histogramEc = getHistogramEcualized();
-		int[] histogramEcAcc = new int [histogramEc.length];
-		histogramEcAcc[0] = histogramEc[0];
-		for(int i = 1; i < histogramEc.length; i++) {
-			histogramEcAcc[i] = histogramEc[i] + histogramEc[i-1];
+			histogramEcAcc[i] = Math.max(0, (Math.round(aux)-1));
 		}
 		return histogramEcAcc;
 	}
