@@ -78,23 +78,49 @@ public class Histogram extends JPanel {
 		return count;
 	}
 	
-	private int[] getHistogramNormalized() {
+	private float[] getHistogramNormalized() {
 		int[] histogram = getHistogram();
-		int pixelNum = this.getSize().height * this.getSize().width;
+		float[] histogramNorm = new float[histogram.length];
+		int pixelNum = image.getVector().length;
 		for(int i = 0; i < histogram.length; i++) {
-			histogram[i] = histogram[i]/pixelNum;
+			histogramNorm[i] = histogram[i]/pixelNum;
 		}
-		return histogram;
+		return histogramNorm;
 	}
 	
-	private int[] getHistogramAccNormalized() {
+	private float[] getHistogramAccNormalized() {
 		int[] histogramAcc = getHistogramAccumulated();
-		int pixelNum = this.getSize().height * this.getSize().width;
+		float[] histogramAccNorm = new float[histogramAcc.length];
+		int pixelNum = image.getVector().length;
 		for(int i = 0; i < histogramAcc.length; i++) {
-			histogramAcc[i] = histogramAcc[i]/pixelNum;
+			histogramAccNorm[i] = histogramAcc[i]/pixelNum;
 		}
-		return histogramAcc;
-	}	
+		return histogramAccNorm;
+	}
+	
+	private int[] getHistogramEcualized() {
+		float[] histogramNorm = getHistogramNormalized();
+		int[] histogramEc = new int[histogramNorm.length];
+		int m = 256;
+		float aux = 0;
+		for(int i = 0; i < histogramNorm.length; i++) {
+			aux = histogramNorm[i] * m;
+			histogramEc[i] = Math.max(0, (Math.round(aux)-1));
+		}
+		return histogramEc;
+	}
+	
+	private int[] getHistogramAccEcualized() {
+		float[] histogramAccNorm = getHistogramAccNormalized();
+		int[] histogramAccEc = new int[histogramAccNorm.length];
+		int m = 256;
+		float aux = 0;
+		for(int i = 0; i < histogramAccNorm.length; i++) {
+			aux = histogramAccNorm[i] * m;
+			histogramAccEc[i] = Math.max(0, (Math.round(aux)-1));
+		}
+		return histogramAccEc;
+	}
 		
 	private static int getMin(int[] vector) {
 		int min = Integer.MAX_VALUE;
