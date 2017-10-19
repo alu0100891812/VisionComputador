@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JPanel;
 
@@ -44,6 +45,17 @@ public class Image extends JPanel implements MouseMotionListener {
 		g.drawImage(image, 0, 0, null);  
 		g.dispose();
 		return GrayImage;
+	}
+	
+	public Image EcualizedImage() {
+		Image EcualizedImage = new Image(new BufferedImage(image.getWidth(), image.getHeight(), image.getType()));
+		int[] vectorTrans = new Histogram(this, true).getVectorEcualized();
+		int[] vectorImage = ((DataBufferInt)EcualizedImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		for(int i = 0; i < vectorImage.length; i++) {
+			vectorImage[i] = vectorTrans[i]; //Image = Vout
+		}
+		EcualizedImage.getBufferedImage().getRaster().setPixels(0,0,image.getWidth(), image.getHeight(),vectorImage);
+		return EcualizedImage;
 	}
 	
 	public Point getMousePixel() { 
@@ -115,8 +127,6 @@ public class Image extends JPanel implements MouseMotionListener {
 			infoPanel.repaint();
 		}
 	}
-	
-	
 	
 	//Media
 	public int getBrightness() {

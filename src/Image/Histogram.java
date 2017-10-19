@@ -88,16 +88,16 @@ public class Histogram extends JPanel {
 		return histogramAccNorm;
 	}
 		
-	private int[] getHistogramEcualizedAcc() {
+	public int[] getVectorEcualized() {
 		float[] histogramAccNorm = getHistogramAccNormalized();
-		int[] histogramEcAcc = new int[histogramAccNorm.length];
+		int[] vectorEc = new int[histogramAccNorm.length];
 		int m = 256;
 		float aux = 0;
 		for(int i = 0; i < histogramAccNorm.length; i++) {
 			aux = histogramAccNorm[i] * m;
-			histogramEcAcc[i] = Math.max(0, (Math.round(aux)-1));
+			vectorEc[i] = Math.max(0, (Math.round(aux)-1));
 		}
-		return histogramEcAcc;
+		return vectorEc;
 	}
 		
 	private static int getMin(int[] vector) {
