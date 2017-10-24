@@ -55,15 +55,42 @@ public class Image extends JPanel implements MouseMotionListener {
 		return new Image(CopyImage);
 	}
 	
-	public Image EcualizedImage() {
+	private Image EcualizedImageFromImageVector(int[] vectorAcc) {
 		Image EcualizedImage = new Image(new BufferedImage(image.getWidth(), image.getHeight(), image.getType()));
-		int[] vectorTrans = new Histogram(this, true).getVectorEcualized();
-		int[] vectorImage = ((DataBufferInt)EcualizedImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		int[] lookUpTable = new int[256];
+		byte[] vectorImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vectorImage = new Histogram(this, false).getHistogramAccumulated();
+		int[] vectorEcc = new int[vectorImg.length];		
+				
 		for(int i = 0; i < vectorImage.length; i++) {
-			vectorImage[i] = vectorTrans[i]; //Image = Vout
+			for(int j = 0; j < vectorAcc.length-1; j++) {
+				if((vectorImage[i] > vectorAcc[j]) && (vectorImage[i] < vectorAcc[j+1])) {
+					if((vectorImage[i]-vectorAcc[j]) > (vectorAcc[j+1]-vectorImage[i])) {
+						lookUpTable[i] = j + 1;
+					} else {
+						lookUpTable[i] = j;
+					}
+				} 
+			}
 		}
-		EcualizedImage.getBufferedImage().getRaster().setPixels(0,0,image.getWidth(), image.getHeight(),vectorImage);
+		for(int i = 0; i < vectorImg.length; i++) {
+			vectorEcc[i] = lookUpTable[vectorImg[i] & 0xFF];
+		}	
+		EcualizedImage.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorEcc);;
 		return EcualizedImage;
+	}
+	
+	public Image EcualizedImage() {
+		int size = (image.getWidth())*(image.getHeight());
+		int[] vectorAcc = new int[256];
+		for(int i = 0; i < vectorAcc.length; i++) {
+			vectorAcc[i] = (i + 1) * (size / 256);
+		}
+		return EcualizedImageFromImageVector(vectorAcc);
+	}
+	
+	public Image EcualizedImageFromImage(Image image) {
+		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
 	}
 	
 	public Point getMousePixel() { 

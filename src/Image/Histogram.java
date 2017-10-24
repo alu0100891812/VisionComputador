@@ -66,7 +66,7 @@ public class Histogram extends JPanel {
 		return count;
 	}
 	
-	private int[] getHistogramAccumulated() {
+	public int[] getHistogramAccumulated() {
 		byte[] pixel = image.getVector();
 		int[] count = new int[256];
 		for(int i = 0; i < pixel.length; i++) {
@@ -86,18 +86,6 @@ public class Histogram extends JPanel {
 			histogramAccNorm[i] = histogramAcc[i]/pixelNum;
 		}
 		return histogramAccNorm;
-	}
-		
-	public int[] getVectorEcualized() {
-		float[] histogramAccNorm = getHistogramAccNormalized();
-		int[] vectorEc = new int[histogramAccNorm.length];
-		int m = 256;
-		float aux = 0;
-		for(int i = 0; i < histogramAccNorm.length; i++) {
-			aux = histogramAccNorm[i] * m;
-			vectorEc[i] = Math.max(0, (Math.round(aux)-1));
-		}
-		return vectorEc;
 	}
 		
 	private static int getMin(int[] vector) {

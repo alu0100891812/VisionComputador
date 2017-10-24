@@ -81,6 +81,11 @@ public class Window {
 	    LinearTransformtionItem.setEnabled(false);
 	    setUpLinearTransformation(LinearTransformtionItem);
 	    editMenu.add(LinearTransformtionItem);
+	    
+	    JMenuItem EcualizeItem = new JMenuItem("Ecualized image", KeyEvent.VK_E);
+        EcualizeItem.setEnabled(false);
+        setUpEcualized(EcualizeItem);
+        editMenu.add(EcualizeItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -176,7 +181,10 @@ public class Window {
 					if(itemBar != null) {
 						itemBar.setEnabled(true);
 					}
-
+                    itemBar = menuBar.getItem("Edit", "Ecualized image");
+                    if(itemBar != null) {
+                        itemBar.setEnabled(true);
+                    }            
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -236,6 +244,37 @@ public class Window {
 			}
 		});
 	}
+	
+    private void setUpEcualized(JMenuItem item) {
+        String tabName = "Ecualized Image";
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                Image gray = tabs.getImage("Gray Image");
+                if(gray != null) {                    
+                    item.setEnabled(false);
+                    BufferedImage image = gray.EcualizedImage().getBufferedImage(); 
+                    JButton button = new JButton();
+                    button.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            tabs.remove(tabName);
+                        }
+                    });
+                    tabs.addImageTab(tabName, new ImageTab(image, tabs.getImageTab("Original Image").getImageName(), true), button);
+                    tabs.addHistogramTab("YY", new HistogramTab(new Histogram(new Image(image), true)), button);
+                    addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
+                    JMenuItem itemBar = menuBar.getItem("File", "Save File");
+                    if(itemBar != null) {
+                        itemBar.setEnabled(true);
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(null, "Can't ecualize image, try again",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
 	
 	private void setUpLinearTransformation(JMenuItem item) {
 		String tabName = "Linear transformation";
