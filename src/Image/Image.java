@@ -20,7 +20,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	private int marginY, marginX;
 	
 	public Image(BufferedImage buffImage) {
-		new Image(buffImage, new JPanel());
+		this(buffImage, new JPanel());
 	}
 	
 	public Image(BufferedImage buffImage, JPanel info) {
@@ -45,6 +45,14 @@ public class Image extends JPanel implements MouseMotionListener {
 		g.drawImage(image, 0, 0, null);  
 		g.dispose();
 		return GrayImage;
+	}
+	
+	public Image getCopy() {
+		BufferedImage CopyImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());  
+		Graphics g = CopyImage.getGraphics();  
+		g.drawImage(image, 0, 0, null);  
+		g.dispose();
+		return new Image(CopyImage);
 	}
 	
 	public Image EcualizedImage() {
@@ -178,7 +186,8 @@ public class Image extends JPanel implements MouseMotionListener {
 	public void setPixelWithValue(int from, int to, int value) {
 		byte[] vector = getVector();
 		for(int i=0; i<vector.length; i++) {
-			if((vector[i] & 0xFF) >= from && (vector[i] & 0xFF) <= to) {
+			int val = vector[i] & 0xFF;
+			if((val) >= from && (vector[i] & 0xFF) <= to) {
 				image.getRaster().getDataBuffer().setElem(i, value);
 			}
 		}
