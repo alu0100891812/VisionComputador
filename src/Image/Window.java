@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -77,6 +78,11 @@ public class Window {
 	    setUpHistogramAccumulated(HistogramAccumulatedItem);
 	    editMenu.add(HistogramAccumulatedItem);
 	    
+	    JMenuItem LinearTransformtionItem = new JMenuItem("Linear Transformation", KeyEvent.VK_L);
+	    LinearTransformtionItem.setIcon(new ImageIcon("histogramAccumulated.png"));
+	    LinearTransformtionItem.setEnabled(false);
+	    setUpLinearTransformation(LinearTransformtionItem);
+	    editMenu.add(LinearTransformtionItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -168,6 +174,11 @@ public class Window {
 					if(itemBar != null) {
 						itemBar.setEnabled(true);
 					}
+					itemBar = menuBar.getItem("Edit", "Linear Transformation");
+					if(itemBar != null) {
+						itemBar.setEnabled(true);
+					}
+
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -227,6 +238,59 @@ public class Window {
 			}
 		});
 	}
+	
+	private void setUpLinearTransformation(JMenuItem item) {
+		String tabName = "Linear transformation";
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image gray = new Image(tabs.getImage("Gray Image").getBufferedImage());
+	    		linearTransformationFrame LTFrame = new linearTransformationFrame("Linear transformation");
+	    		LTFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	    		LTFrame.setVisible(true);
+	    		LTFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    		        int[] nodes = LTFrame.getNodeData();	    		    
+			    	    if(nodes.length > 0) {			
+			    	    	for(int i=0; i<nodes.length-3; i+=2) {
+			    	    		if(nodes[i+1] != nodes[i+3]) {
+			    	    			if(nodes[i] == nodes[i+2]) {
+				    	    			gray.setPixelWithValue(nodes[i], nodes[i+2]+1, nodes[i+1]);
+				    	    		}else {
+				    	    			for(int j=0; j<(nodes[i+2]-nodes[i]); j++) {				    	    				
+				    	    				gray.setPixelWithValue(nodes[i], nodes[i+2], nodes[i+1]);
+				    	    			}
+				    	    		}
+			    	    		}else {
+				    	    		if(nodes[i] == nodes[i+2]) {
+				    	    			gray.setPixelWithValue(nodes[i], nodes[i+2]+1, nodes[i+1]);
+				    	    		}else {
+				    	    			gray.setPixelWithValue(nodes[i], nodes[i+2], nodes[i+1]);
+				    	    		}
+			    	    		}
+			    	    	}
+							item.setEnabled(false);
+							JButton button = new JButton();
+							button.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									tabs.remove(tabName);
+								}
+							});
+							tabs.addImageTab(tabName, new ImageTab(gray.getBufferedImage(), tabs.getImageTab("Original Image").getImageName(), true), button);
+							addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_L);
+						}else{
+							JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
+			    					"Error", JOptionPane.ERROR_MESSAGE);
+						}
+			    	    gray.setPixelWithValue(0, 125, 255);
+	    		    }
+	    		});
+	    	}
+		});
+	}
+
 	
 	private void addToSaveItem(String name, ImageIcon icon, int keyEvent) {
 		JMenu menu = (JMenu) menuBar.getItem("File", "Save File");

@@ -174,4 +174,23 @@ public class Image extends JPanel implements MouseMotionListener {
 		}
 		return cont/256;
 	}
+	
+	public void setPixelWithValue(int from, int to, int value) {
+		byte[] vector = getVector();
+		for(int i=0; i<vector.length; i++) {
+			if((vector[i] & 0xFF) >= from && (vector[i] & 0xFF) <= to) {
+				image.getRaster().getDataBuffer().setElem(i, value);
+			}
+		}
+	}
+	
+	public void setPixelWithValue(int from, int value) {
+		byte[] vector = getVector();
+		for(int i=0; i<vector.length; i++) {
+			if((vector[i] & 0xFF) == from) {
+				image.getRaster().getDataBuffer().setElem(i, value);
+			}
+		}
+	}
+
 }
