@@ -290,20 +290,22 @@ public class Window {
 	    			public void mouseClicked(MouseEvent arg0) {
 	    		        int[] nodes = LTFrame.getNodeData();	    		    
 			    	    if(nodes.length > 0) {		
-			    	    	//LTFrame.setVisible(false);
-			    	    	//LTFrame.dispose();
+			    	    	LTFrame.setVisible(false);
+			    	    	LTFrame.dispose();
+			    	    	byte[] originalGray = tabs.getImage("Gray Image").getVector();
 			    	    	for(int i=0; i<nodes.length-3; i+=2) {
 			    	    		if(nodes[i+1] != nodes[i+3]) {
 			    	    			if(nodes[i] == nodes[i+2]) {
 				    	    		}else {
-				    	    			for(int j=0; j<(nodes[i+2]-nodes[i]); j++) {				    	    				
-				    	    				gray.setPixelWithValue(nodes[i]+j, nodes[i+1] + (((nodes[i+3]-nodes[i+1])/(nodes[i+2]-nodes[i]))*j));
+				    	    			for(int j=0; j<(nodes[i+2]-nodes[i]); j++) {	
+				    	    				float dif = ((float)(nodes[i+3]-nodes[i+1])/(float)(nodes[i+2]-nodes[i]));
+				    	    				gray.setPixelWithValue(originalGray, nodes[i]+j, nodes[i+1] + (dif*j));
 				    	    			}
 				    	    		}
 			    	    		}else {
 				    	    		if(nodes[i] == nodes[i+2]) {
 				    	    		}else {
-				    	    			gray.setPixelWithValue(nodes[i], nodes[i+2], nodes[i+1]);
+				    	    			gray.setPixelWithValue(originalGray, nodes[i], nodes[i+2], nodes[i+1]);
 				    	    		}
 			    	    		}
 			    	    	}

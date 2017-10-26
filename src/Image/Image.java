@@ -157,7 +157,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	public void mouseMoved(MouseEvent arg0) {
 		int x = arg0.getX();
 		int y = arg0.getY();
-		if(x > marginX && x <= (image.getWidth() + marginX) && y > marginY && y <= (image.getHeight() + marginY)) {
+		if(x >= marginX && x < (image.getWidth() + marginX) && y >= marginY && y < (image.getHeight() + marginY)) {
 			MousePosition.setLocation(x - marginX, y - marginY);		
 			infoPanel.repaint();
 		}
@@ -210,21 +210,18 @@ public class Image extends JPanel implements MouseMotionListener {
 		return cont/256;
 	}
 	
-	public void setPixelWithValue(int from, int to, int value) {
-		byte[] vector = getVector();
+	public void setPixelWithValue(byte[] vector, int from, int to, int value) {
 		for(int i=0; i<vector.length; i++) {
-			int val = vector[i] & 0xFF;
-			if((val) >= from && (vector[i] & 0xFF) <= to) {
+			if((vector[i] & 0xFF) >= from && (vector[i] & 0xFF) <= to) {
 				image.getRaster().getDataBuffer().setElem(i, value);
 			}
 		}
 	}
 	
-	public void setPixelWithValue(int from, int value) {
-		byte[] vector = getVector();
+	public void setPixelWithValue(byte[] vector, int from, float value) {
 		for(int i=0; i<vector.length; i++) {
 			if((vector[i] & 0xFF) == from) {
-				image.getRaster().getDataBuffer().setElem(i, value);
+				image.getRaster().getDataBuffer().setElem(i, (int)value);
 			}
 		}
 	}

@@ -62,11 +62,15 @@ public class ImageTab extends JPanel {
 				}
 				int mX = image.getMousePixel().x;
 				int mY = image.getMousePixel().y;
-				Color color = image.getRGB(mX-1, mY-1);
+				Color color = image.getRGB(mX, mY);
+				byte[] val = image.getVector();
+				int l = val.length;
+				int l1 = image.getImageWidth();
+				int l2 = image.getImageHeight();
 				color = color == null ? new Color(255, 255, 255) : color;
 				g.drawString("(" + mX + ", " + mY + ")", 160, 128);
 				if(gray) {
-					g.drawString(color.getRed() + "", 160, 150);
+					g.drawString((image.getVector()[image.getImageWidth()*mY+mX] & 0xFF) + "", 160, 150);
 				}else {
 					g.drawString(color.getRed() + ", " + color.getGreen() + ", " + color.getBlue(), 160, 150);
 				}
