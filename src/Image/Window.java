@@ -283,7 +283,8 @@ public class Window {
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image gray = tabs.getImage("Gray Image").getCopy();
 	    		linearTransformationFrame LTFrame = new linearTransformationFrame("Linear transformation");
-	    		LTFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	    		LTFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    		LTFrame.setLocationRelativeTo(null);
 	    		LTFrame.setVisible(true);
 	    		LTFrame.btnAceptar.addMouseListener(new MouseAdapter() {
 	    			@Override
@@ -295,16 +296,14 @@ public class Window {
 			    	    	byte[] originalGray = tabs.getImage("Gray Image").getVector();
 			    	    	for(int i=0; i<nodes.length-3; i+=2) {
 			    	    		if(nodes[i+1] != nodes[i+3]) {
-			    	    			if(nodes[i] == nodes[i+2]) {
-				    	    		}else {
+			    	    			if(nodes[i] != nodes[i+2]) {
 				    	    			for(int j=0; j<(nodes[i+2]-nodes[i]); j++) {	
 				    	    				float dif = ((float)(nodes[i+3]-nodes[i+1])/(float)(nodes[i+2]-nodes[i]));
 				    	    				gray.setPixelWithValue(originalGray, nodes[i]+j, nodes[i+1] + (dif*j));
 				    	    			}
 				    	    		}
 			    	    		}else {
-				    	    		if(nodes[i] == nodes[i+2]) {
-				    	    		}else {
+				    	    		if(nodes[i] != nodes[i+2]) {
 				    	    			gray.setPixelWithValue(originalGray, nodes[i], nodes[i+2], nodes[i+1]);
 				    	    		}
 			    	    		}
