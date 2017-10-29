@@ -75,7 +75,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		for(int i = 0; i < vectorImg.length; i++) {
 			vectorEcc[i] = lookUpTable[vectorImg[i] & 0xFF];
 		}	
-		EcualizedImage.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorEcc);;
+		EcualizedImage.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorEcc);
 		return EcualizedImage;
 	}
 	
@@ -88,6 +88,19 @@ public class Image extends JPanel implements MouseMotionListener {
 		return EcualizedImageFromImageVector(vectorAcc);
 	}
 	
+	public Image BCImage(int brightness, int contrast) {
+        Image VectorImage = new Image(new BufferedImage(image.getWidth(), image.getHeight(), image.getType())); 
+        byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+        int[] vectorResult = new int[vImg.length];
+        
+        for(int i = 0; i < vectorResult.length; i++) {
+            vectorResult[i] = (brightness * (vImg[i] & 0xFF)) + contrast;            
+        }
+        
+        VectorImage.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
+        return VectorImage;
+    }
+
 	public Image EcualizedImageFromImage(Image image) {
 		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
 	}
