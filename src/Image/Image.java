@@ -88,8 +88,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return EcualizedImageFromImageVector(vectorAcc);
 	}
 	
-	public Image BCImage(int brightness, int contrast) {
-        Image VectorImage = new Image(new BufferedImage(image.getWidth(), image.getHeight(), image.getType())); 
+	public void BCImage(int brightness, int contrast) { 
         byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
         int[] vectorResult = new int[vImg.length];
         
@@ -97,8 +96,7 @@ public class Image extends JPanel implements MouseMotionListener {
             vectorResult[i] = (brightness * (vImg[i] & 0xFF)) + contrast;            
         }
         
-        VectorImage.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
-        return VectorImage;
+        this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
     }
 
 	public Image EcualizedImageFromImage(Image image) {
