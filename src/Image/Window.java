@@ -367,8 +367,7 @@ public class Window {
 	    				if(data.length == 2) {
 	    					BGFrame.setVisible(false);
 			    	    	BGFrame.dispose();
-			    	    	//gray.changeBrightness();
-			    	    	//gray.changeContrast();
+			    	    	gray.BCImage(data[0], data[1]);
 			    	    	item.setEnabled(false);
 							JButton button = new JButton();
 							button.addActionListener(new ActionListener() {
