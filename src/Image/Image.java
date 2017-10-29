@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
 
 import javax.swing.JPanel;
 
@@ -17,7 +16,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	private BufferedImage image;
 	private Point MousePosition;
 	private JPanel infoPanel;
-	private int marginY, marginX;
+	public int marginY, marginX;
 	
 	public Image(BufferedImage buffImage) {
 		this(buffImage, new JPanel());

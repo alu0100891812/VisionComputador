@@ -34,7 +34,7 @@ public class linearTransformationFrame extends JFrame {
 	
 	public linearTransformationFrame(String name) {
 		setTitle(name);
-		setBounds(100, 100, 550, 300);
+		setBounds(0, 0, 550, 300);
 		preNodeNumber = 0;
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

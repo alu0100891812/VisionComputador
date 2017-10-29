@@ -3,19 +3,25 @@ package Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-public class Histogram extends JPanel {
+public class Histogram extends JPanel implements MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 	
 	private Image image;
 	private boolean accumulated;
+	final int margin = 20;
+	private int[][] hint;
 	
 	public Histogram(Image image, boolean accumulated) {
 		this.image = image;
 		this.accumulated = accumulated;
+		hint = new int[256][5];
+		this.addMouseMotionListener(this);
 	}
 	
 	@Override
@@ -24,19 +30,18 @@ public class Histogram extends JPanel {
 		
 		int[] count = accumulated ? getHistogramAccumulated() : getHistogram();
 		
-		final int margin = 20;
 		final int height = this.getSize().height;
 		final int width = this.getSize().width;
 		final int max = getMax(count);
 		int yPos = height - margin - 2;
-		int xPos = margin - 2;	
-		float barWidth = ((float)width - (margin * 2))/256;
+		float xPos = margin - 2;	
+		float barWidth = ((float)width-(margin * 3))/(float)256;
 		double blockHeight = ((float)max)/((float)height - (margin * 2));
 		double barHeight;
 		
 		g.setColor(Color.BLACK);
-		g.drawString(new Integer(max).toString(), xPos - (new Integer(max).toString().length()/2 * 5), 15);
-		g.drawString("0", xPos - 10, yPos + 10);
+		g.drawString(new Integer(max).toString(), (int)xPos - (new Integer(max).toString().length()/2 * 5), 15);
+		g.drawString("0", (int)xPos - 10, yPos + 10);
 		g.drawString("255", width - (margin + 2) - 10, yPos + 15);
 		g.drawString("Pixel value", (width/2) - margin - 25, yPos + 17);
 		Graphics2D g2=(Graphics2D)g.create();
@@ -46,8 +51,9 @@ public class Histogram extends JPanel {
 		g.setColor(Color.BLUE);
 		for(int k = 0; k < count.length; k++) {
 			barHeight = ((double)count[k])/blockHeight;
-			g.drawRect(xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
+			g.drawRect((int)xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
 			xPos += barWidth;
+			//hint[0] = ; hint[1] = ; hint[2] = ; hint[3] = ; hint[4] = ;
 		}
 		
 		g.setColor(Color.BLACK);
@@ -115,6 +121,17 @@ public class Histogram extends JPanel {
 		g.dispose();
 		
 		return finalImage;
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		int x = arg0.getX();
+		int y = arg0.getY();
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
 	}
 }
 

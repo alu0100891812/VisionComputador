@@ -77,10 +77,16 @@ public class Window {
 	    editMenu.add(HistogramAccumulatedItem);
 	    
 	    JMenuItem LinearTransformtionItem = new JMenuItem("Linear Transformation", KeyEvent.VK_L);
-	    LinearTransformtionItem.setIcon(new ImageIcon("histogramAccumulated.png"));
+	    LinearTransformtionItem.setIcon(new ImageIcon("linearTransformations.png"));
 	    LinearTransformtionItem.setEnabled(false);
 	    setUpLinearTransformation(LinearTransformtionItem);
 	    editMenu.add(LinearTransformtionItem);
+	    
+	    JMenuItem BrightnessContrastItem = new JMenuItem("Brightness Contrast", KeyEvent.VK_B);
+	    BrightnessContrastItem.setIcon(new ImageIcon("brightnessContrast.png"));
+	    BrightnessContrastItem.setEnabled(false);
+	    setUpBrightnessContrast(BrightnessContrastItem);
+	    editMenu.add(BrightnessContrastItem);
 	    
 	    JMenuItem EcualizeItem = new JMenuItem("Ecualized image", KeyEvent.VK_E);
         EcualizeItem.setEnabled(false);
@@ -160,6 +166,18 @@ public class Window {
 							if(itemBar != null) {
 								itemBar.setEnabled(false);
 							}
+							itemBar = menuBar.getItem("Edit", "Linear Transformation");
+							if(itemBar != null) {
+								itemBar.setEnabled(false);
+							}
+							itemBar = menuBar.getItem("Edit", "Brightness Contrast");
+		                    if(itemBar != null) {
+		                        itemBar.setEnabled(false);
+		                    }
+		                    itemBar = menuBar.getItem("Edit", "Ecualized image");
+		                    if(itemBar != null) {
+		                        itemBar.setEnabled(false);
+		                    }  
 							tabs.remove(tabName);
 						}
 					});
@@ -181,6 +199,10 @@ public class Window {
 					if(itemBar != null) {
 						itemBar.setEnabled(true);
 					}
+					itemBar = menuBar.getItem("Edit", "Brightness Contrast");
+                    if(itemBar != null) {
+                        itemBar.setEnabled(true);
+                    }
                     itemBar = menuBar.getItem("Edit", "Ecualized image");
                     if(itemBar != null) {
                         itemBar.setEnabled(true);
@@ -317,7 +339,7 @@ public class Window {
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(gray.getBufferedImage(), tabs.getImageTab("Original Image").getImageName(), true), button);
-							addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_L);
+							addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
 			    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -328,6 +350,44 @@ public class Window {
 		});
 	}
 
+	private void setUpBrightnessContrast(JMenuItem item) {
+		String tabName = "Brightness Contrast";
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image gray = tabs.getImage("Gray Image").getCopy();
+	    		brightnessContrastFrame BGFrame = new brightnessContrastFrame("Change Brightness Contrast", gray.getBrightness(), gray.getContrast());
+	    		BGFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    		BGFrame.setLocationRelativeTo(null);
+	    		BGFrame.setVisible(true);
+	    		BGFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				int[] data = BGFrame.getData();
+	    				if(data.length == 2) {
+	    					BGFrame.setVisible(false);
+			    	    	BGFrame.dispose();
+			    	    	//gray.changeBrightness();
+			    	    	//gray.changeContrast();
+			    	    	item.setEnabled(false);
+							JButton button = new JButton();
+							button.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									tabs.remove(tabName);
+								}
+							});
+							tabs.addImageTab(tabName, new ImageTab(gray.getBufferedImage(), tabs.getImageTab("Original Image").getImageName(), true), button);
+							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+						}else{
+							JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
+			    					"Error", JOptionPane.ERROR_MESSAGE);
+						}
+	    		    }
+	    		});
+	    	}
+		});
+	}
 	
 	private void addToSaveItem(String name, ImageIcon icon, int keyEvent) {
 		JMenu menu = (JMenu) menuBar.getItem("File", "Save File");

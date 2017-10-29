@@ -1,18 +1,22 @@
 package Image;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 public class ImageTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
+	private JScrollPane scrollPane;
 	private Image image;
 	private JPanel infoPanel;
 	private String name;
@@ -22,9 +26,47 @@ public class ImageTab extends JPanel {
 		this.name = name;
 		this.gray = gray;
 		setUpInfo(image);
-		this.setLayout(new BorderLayout());
-		this.add(this.image, BorderLayout.CENTER);
-		this.add(infoPanel, BorderLayout.LINE_END);
+		
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_contentPane.columnWeights = new double[]{1.0};
+		gbl_contentPane.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		this.setLayout(gbl_contentPane);
+		
+		scrollPane = new JScrollPane();
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 0;
+		gbc_scrollPane.gridwidth = 3;
+		gbc_scrollPane.gridheight = 3;
+		scrollPane.setBorder(new EmptyBorder(0,0,0,0));
+		this.image.setPreferredSize(new Dimension(this.image.getImageWidth()+this.image.marginX*2, this.image.getImageHeight()+this.image.marginY*2));
+		scrollPane.setViewportView(this.image);
+		scrollPane.setPreferredSize(new Dimension(this.getWidth()*3/4, this.getHeight()));
+		this.add(scrollPane, gbc_scrollPane);
+		
+		GridBagConstraints gbc_infoPane = new GridBagConstraints();
+		gbc_infoPane.insets = new Insets(0, 0, 5, 5);
+		gbc_infoPane.fill = GridBagConstraints.BOTH;
+		gbc_infoPane.gridx = 3;
+		gbc_infoPane.gridy = 0;
+		gbc_infoPane.gridheight = 3;
+		this.add(infoPanel, gbc_infoPane);
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		scrollPane.repaint();		
+		if(getWidth() > 1200) {
+			infoPanel.setPreferredSize(new Dimension(450, infoPanel.getHeight()));
+		}else {
+			infoPanel.setPreferredSize(new Dimension(300, infoPanel.getHeight()));
+		}
+		infoPanel.repaint();
 	}
 	
 	private void setUpInfo(BufferedImage buffImage) {
@@ -58,15 +100,11 @@ public class ImageTab extends JPanel {
 					g.drawString(new RangeValue().calculateRange(image), 160, 170);
 					g.drawString(image.getEntropy() + "", 160, 190);
 					g.drawString(image.getBrightness() + "", 180, 210);
-					g.drawString(image.getContrast() + "", 160, 230);
+					g.drawString(image.getContrast() + "", 180, 230);
 				}
 				int mX = image.getMousePixel().x;
 				int mY = image.getMousePixel().y;
 				Color color = image.getRGB(mX, mY);
-				byte[] val = image.getVector();
-				int l = val.length;
-				int l1 = image.getImageWidth();
-				int l2 = image.getImageHeight();
 				color = color == null ? new Color(255, 255, 255) : color;
 				g.drawString("(" + mX + ", " + mY + ")", 160, 128);
 				if(gray) {
@@ -84,7 +122,7 @@ public class ImageTab extends JPanel {
 		image = new Image(buffImage, infoPanel);
 		image.setInfo(infoPanel);
 		infoPanel.setBorder(new EmptyBorder(0,3,0,3));
-		infoPanel.setPreferredSize(new Dimension(300, getHeight()));
+		infoPanel.setPreferredSize(new Dimension(250, getHeight()));
 	}
 	
 	public Image getImage() {

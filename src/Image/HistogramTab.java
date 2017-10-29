@@ -18,7 +18,7 @@ public class HistogramTab extends JPanel {
 		setUpInfo();
 		this.setLayout(new BorderLayout());
 		this.add(this.histogram, BorderLayout.CENTER);
-		this.add(infoPanel, BorderLayout.LINE_END);
+		//this.add(infoPanel, BorderLayout.LINE_END);
 	}
 	
 	private void setUpInfo() {
