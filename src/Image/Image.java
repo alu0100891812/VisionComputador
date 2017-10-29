@@ -99,7 +99,7 @@ public class Image extends JPanel implements MouseMotionListener {
         this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
     }
 	
-	public int Diff(Image newImage) {
+	public int DiffImage(Image newImage) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		byte[] vImgNow = ((DataBufferByte)newImage.RGBtoGray().getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[vImg.length];
@@ -121,6 +121,21 @@ public class Image extends JPanel implements MouseMotionListener {
 		return error;
 	}
 
+	public void GammaCImage(int value) {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		double[] vImgNormalized = new double[vImg.length];
+		int[] vResult = new int[vImg.length];
+		double acc = 0;
+		for(int i = 0; i < vImg.length; i++) {
+			vImgNormalized[i] = (vImg[i] & 0xFF) / 255;
+		}		
+		for(int j = 0; j < vImgNormalized.length; j++) {
+			acc = Math.pow(vImgNormalized[j], value);
+			vResult[j] = ((int) Math.round(acc)) * 255;
+		}
+		this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+	}
+	
 	public Image EcualizedImageFromImage(Image image) {
 		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
 	}
