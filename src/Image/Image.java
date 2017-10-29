@@ -98,6 +98,28 @@ public class Image extends JPanel implements MouseMotionListener {
         
         this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
     }
+	
+	public int Diff(Image newImage) {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		byte[] vImgNow = ((DataBufferByte)newImage.RGBtoGray().getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+		int error = 0;
+		
+		if(vImg.length == vImgNow.length) {
+			for(int i = 0; i < vImg.length; i++) {
+				if((vImg[i] - vImgNow[i] > -20) && (vImg[i] - vImgNow[i] < 20)) { 
+					vResult[i] = (vImgNow[i] & 0xFF);
+				} else {
+					int rgb = (255<<16);
+					vResult[i] = rgb;
+				}
+			}
+		} else {
+			error = 1; //Error fallo de tamaño
+		}
+	    this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return error;
+	}
 
 	public Image EcualizedImageFromImage(Image image) {
 		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
