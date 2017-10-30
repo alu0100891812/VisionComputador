@@ -86,6 +86,7 @@ public class linearTransformationFrame extends JFrame {
 					g.fillOval((int)(nodes[i]*xBlock)-5+margin, this.getHeight()-(int)(nodes[i+1]*yBlock)-5-margin, 10, 10);
 				}
 				g.fillOval((int)(nodes[nodes.length-2]*xBlock)-5+margin, this.getHeight()-(int)(nodes[nodes.length-1]*yBlock)-5-margin, 10, 10);
+				g.dispose();
 			}
 		};
 		GridBagConstraints gbc_graphicPanel = new GridBagConstraints();

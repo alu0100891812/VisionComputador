@@ -62,15 +62,32 @@ public class Tabs extends JTabbedPane {
 		return null;
 	}
 	
-	public Histogram getHistogram(String name) {
+	public HistogramTab getHistogramTab(String name) {
 		if(histograms != null) {
 			for(Pair<HistogramTab, String> histogram : histograms) {
 				if(histogram.getRight().equalsIgnoreCase(name)) {
-					return histogram.getLeft().getHistogram();
+					return histogram.getLeft();
 				}
 			}			
 		}
 		return null;
+	}
+	
+	public String getName(Image image) {
+		if(images != null) {
+			for(Pair<ImageTab, String> imageTab : images) {
+				if(imageTab.getLeft().getImage() == image) {
+					return imageTab.getLeft().getImageName();
+				}
+			}			
+		}
+		return null;
+	}
+	
+	public String[] getTabsNames() {
+		String[] names = new String[tabNames.size()];
+		names = tabNames.toArray(names);
+		return names;
 	}
 	
 	public void addImageTab(String title, ImageTab image, JButton button) {
@@ -101,11 +118,5 @@ public class Tabs extends JTabbedPane {
 		if(tabNames == null)
 			tabNames = new Vector<String>();
 		tabNames.addElement(title);
-	}
-	
-	public String[] getTabsNames() {
-		String[] names = new String[tabNames.size()];
-		names = tabNames.toArray(names);
-		return names;
-	}
+	}	
 }

@@ -3,6 +3,7 @@ package Image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
@@ -13,14 +14,24 @@ public class Histogram extends JPanel implements MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 	
 	private Image image;
+	private JPanel info;
 	private boolean accumulated;
 	final int margin = 20;
 	private int[][] hint;
+	private int[] currentValue;
+	private Point MousePosition;
 	
 	public Histogram(Image image, boolean accumulated) {
+		this(image, accumulated, new JPanel());
+	}
+	
+	public Histogram(Image image, boolean accumulated, JPanel info) {
 		this.image = image;
 		this.accumulated = accumulated;
-		hint = new int[256][5];
+		this.info = info;
+		hint = new int[256][2];
+		currentValue = new int[2];
+		MousePosition = new Point();
 		this.addMouseMotionListener(this);
 	}
 	
@@ -53,13 +64,13 @@ public class Histogram extends JPanel implements MouseMotionListener {
 			barHeight = ((double)count[k])/blockHeight;
 			g.drawRect((int)xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
 			xPos += barWidth;
-			//hint[0] = ; hint[1] = ; hint[2] = ; hint[3] = ; hint[4] = ;
+			hint[k][0] = (int)xPos; hint[k][1] = count[k];
 		}
 		
 		g.setColor(Color.BLACK);
 		g.fillRect(margin - 2, height - margin - 2, width - ((margin + 2) * 2), 2);
 		g.fillRect(margin - 2, (height - margin - 2) - (height - ((margin + 2) * 2)), 2, height - ((margin + 2) * 2));
-		
+
 		g.dispose();
 	}
 	
@@ -127,11 +138,29 @@ public class Histogram extends JPanel implements MouseMotionListener {
 	public void mouseMoved(MouseEvent arg0) {
 		int x = arg0.getX();
 		int y = arg0.getY();
+		boolean hit = false;
 		
+		for(int i=1; i<hint.length; i++) {
+			if(hint[i-1][0] <= x && hint[i][0] > x) {
+				MousePosition.setLocation(x, y);
+				currentValue[0] = i; currentValue[1] = hint[i][1];
+				hit = true;
+				break;
+			}
+		}
+		if(!hit) {
+			MousePosition.setLocation(-1, -1);
+		}else {			
+			info.repaint();
+		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
+	}
+	
+	public int[] getValues() {
+		return currentValue;
 	}
 }
 

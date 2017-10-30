@@ -17,12 +17,14 @@ public class ImageTab extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private JScrollPane scrollPane;
+	private Image original;
 	private Image image;
 	private JPanel infoPanel;
 	private String name;
 	private boolean gray;
 	
-	public ImageTab(BufferedImage image, String name, boolean gray) {
+	public ImageTab(Image original, BufferedImage image, String name, boolean gray) {
+		this.original = original;
 		this.name = name;
 		this.gray = gray;
 		setUpInfo(image);
@@ -131,5 +133,9 @@ public class ImageTab extends JPanel {
 	
 	public String getImageName() {
 		return name;
+	}
+	
+	public Image getOrigin() {
+		return original;
 	}
 }

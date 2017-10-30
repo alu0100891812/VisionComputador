@@ -24,7 +24,7 @@ public class Window {
 	private JFrame frame;
 	private MenuBar menuBar;
 	private Tabs tabs;
-	private Histogram histograma;
+	private Image selectedImage;
 	
 	public Window() {
 		frame = new JFrame("Image");
@@ -89,6 +89,7 @@ public class Window {
 	    editMenu.add(BrightnessContrastItem);
 	    
 	    JMenuItem EcualizeItem = new JMenuItem("Ecualized image", KeyEvent.VK_E);
+	    EcualizeItem.setIcon(new ImageIcon("ecualizeImage.png"));
         EcualizeItem.setEnabled(false);
         setUpEcualized(EcualizeItem);
         editMenu.add(EcualizeItem);
@@ -98,10 +99,24 @@ public class Window {
 	    tabs = new Tabs();
 	    tabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 	    frame.add(tabs);	    
+	    
+	    editMenu.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JTabbedPane sourceTabbedPane = (JTabbedPane) arg0.getSource();
+		        int index = sourceTabbedPane.getSelectedIndex();
+		        ImageTab itab = tabs.getImageTab(tabs.getTabsNames()[index]);
+		        HistogramTab htab = tabs.getHistogramTab(tabs.getTabsNames()[index]);
+		        if(itab != null) {
+		        	selectedImage = itab.getOrigin();
+		        }else if(htab != null) {
+		        	selectedImage = htab.getOrigin();
+		        }
+			}
+	    });
 	}
 	
 	private void setUpOpenItem(JMenuItem item) {
-		String tabName = "Original Image";
 		item.addActionListener(new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
@@ -118,6 +133,8 @@ public class Window {
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 					try {
 						JButton button = new JButton();
+						File file = filePicker.getSelectedFile();
+						String tabName = file.getName().substring(0, 4) + " - Original Image";
 						button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
@@ -127,8 +144,8 @@ public class Window {
 								tabs.remove(tabName);
 							}
 						});
-						File file = filePicker.getSelectedFile();
-						tabs.addImageTab(tabName, new ImageTab(ImageIO.read(file), file.getName(), false), button);
+						tabs.addImageTab(tabName, new ImageTab(selectedImage, ImageIO.read(file), file.getName(), false), button);
+						selectedImage = tabs.getImage(tabName);
 						JMenuItem item = menuBar.getItem("Edit", "Convert to Gray");
 						if(item != null) {
 							item.setEnabled(true);
@@ -146,15 +163,15 @@ public class Window {
 	}
 	
 	private void setUpConvertToGray(JMenuItem item) {
-		String tabName = "Gray Image";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image original = tabs.getImage("Original Image");
+				Image original = selectedImage;
 				if(original != null) {					
 					item.setEnabled(false);
 					BufferedImage gray = original.RGBtoGray();
 					JButton button = new JButton();
+					String tabName = tabs.getName(selectedImage) + " - Gray Image";
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -181,7 +198,7 @@ public class Window {
 							tabs.remove(tabName);
 						}
 					});
-					tabs.addImageTab(tabName, new ImageTab(gray, tabs.getImageTab("Original Image").getImageName(), true), button);
+					tabs.addImageTab(tabName, new ImageTab(selectedImage, gray, tabs.getName(selectedImage), true), button);
 					addToSaveItem(tabName, new ImageIcon("RGBtoGray.png"), KeyEvent.VK_G);
 					JMenuItem itemBar = menuBar.getItem("File", "Save File");
 					if(itemBar != null) {
@@ -216,94 +233,76 @@ public class Window {
 	}
 	
 	private void setUpHistogram(JMenuItem item) {
-		String tabName = "Histogram";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image gray = tabs.getImage("Gray Image");
-				if(gray != null) {				
-					item.setEnabled(false);
-					histograma = new Histogram(gray, false);
-					JButton button = new JButton();
-					button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
-						}
-					});
-					tabs.addHistogramTab(tabName, new HistogramTab(histograma), button);
-					addToSaveItem(tabName, new ImageIcon("histogram.png"), KeyEvent.VK_H);
-				}else{
-					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
-	    					"Error", JOptionPane.ERROR_MESSAGE);
-				}
+				Image gray = new Image(selectedImage.RGBtoGray());
+				item.setEnabled(false);
+				JButton button = new JButton();
+				String tabName = tabs.getName(selectedImage) + " - Histogram";
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						tabs.remove(tabName);
+					}
+				});
+				tabs.addHistogramTab(tabName, new HistogramTab(selectedImage, gray, false), button);
+				addToSaveItem(tabName, new ImageIcon("histogram.png"), KeyEvent.VK_H);
 			}
 		});
 	}
 	
 	private void setUpHistogramAccumulated(JMenuItem item) {
-		String tabName = "Histogram Accumulated";
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Image gray = tabs.getImage("Gray Image");
-				if(gray != null) {				
-					item.setEnabled(false);
-					histograma = new Histogram(gray, true);
-					JButton button = new JButton();
-					button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
-						}
-					});
-					tabs.addHistogramTab(tabName, new HistogramTab(histograma), button);
-					addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_H);
-				}else{
-					JOptionPane.showMessageDialog(null, "Can't show the histogram, try again",
-	    					"Error", JOptionPane.ERROR_MESSAGE);
-				}
+				Image gray = new Image(selectedImage.RGBtoGray());
+				item.setEnabled(false);
+				JButton button = new JButton();
+				String tabName = tabs.getName(selectedImage) + " - Histogram Accumulated";
+				button.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						tabs.remove(tabName);
+					}
+				});
+				tabs.addHistogramTab(tabName, new HistogramTab(selectedImage, gray, true), button);
+				addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_H);
 			}
 		});
 	}
 	
     private void setUpEcualized(JMenuItem item) {
-        String tabName = "Ecualized Image";
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                Image gray = tabs.getImage("Gray Image");
-                if(gray != null) {                    
-                    item.setEnabled(false);
-                    BufferedImage image = gray.EcualizedImage().getBufferedImage(); 
-                    JButton button = new JButton();
-                    button.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            tabs.remove(tabName);
-                        }
-                    });
-                    tabs.addImageTab(tabName, new ImageTab(image, tabs.getImageTab("Original Image").getImageName(), true), button);
-                    tabs.addHistogramTab("YY", new HistogramTab(new Histogram(new Image(image), true)), button);
-                    addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
-                    JMenuItem itemBar = menuBar.getItem("File", "Save File");
-                    if(itemBar != null) {
-                        itemBar.setEnabled(true);
+                Image gray = new Image(selectedImage.RGBtoGray());                                 
+                item.setEnabled(false);
+                BufferedImage image = gray.EcualizedImage().getBufferedImage(); 
+                JButton button = new JButton();
+                String tabName = tabs.getName(selectedImage) + " - Ecualized Image";
+                button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        tabs.remove(tabName);
                     }
-                }else{
-                    JOptionPane.showMessageDialog(null, "Can't ecualize image, try again",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                });
+                tabs.addImageTab(tabName, new ImageTab(selectedImage, image, tabs.getName(selectedImage), true), button);
+                tabs.addHistogramTab("YY", new HistogramTab(selectedImage, new Image(image), true), button);
+                addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
+                JMenuItem itemBar = menuBar.getItem("File", "Save File");
+                if(itemBar != null) {
+                    itemBar.setEnabled(true);
+                }               
             }
         });
     }
 	
 	private void setUpLinearTransformation(JMenuItem item) {
-		String tabName = "Linear transformation";
 		item.addActionListener(new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
-	    		Image gray = tabs.getImage("Gray Image").getCopy();
+	    		Image gray = new Image(selectedImage.RGBtoGray());
 	    		linearTransformationFrame LTFrame = new linearTransformationFrame("Linear transformation");
 	    		LTFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    		LTFrame.setLocationRelativeTo(null);
@@ -332,13 +331,14 @@ public class Window {
 			    	    	}
 							item.setEnabled(false);
 							JButton button = new JButton();
+				    		String tabName = tabs.getName(selectedImage) + " - Linear transformation";
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(gray.getBufferedImage(), tabs.getImageTab("Original Image").getImageName(), true), button);
+							tabs.addImageTab(tabName, new ImageTab(selectedImage, gray.getBufferedImage(), tabs.getName(selectedImage), true), button);
 							addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
@@ -351,11 +351,10 @@ public class Window {
 	}
 
 	private void setUpBrightnessContrast(JMenuItem item) {
-		String tabName = "Brightness Contrast";
 		item.addActionListener(new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
-	    		Image gray = tabs.getImage("Gray Image").getCopy();
+	    		Image gray = new Image(selectedImage.RGBtoGray());;
 	    		brightnessContrastFrame BGFrame = new brightnessContrastFrame("Change Brightness Contrast", gray.getBrightness(), gray.getContrast());
 	    		BGFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    		BGFrame.setLocationRelativeTo(null);
@@ -370,13 +369,14 @@ public class Window {
 			    	    	gray.BCImage(data[0], data[1]);
 			    	    	item.setEnabled(false);
 							JButton button = new JButton();
+							String tabName = tabs.getName(selectedImage) + " - Brightness Contrast";
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(gray.getBufferedImage(), tabs.getImageTab("Original Image").getImageName(), true), button);
+							tabs.addImageTab(tabName, new ImageTab(selectedImage, gray.getBufferedImage(), tabs.getName(selectedImage), true), button);
 							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
