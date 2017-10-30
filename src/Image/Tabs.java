@@ -20,6 +20,48 @@ public class Tabs extends JTabbedPane {
 				break;
 			}
 		}
+		for(String tab : tabNames) {
+			if(tab.equalsIgnoreCase(name)) {
+				tabNames.remove(tabNames.indexOf(tab));
+				break;
+			}
+		}
+		for(Pair<ImageTab, String> image : images) {
+			if(image.getRight().equalsIgnoreCase(name)) {
+				images.remove(images.indexOf(image));
+				break;
+			}
+		}
+		for(Pair<HistogramTab, String> histogram : histograms) {
+			if(histogram.getRight().equalsIgnoreCase(name)) {
+				histograms.remove(histograms.indexOf(histogram));
+				break;
+			}
+		}		
+	}
+	
+	public void removeTabs(String name) {
+		if(tabNames != null) {
+			for(int i=0; i<tabNames.size(); i++) {
+				if(tabNames.get(i).contains(name.substring(0, 4))) {
+					this.remove(i);
+					tabNames.remove(i);
+					i--;
+				}
+			}
+			for(Pair<ImageTab, String> image : images) {
+				if(image.getRight().contains(name.substring(0, 4))) {
+					images.remove(images.indexOf(image));
+					break;
+				}
+			}
+			for(Pair<HistogramTab, String> histogram : histograms) {
+				if(histogram.getRight().contains(name.substring(0, 4))) {
+					histograms.remove(histograms.indexOf(histogram));
+					break;
+				}
+			}
+		}
 	}
 	
 	public Image getImage(String name) {
@@ -76,7 +118,7 @@ public class Tabs extends JTabbedPane {
 	public String getName(Image image) {
 		if(images != null) {
 			for(Pair<ImageTab, String> imageTab : images) {
-				if(imageTab.getLeft().getImage() == image) {
+				if(imageTab.getLeft().getOrigin().id == image.id) {
 					return imageTab.getLeft().getImageName();
 				}
 			}			
@@ -90,33 +132,52 @@ public class Tabs extends JTabbedPane {
 		return names;
 	}
 	
+	public boolean contains(String name) {
+		if(tabNames != null) {
+			for(String tab : tabNames) {
+				if(tab.contains(name)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}	
+	
 	public void addImageTab(String title, ImageTab image, JButton button) {
-		this.addTab(title, image);
-		int index = this.getTabCount() -1;
-		this.setTabComponentAt(index, CloseableTab.createTab(title, button));
-		this.setSelectedIndex(index);
-		
-		if(images == null) 
-			images = new Vector<Pair<ImageTab, String>>();
-		images.addElement(new Pair<ImageTab, String>(image, title));
-		
-		if(tabNames == null)
-			tabNames = new Vector<String>();
-		tabNames.addElement(title);
+		if(!this.contains(title)) {		
+			this.addTab(title, image);
+			int index = this.getTabCount() -1;
+			this.setTabComponentAt(index, CloseableTab.createTab(title, button));
+			this.setSelectedIndex(index);
+			
+			if(images == null) 
+				images = new Vector<Pair<ImageTab, String>>();
+			images.addElement(new Pair<ImageTab, String>(image, title));
+			
+			if(tabNames == null)
+				tabNames = new Vector<String>();
+			tabNames.addElement(title);
+		}else {
+			this.setSelectedIndex(tabNames.indexOf(title));
+		}
 	}
 	
 	public void addHistogramTab(String title, HistogramTab histogram, JButton button) {
-		this.addTab(title, histogram);
-		int index = this.getTabCount() -1;
-		this.setTabComponentAt(index, CloseableTab.createTab(title, button));
-		this.setSelectedIndex(index);
-		
-		if(histograms == null) 
-			histograms = new Vector<Pair<HistogramTab, String>>();
-		histograms.addElement(new Pair<HistogramTab, String>(histogram, title));
-		
-		if(tabNames == null)
-			tabNames = new Vector<String>();
-		tabNames.addElement(title);
+		if(!this.contains(title)) {	
+			this.addTab(title, histogram);
+			int index = this.getTabCount() -1;
+			this.setTabComponentAt(index, CloseableTab.createTab(title, button));
+			this.setSelectedIndex(index);
+			
+			if(histograms == null) 
+				histograms = new Vector<Pair<HistogramTab, String>>();
+			histograms.addElement(new Pair<HistogramTab, String>(histogram, title));
+			
+			if(tabNames == null)
+				tabNames = new Vector<String>();
+			tabNames.addElement(title);
+		}else {
+			this.setSelectedIndex(tabNames.indexOf(title));
+		}
 	}	
 }

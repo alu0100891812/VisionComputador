@@ -17,6 +17,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	private Point MousePosition;
 	private JPanel infoPanel;
 	public int marginY, marginX;
+	public final double id;
 	
 	public Image(BufferedImage buffImage) {
 		this(buffImage, new JPanel());
@@ -29,6 +30,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		marginY = 20;
 		MousePosition = new Point();
 		this.addMouseMotionListener(this);
+		id = Math.random();
 	}
 	
 	@Override
@@ -63,7 +65,7 @@ public class Image extends JPanel implements MouseMotionListener {
 				
 		for(int i = 0; i < vectorImage.length; i++) {
 			for(int j = 0; j < vectorAcc.length-1; j++) {
-				if((vectorImage[i] > vectorAcc[j]) && (vectorImage[i] < vectorAcc[j+1])) {
+				if((vectorImage[i] > vectorAcc[j]) && (vectorImage[i] <= vectorAcc[j+1])) {
 					if((vectorImage[i]-vectorAcc[j]) > (vectorAcc[j+1]-vectorImage[i])) {
 						lookUpTable[i] = j + 1;
 					} else {
@@ -80,23 +82,25 @@ public class Image extends JPanel implements MouseMotionListener {
 	}
 	
 	public Image EcualizedImage() {
-		int size = (image.getWidth())*(image.getHeight());
+		float size = (image.getWidth())*(image.getHeight());
 		int[] vectorAcc = new int[256];
 		for(int i = 0; i < vectorAcc.length; i++) {
-			vectorAcc[i] = (i + 1) * (size / 256);
+			vectorAcc[i] = (int)((float)(i + 1) * (size / (float)256));
 		}
 		return EcualizedImageFromImageVector(vectorAcc);
 	}
 	
 	public void BCImage(int brightness, int contrast) { 
-        byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
-        int[] vectorResult = new int[vImg.length];
-        
-        for(int i = 0; i < vectorResult.length; i++) {
-            vectorResult[i] = (brightness * (vImg[i] & 0xFF)) + contrast;            
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+        float brightnessPrev = (float)getBrightness();
+        float contrastPrev = (float)getContrast();       
+        float a = ((float)brightness) / brightnessPrev;
+        float b = ((float)contrast) - (a * contrastPrev);
+        for(int i = 0; i < vImg.length; i++) {
+        	vResult[i] = (int)((a * (vImg[i] & 0xFF)) + b);
         }
-        
-        this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vectorResult);
+        this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
     }
 	
 	public int DiffImage(Image newImage) {

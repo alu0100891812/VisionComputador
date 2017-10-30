@@ -71,8 +71,8 @@ public class linearTransformationFrame extends JFrame {
 				super.paintComponent(g);
 				int[] nodes = getNodeData();
 				int margin = 20;
-				float xBlock = ((float)this.getWidth()-(margin*2))/(float)255;
-				float yBlock = ((float)this.getHeight()-(margin*2))/(float)255;
+				float xBlock = ((float)this.getWidth()-(margin*2))/(float)256;
+				float yBlock = ((float)this.getHeight()-(margin*2))/(float)256;
 				g.setColor(Color.BLACK);
 				g.fillRect(margin, this.getHeight()-margin, this.getWidth()-(margin*2), 2);
 				g.fillRect(margin, margin, 2, this.getHeight()-(margin*2));
