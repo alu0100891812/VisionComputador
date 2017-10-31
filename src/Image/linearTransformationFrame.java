@@ -166,6 +166,7 @@ public class linearTransformationFrame extends JFrame {
 		contentPane.add(spinner, gbc_spinner);
 		
 		btnAceptar = new JButton("Aceptar");
+		getRootPane().setDefaultButton(btnAceptar);
 		
 		GridBagConstraints gbc_btnAceptar = new GridBagConstraints();
 		gbc_btnAceptar.gridx = 1;

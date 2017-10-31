@@ -20,24 +20,30 @@ public class Tabs extends JTabbedPane {
 				break;
 			}
 		}
-		for(String tab : tabNames) {
-			if(tab.equalsIgnoreCase(name)) {
-				tabNames.remove(tabNames.indexOf(tab));
-				break;
+		if(tabNames != null) {
+			for(String tab : tabNames) {
+				if(tab.equalsIgnoreCase(name)) {
+					tabNames.remove(tabNames.indexOf(tab));
+					break;
+				}
 			}
 		}
-		for(Pair<ImageTab, String> image : images) {
-			if(image.getRight().equalsIgnoreCase(name)) {
-				images.remove(images.indexOf(image));
-				break;
+		if(images != null) {
+			for(Pair<ImageTab, String> image : images) {
+				if(image.getRight().equalsIgnoreCase(name)) {
+					images.remove(images.indexOf(image));
+					break;
+				}
 			}
 		}
-		for(Pair<HistogramTab, String> histogram : histograms) {
-			if(histogram.getRight().equalsIgnoreCase(name)) {
-				histograms.remove(histograms.indexOf(histogram));
-				break;
-			}
-		}		
+		if(histograms != null) {
+			for(Pair<HistogramTab, String> histogram : histograms) {
+				if(histogram.getRight().equalsIgnoreCase(name)) {
+					histograms.remove(histograms.indexOf(histogram));
+					break;
+				}
+			}		
+		}
 	}
 	
 	public void removeTabs(String name) {
@@ -49,16 +55,20 @@ public class Tabs extends JTabbedPane {
 					i--;
 				}
 			}
-			for(Pair<ImageTab, String> image : images) {
-				if(image.getRight().contains(name.substring(0, 4))) {
-					images.remove(images.indexOf(image));
-					break;
+			if(images != null) {
+				for(Pair<ImageTab, String> image : images) {
+					if(image.getRight().contains(name.substring(0, 4))) {
+						images.remove(images.indexOf(image));
+						break;
+					}
 				}
 			}
-			for(Pair<HistogramTab, String> histogram : histograms) {
-				if(histogram.getRight().contains(name.substring(0, 4))) {
-					histograms.remove(histograms.indexOf(histogram));
-					break;
+			if(histograms != null) {
+				for(Pair<HistogramTab, String> histogram : histograms) {
+					if(histogram.getRight().contains(name.substring(0, 4))) {
+						histograms.remove(histograms.indexOf(histogram));
+						break;
+					}
 				}
 			}
 		}
@@ -144,7 +154,10 @@ public class Tabs extends JTabbedPane {
 	}	
 	
 	public void addImageTab(String title, ImageTab image, JButton button) {
-		if(!this.contains(title)) {		
+		if(tabNames == null)
+			tabNames = new Vector<String>();
+		
+		if(tabNames.indexOf(title) < 0) {		
 			this.addTab(title, image);
 			int index = this.getTabCount() -1;
 			this.setTabComponentAt(index, CloseableTab.createTab(title, button));
@@ -153,9 +166,7 @@ public class Tabs extends JTabbedPane {
 			if(images == null) 
 				images = new Vector<Pair<ImageTab, String>>();
 			images.addElement(new Pair<ImageTab, String>(image, title));
-			
-			if(tabNames == null)
-				tabNames = new Vector<String>();
+
 			tabNames.addElement(title);
 		}else {
 			this.setSelectedIndex(tabNames.indexOf(title));
@@ -163,7 +174,7 @@ public class Tabs extends JTabbedPane {
 	}
 	
 	public void addHistogramTab(String title, HistogramTab histogram, JButton button) {
-		if(!this.contains(title)) {	
+		if(tabNames.indexOf(title) < 0) {	
 			this.addTab(title, histogram);
 			int index = this.getTabCount() -1;
 			this.setTabComponentAt(index, CloseableTab.createTab(title, button));
@@ -173,8 +184,6 @@ public class Tabs extends JTabbedPane {
 				histograms = new Vector<Pair<HistogramTab, String>>();
 			histograms.addElement(new Pair<HistogramTab, String>(histogram, title));
 			
-			if(tabNames == null)
-				tabNames = new Vector<String>();
 			tabNames.addElement(title);
 		}else {
 			this.setSelectedIndex(tabNames.indexOf(title));

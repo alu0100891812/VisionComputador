@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 public class Histogram extends JPanel implements MouseMotionListener {
@@ -49,21 +50,27 @@ public class Histogram extends JPanel implements MouseMotionListener {
 		float barWidth = ((float)width-(margin * 3))/(float)256;
 		double blockHeight = ((float)max)/((float)height - (margin * 2));
 		double barHeight;
+		int xPosPrev = (int)(xPos - barWidth);
 		
 		g.setColor(Color.BLACK);
 		g.drawString(new Integer(max).toString(), (int)xPos - (new Integer(max).toString().length()/2 * 5), 15);
 		g.drawString("0", (int)xPos - 10, yPos + 10);
 		g.drawString("255", width - (margin + 2) - 10, yPos + 15);
 		g.drawString("Pixel value", (width/2) - margin - 25, yPos + 17);
-		Graphics2D g2=(Graphics2D)g.create();
+		Graphics2D g2 = (Graphics2D)g.create();
 		g2.rotate(Math.toRadians(-90));
 		g2.drawString("Repetitions", -(height/2) - 25, 13);
 		
 		g.setColor(Color.BLUE);
 		for(int k = 0; k < count.length; k++) {
 			barHeight = ((double)count[k])/blockHeight;
-			g.drawRect((int)xPos, yPos - (int)barHeight, (int)barWidth, (int)barHeight);
+			xPosPrev = (int)Math.round(xPos);
 			xPos += barWidth;
+			if(((JCheckBox)info.getComponent(0)).isSelected()) {
+				g.fillRect(xPosPrev, yPos - (int)barHeight, (int)Math.round(xPos - xPosPrev), (int)barHeight);
+			}else {
+				g.drawRect(xPosPrev, yPos - (int)barHeight, (int)Math.round(xPos - xPosPrev), (int)barHeight);				
+			}
 			hint[k][0] = (int)xPos; hint[k][1] = count[k];
 		}
 		

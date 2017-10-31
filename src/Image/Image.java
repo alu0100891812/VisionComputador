@@ -93,7 +93,9 @@ public class Image extends JPanel implements MouseMotionListener {
 	public void BCImage(int brightness, int contrast) { 
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[vImg.length];
-        float brightnessPrev = (float)getBrightness();
+        int brightnessDiff = brightness - getBrightness();
+        int contrastDiff = contrast - getContrast();
+		/*
         float contrastPrev = (float)getContrast();       
         float a = ((float)brightness) / brightnessPrev;
         float b = ((float)contrast) - (a * contrastPrev);
@@ -101,6 +103,12 @@ public class Image extends JPanel implements MouseMotionListener {
         	vResult[i] = (int)((a * (vImg[i] & 0xFF)) + b);
         }
         this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+        */
+        float factor = ((float)(259 * (contrastDiff + 255)) / (float)(255 * (259 - contrastDiff)));
+		for(int i = 0; i < vImg.length; i++) {
+			vResult[i] = Truncate((int)(factor * (((vImg[i] & 0xFF) + brightnessDiff) - 128) + 128));
+		}
+		this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
     }
 	
 	public int DiffImage(Image newImage) {
@@ -277,4 +285,11 @@ public class Image extends JPanel implements MouseMotionListener {
 		}
 	}
 
+	public int Truncate(int value) {
+		if(value < 0)
+			value = 0;
+		if(value > 255) 
+			value = 255;
+		return value;
+	}
 }

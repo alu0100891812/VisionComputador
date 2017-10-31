@@ -98,6 +98,8 @@ public class brightnessContrastFrame extends JFrame {
 		panel_1.add(label);
 				
 		btnAceptar = new JButton("Aceptar");
+		getRootPane().setDefaultButton(btnAceptar);
+		
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.gridx = 1;
 		gbc_btnNewButton.gridy = 3;

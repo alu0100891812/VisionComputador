@@ -3,6 +3,7 @@ package Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -92,6 +93,12 @@ public class Window {
         EcualizeItem.setEnabled(false);
         setUpEcualized(EcualizeItem);
         editMenu.add(EcualizeItem);
+        
+        JMenuItem GammaCorrectionItem = new JMenuItem("Gamma correction", KeyEvent.VK_G);
+        GammaCorrectionItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        GammaCorrectionItem.setEnabled(false);
+        setUpGammaCorrection(GammaCorrectionItem);
+        editMenu.add(GammaCorrectionItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -298,6 +305,52 @@ public class Window {
 						}
 	    		    }
 	    		});
+	    		LTFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	int[] nodes = LTFrame.getNodeData();	    		    
+				    	    if(nodes.length > 0) {		
+				    	    	LTFrame.setVisible(false);
+				    	    	LTFrame.dispose();
+				    	    	byte[] originalGray = gray.getCopy().getVector();
+				    	    	for(int i=0; i<nodes.length-3; i+=2) {
+				    	    		if(nodes[i+1] != nodes[i+3]) {
+				    	    			if(nodes[i] != nodes[i+2]) {
+					    	    			for(int j=0; j<(nodes[i+2]-nodes[i]); j++) {	
+					    	    				float dif = ((float)(nodes[i+3]-nodes[i+1])/(float)(nodes[i+2]-nodes[i]));
+					    	    				gray.setPixelWithValue(originalGray, nodes[i]+j, nodes[i+1] + (dif*j));
+					    	    			}
+					    	    		}
+				    	    		}else {
+					    	    		if(nodes[i] != nodes[i+2]) {
+					    	    			gray.setPixelWithValue(originalGray, nodes[i], nodes[i+2], nodes[i+1]);
+					    	    		}
+				    	    		}
+				    	    	}
+								JButton button = new JButton();
+					    		String tabName = tabs.getName(original).substring(0, 4) + " - Linear transformation";
+								button.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										tabs.remove(tabName);
+									}
+								});
+								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
+							}else{
+								JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+							}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
 	    	}
 		});
 	}
@@ -329,13 +382,115 @@ public class Window {
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
-							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
 			    					"Error", JOptionPane.ERROR_MESSAGE);
 						}
 	    		    }
 	    		});
+	    		BGFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	int[] data = BGFrame.getData();
+		    				if(data.length == 2) {
+		    					BGFrame.setVisible(false);
+				    	    	BGFrame.dispose();
+				    	    	gray.BCImage(data[0], data[1]);
+								JButton button = new JButton();
+								String tabName = tabs.getName(original).substring(0, 4) + " - Brightness Contrast";
+								button.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										tabs.remove(tabName);
+									}
+								});
+								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
+							}else{
+								JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+							}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	private void setUpGammaCorrection(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+				Image original = getSelectedImage();
+				Image gray = new Image(original.RGBtoGray());
+				GammaCorrectionFrame GCFrame = new GammaCorrectionFrame("Select Gamma Correction");
+				GCFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				GCFrame.setLocationRelativeTo(null);
+				GCFrame.setVisible(true);
+				GCFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				int correction = GCFrame.getData();
+	    				if(correction != 0) {
+	    					GCFrame.setVisible(false);
+			    	    	GCFrame.dispose();
+	    					gray.GammaCImage(correction);
+	    					JButton button = new JButton();
+							String tabName = tabs.getName(original).substring(0, 4) + " - Gamma Correction";
+							button.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									tabs.remove(tabName);
+								}
+							});
+							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+	    				}else {
+	    					JOptionPane.showMessageDialog(null, "Can't correct the gamma with exponent 0, try again",
+			    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+				});
+				GCFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	int correction = GCFrame.getData();
+		    				if(correction != 0) {
+		    					GCFrame.setVisible(false);
+				    	    	GCFrame.dispose();
+		    					gray.GammaCImage(correction);
+		    					JButton button = new JButton();
+								String tabName = tabs.getName(original).substring(0, 4) + " - Gamma Correction";
+								button.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										tabs.remove(tabName);
+									}
+								});
+								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+		    				}else {
+		    					JOptionPane.showMessageDialog(null, "Can't correct the gamma with exponent 0, try again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
 	    	}
 		});
 	}
