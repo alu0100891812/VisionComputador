@@ -21,6 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.github.jaiimageio.*;
+
 public class Window {
 	private JFrame frame;
 	private MenuBar menuBar;
@@ -99,6 +101,12 @@ public class Window {
         GammaCorrectionItem.setEnabled(false);
         setUpGammaCorrection(GammaCorrectionItem);
         editMenu.add(GammaCorrectionItem);
+        
+        JMenuItem DiffImagesItem = new JMenuItem("Difference between images", KeyEvent.VK_D);
+        DiffImagesItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        DiffImagesItem.setEnabled(false);
+        setUpDiffImage(DiffImagesItem);
+        editMenu.add(DiffImagesItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -130,14 +138,14 @@ public class Window {
 	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF", "tiff"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
 	    		int result = filePicker.showOpenDialog(frame);
 	    		
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 					try {
 						JButton button = new JButton();
 						File file = filePicker.getSelectedFile();
-						String tabName = file.getName().substring(0, 4) + " - Original Image";
+						String tabName = file.getName() + " - Original Image";
 						button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
@@ -174,7 +182,7 @@ public class Window {
 				if(original != null) {
 					BufferedImage gray = original.RGBtoGray();
 					JButton button = new JButton();
-					String tabName = tabs.getName(original).substring(0, 4) + " - Gray Image";
+					String tabName = tabs.getName(original) + " - Gray Image";
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -198,7 +206,7 @@ public class Window {
 				Image original = getSelectedImage();
 				Image gray = new Image(original.RGBtoGray());
 				JButton button = new JButton();
-				String tabName = tabs.getName(original).substring(0, 4) + " - Histogram";
+				String tabName = tabs.getName(original) + " - Histogram";
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -218,7 +226,7 @@ public class Window {
 				Image original = getSelectedImage();
 				Image gray = new Image(original.RGBtoGray());
 				JButton button = new JButton();
-				String tabName = tabs.getName(original).substring(0, 4) + " - Histogram Accumulated";
+				String tabName = tabs.getName(original) + " - Histogram Accumulated";
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -239,7 +247,7 @@ public class Window {
 				Image gray = new Image(original.RGBtoGray());
                 BufferedImage image = gray.EcualizedImage().getBufferedImage(); 
                 JButton button = new JButton();
-                String tabName = tabs.getName(original).substring(0, 4) + " - Ecualized Image";
+                String tabName = tabs.getName(original) + " - Ecualized Image";
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -290,7 +298,7 @@ public class Window {
 			    	    		}
 			    	    	}
 							JButton button = new JButton();
-				    		String tabName = tabs.getName(original).substring(0, 4) + " - Linear transformation";
+				    		String tabName = tabs.getName(original) + " - Linear transformation";
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -329,7 +337,7 @@ public class Window {
 				    	    		}
 				    	    	}
 								JButton button = new JButton();
-					    		String tabName = tabs.getName(original).substring(0, 4) + " - Linear transformation";
+					    		String tabName = tabs.getName(original) + " - Linear transformation";
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
@@ -374,7 +382,7 @@ public class Window {
 			    	    	BGFrame.dispose();
 			    	    	gray.BCImage(data[0], data[1]);
 							JButton button = new JButton();
-							String tabName = tabs.getName(original).substring(0, 4) + " - Brightness Contrast";
+							String tabName = tabs.getName(original) + " - Brightness Contrast";
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -399,7 +407,7 @@ public class Window {
 				    	    	BGFrame.dispose();
 				    	    	gray.BCImage(data[0], data[1]);
 								JButton button = new JButton();
-								String tabName = tabs.getName(original).substring(0, 4) + " - Brightness Contrast";
+								String tabName = tabs.getName(original) + " - Brightness Contrast";
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
@@ -444,7 +452,7 @@ public class Window {
 			    	    	GCFrame.dispose();
 	    					gray.GammaCImage(correction);
 	    					JButton button = new JButton();
-							String tabName = tabs.getName(original).substring(0, 4) + " - Gamma Correction";
+							String tabName = tabs.getName(original) + " - Gamma Correction";
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -469,7 +477,7 @@ public class Window {
 				    	    	GCFrame.dispose();
 		    					gray.GammaCImage(correction);
 		    					JButton button = new JButton();
-								String tabName = tabs.getName(original).substring(0, 4) + " - Gamma Correction";
+								String tabName = tabs.getName(original) + " - Gamma Correction";
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
@@ -493,6 +501,46 @@ public class Window {
 				});
 	    	}
 		});
+	}
+	
+	private void setUpDiffImage(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		String username = System.getProperty("user.name");
+	    		String path = "C:\\Users\\" + username + "\\Downloads";
+	    		JFileChooser filePicker = new JFileChooser(path);
+	    		filePicker.setDialogTitle("Select a image to open");
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
+	    		int result = filePicker.showOpenDialog(frame);
+	    		
+	    		if(result == JFileChooser.APPROVE_OPTION) {
+					try {
+						JButton button = new JButton();
+						File file = filePicker.getSelectedFile();
+						String tabName = file.getName() + " - Difference Images";
+						button.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								tabs.remove(tabName);
+							}
+						});
+						Image original = getSelectedImage();
+						Image gray = new Image(original.RGBtoGray());
+						Image resultImg = gray.DiffImage(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
+						tabs.addImageTab(tabName, new ImageTab(original, resultImg.getBufferedImage(), file.getName(), true), button);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}   			
+	    		}else if(result == JFileChooser.ERROR_OPTION) {
+	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    		}
+	    	}
+	    });
 	}
 	
 	private void addToSaveItem(String name, ImageIcon icon, int keyEvent) {

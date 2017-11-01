@@ -49,7 +49,7 @@ public class Tabs extends JTabbedPane {
 	public void removeTabs(String name) {
 		if(tabNames != null) {
 			for(int i=0; i<tabNames.size(); i++) {
-				if(tabNames.get(i).contains(name.substring(0, 4))) {
+				if(tabNames.get(i).contains(name)) {
 					this.remove(i);
 					tabNames.remove(i);
 					i--;
@@ -57,7 +57,7 @@ public class Tabs extends JTabbedPane {
 			}
 			if(images != null) {
 				for(Pair<ImageTab, String> image : images) {
-					if(image.getRight().contains(name.substring(0, 4))) {
+					if(image.getRight().contains(name)) {
 						images.remove(images.indexOf(image));
 						break;
 					}
@@ -65,7 +65,7 @@ public class Tabs extends JTabbedPane {
 			}
 			if(histograms != null) {
 				for(Pair<HistogramTab, String> histogram : histograms) {
-					if(histogram.getRight().contains(name.substring(0, 4))) {
+					if(histogram.getRight().contains(name)) {
 						histograms.remove(histograms.indexOf(histogram));
 						break;
 					}

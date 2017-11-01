@@ -111,26 +111,33 @@ public class Image extends JPanel implements MouseMotionListener {
 		this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
     }
 	
-	public int DiffImage(Image newImage) {
+	public Image DiffImage(Image newImage) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
-		byte[] vImgNow = ((DataBufferByte)newImage.RGBtoGray().getRaster().getDataBuffer()).getData();
+		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[vImg.length];
 		int error = 0;
 		
 		if(vImg.length == vImgNow.length) {
 			for(int i = 0; i < vImg.length; i++) {
-				if((vImg[i] - vImgNow[i] > -20) && (vImg[i] - vImgNow[i] < 20)) { 
-					vResult[i] = (vImgNow[i] & 0xFF);
+				int rgb;
+				if((vImg[i] - vImgNow[i] > - 50) && (vImg[i] - vImgNow[i] < 50)) { 
+					rgb = (vImgNow[i] & 0xFF) << 16;
+					rgb += (vImgNow[i] & 0xFF) << 8;
+					rgb += (vImgNow[i] & 0xFF);
 				} else {
-					int rgb = (255<<16);
-					vResult[i] = rgb;
+					rgb = 255 << 16;
+					
 				}
+				vResult[i] = rgb;
 			}
 		} else {
 			error = 1; //Error fallo de tamaño
 		}
-	    this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
-		return error;
+		int vv = vResult.length;
+		int vvv = vImg.length;
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, 100, 100, vResult);
+		return result;
 	}
 
 	public void GammaCImage(int value) {
