@@ -30,6 +30,9 @@ public class brightnessContrastFrame extends JFrame {
 		
 		((JPanel)getContentPane()).setBorder(new EmptyBorder(20, 10, 10, 10));
 		
+		brightness = bright;
+		contrast = cont;
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0};

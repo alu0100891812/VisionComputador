@@ -89,9 +89,10 @@ public class ImageTab extends JPanel {
 				g.drawString("Image height:", 40, 100);
 				if(gray) {
 					g.drawString("Range Value:", 40, 170);
-					g.drawString("Image entropy:", 40, 190);
-					g.drawString("Image Brightness:", 40, 210);
-					g.drawString("Image Contrast:", 40, 230);
+					g.drawString("Dinamic Range Value:", 40, 190);
+					g.drawString("Image entropy:", 40, 210);
+					g.drawString("Image Brightness:", 40, 230);
+					g.drawString("Image Contrast:", 40, 250);
 				}
 				g.drawString(name.substring(0, name.lastIndexOf('.')), 180, 40);
 				g.drawString(name.substring(name.lastIndexOf('.') + 1), 180, 60);
@@ -100,9 +101,10 @@ public class ImageTab extends JPanel {
 				g.setFont(font);
 				if(gray) {
 					g.drawString(new RangeValue().calculateRange(image), 160, 170);
-					g.drawString(image.getEntropy() + "", 160, 190);
-					g.drawString(image.getBrightness() + "", 180, 210);
-					g.drawString(image.getContrast() + "", 180, 230);
+					g.drawString(image.getDinamicRange() + "", 200, 190);
+					g.drawString(image.getEntropy() + "", 160, 210);
+					g.drawString(image.getBrightness() + "", 180, 230);
+					g.drawString(image.getContrast() + "", 180, 250);
 				}
 				int mX = image.getMousePixel().x;
 				int mY = image.getMousePixel().y;

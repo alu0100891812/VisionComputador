@@ -107,6 +107,12 @@ public class Window {
         DiffImagesItem.setEnabled(false);
         setUpDiffImage(DiffImagesItem);
         editMenu.add(DiffImagesItem);
+        
+        JMenuItem SubImageItem = new JMenuItem("SubImage", KeyEvent.VK_S);
+        SubImageItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        SubImageItem.setEnabled(false);
+        setUpSubImage(SubImageItem);
+        editMenu.add(SubImageItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -158,7 +164,8 @@ public class Window {
 								tabs.remove(tabName);
 							}
 						});
-						tabs.addImageTab(tabName, new ImageTab(new Image(ImageIO.read(file)), ImageIO.read(file), file.getName(), false), button);
+						Image res = new Image(ImageIO.read(file));
+						tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), file.getName(), false), button);
 						JMenuItem[] items = menuBar.getMenuItems("Edit");
 						for(JMenuItem item : items)
 							item.setEnabled(true);
@@ -593,6 +600,82 @@ public class Window {
 	    		}
 	    	}
 	    });
+	}
+	
+	private void setUpSubImage(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image gray = new Image(original.RGBtoGray());
+				CutImageFrame CIFrame = new CutImageFrame("Select a region into the image", gray);
+				CIFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				CIFrame.setLocationRelativeTo(null);
+				CIFrame.setVisible(true);
+				CIFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image result = CIFrame.getCuttedImage();
+	    				if(result != null) {
+	    					CIFrame.setVisible(false);
+			    	    	CIFrame.dispose();
+	    					JButton button = new JButton();
+	    					String tabName = tabs.getName(original) + " - Cutted Image";
+							button.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									tabs.remove(tabName);
+								}
+							});
+							tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
+							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_C);
+							JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
+	    				}else {
+	    					JOptionPane.showMessageDialog(null, "Can't cut the image, try again",
+			    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+				});
+				CIFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image result = CIFrame.getCuttedImage();
+		    				if(result != null) {
+		    					CIFrame.setVisible(false);
+				    	    	CIFrame.dispose();
+		    					JButton button = new JButton();
+		    					String tabName = tabs.getName(original) + " - Cutted Image";
+								button.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										tabs.remove(tabName);
+									}
+								});
+								tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
+								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_C);
+								JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
+		    				}else {
+		    					JOptionPane.showMessageDialog(null, "Can't cut the image, try again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
 	}
 	
 	private void addToSaveItem(String name, ImageIcon icon, int keyEvent) {
