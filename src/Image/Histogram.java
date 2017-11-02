@@ -102,6 +102,7 @@ public class Histogram extends JPanel implements MouseMotionListener {
 		return count;
 	}
 	
+	@SuppressWarnings("unused")
 	private float[] getHistogramAccNormalized() {
 		int[] histogramAcc = getHistogramAccumulated();
 		float[] histogramAccNorm = new float[histogramAcc.length];
@@ -112,6 +113,7 @@ public class Histogram extends JPanel implements MouseMotionListener {
 		return histogramAccNorm;
 	}
 		
+	@SuppressWarnings("unused")
 	private static int getMin(int[] vector) {
 		int min = Integer.MAX_VALUE;
 		for(int j = 0; j < 256; j++) {

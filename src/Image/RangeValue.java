@@ -1,15 +1,8 @@
 package Image;
 
-import javax.swing.JPanel;
-
-
 public class RangeValue {
 	
-	private JPanel panel;
-	
-	public RangeValue() {
-			panel = new JPanel();
-	}
+	public RangeValue() {}
 		
 	public String calculateRange(Image image) {
 		byte[] pixel = image.getVector();
