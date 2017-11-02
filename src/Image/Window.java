@@ -97,19 +97,19 @@ public class Window {
         editMenu.add(EcualizeItem);
         
         JMenuItem GammaCorrectionItem = new JMenuItem("Gamma correction", KeyEvent.VK_G);
-        GammaCorrectionItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        GammaCorrectionItem.setIcon(new ImageIcon("correctionGamma.png"));
         GammaCorrectionItem.setEnabled(false);
         setUpGammaCorrection(GammaCorrectionItem);
         editMenu.add(GammaCorrectionItem);
         
         JMenuItem DiffImagesItem = new JMenuItem("Difference between images", KeyEvent.VK_D);
-        DiffImagesItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        DiffImagesItem.setIcon(new ImageIcon("differenceImages.png"));
         DiffImagesItem.setEnabled(false);
         setUpDiffImage(DiffImagesItem);
         editMenu.add(DiffImagesItem);
         
         JMenuItem SubImageItem = new JMenuItem("SubImage", KeyEvent.VK_S);
-        SubImageItem.setIcon(new ImageIcon("ecualizeImage.png"));
+        SubImageItem.setIcon(new ImageIcon("cutImage.png"));
         SubImageItem.setEnabled(false);
         setUpSubImage(SubImageItem);
         editMenu.add(SubImageItem);
@@ -586,7 +586,7 @@ public class Window {
 						});
 						Image resultImgHSB = gray.DiffImageHSB(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
 						tabs.addImageTab(tabName2, new ImageTab(original, resultImgHSB.getBufferedImage(), file.getName(), false), button2);
-						addToSaveItem(tabName2, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_D);
+						addToSaveItem(tabName2, new ImageIcon("differenceImages.png"), KeyEvent.VK_D);
 						JMenuItem itemBar = menuBar.getItem("File", "Save File");
 		                if(itemBar != null) {
 		                    itemBar.setEnabled(true);
@@ -628,7 +628,7 @@ public class Window {
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
-							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_C);
+							addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_C);
 							JMenuItem itemBar = menuBar.getItem("File", "Save File");
 			                if(itemBar != null) {
 			                    itemBar.setEnabled(true);
@@ -656,7 +656,7 @@ public class Window {
 									}
 								});
 								tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
-								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_C);
+								addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_C);
 								JMenuItem itemBar = menuBar.getItem("File", "Save File");
 				                if(itemBar != null) {
 				                    itemBar.setEnabled(true);
