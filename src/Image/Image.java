@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
 
 import javax.swing.JPanel;
 
@@ -114,30 +116,166 @@ public class Image extends JPanel implements MouseMotionListener {
 	public Image DiffImage(Image newImage) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
-		int[] vResult = new int[vImg.length];
-		int error = 0;
+		int[] vResult = new int[3*vImg.length];
+		int indexResult = 0;
 		
 		if(vImg.length == vImgNow.length) {
 			for(int i = 0; i < vImg.length; i++) {
-				int rgb;
-				if((vImg[i] - vImgNow[i] > - 50) && (vImg[i] - vImgNow[i] < 50)) { 
-					rgb = (vImgNow[i] & 0xFF) << 16;
-					rgb += (vImgNow[i] & 0xFF) << 8;
-					rgb += (vImgNow[i] & 0xFF);
+				if(Math.abs((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF)) < 110) { 
+					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImgNow[i] & 0xFF);
 				} else {
-					rgb = 255 << 16;
-					
+					vResult[indexResult] = 255;
 				}
-				vResult[i] = rgb;
+				indexResult += 3;
 			}
-		} else {
-			error = 1; //Error fallo de tamaño
 		}
-		int vv = vResult.length;
-		int vvv = vImg.length;
-		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB));
-	    result.getBufferedImage().getRaster().setPixels(0, 0, 100, 100, vResult);
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+	    FilterNoise(result, newImage);
 		return result;
+	}
+	
+	public Image DiffImageHSB(Image newImage) {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[3*vImg.length];
+		int indexResult = 0;
+		
+		if(vImg.length == vImgNow.length) {
+			for(int i = 0; i < vImg.length; i++) {
+				Color col1 = new Color(image.getRGB(i%image.getWidth(),i/image.getWidth()));
+				Color col2 = new Color(newImage.getBufferedImage().getRGB(i%newImage.getImageWidth(),i/newImage.getImageWidth()));
+				float[] hsb1 = Color.RGBtoHSB(col1.getRed(), col1.getGreen(), col1.getBlue(), null);
+				float[] hsb2 = Color.RGBtoHSB(col2.getRed(), col2.getGreen(), col2.getBlue(), null);
+				if(Math.abs(hsb1[2] - hsb2[2]) < 0.45) {
+					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImgNow[i] & 0xFF);
+				} else {
+					vResult[indexResult] = 255;
+				}
+				indexResult += 3;
+			}
+		}
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return result;
+	}
+	
+	public void FilterNoise(Image diffImage, Image original) {
+		int[] vImg = ((DataBufferInt)diffImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		byte[] vImgOriginal = ((DataBufferByte)original.getBufferedImage().getRaster().getDataBuffer()).getData();
+		int[] vImgMod = new int[3*diffImage.getImageWidth()*diffImage.getImageHeight()];
+		int indexMod = 0;
+		
+		for(int i = 0; i < vImg.length; i++) {
+			if(vImg[i] == 16711680) {
+				if((i%diffImage.getImageWidth() != (diffImage.getImageWidth()-1) && vImg[i+1] != 16711680) || (i%diffImage.getImageWidth() > 0 && vImg[i-1] != 16711680) || (i/diffImage.getImageWidth() > 0 && vImg[i-diffImage.getImageWidth()] != 16711680) || (i/diffImage.getImageWidth() < (diffImage.getImageHeight()-1) && vImg[i+diffImage.getImageWidth()] != 16711680)) {
+					vImgMod[indexMod+1] = 255;
+				}else {
+					vImgMod[indexMod] = 255;
+				}
+			}else {
+				vImgMod[indexMod] = vImgMod[indexMod+1] = vImgMod[indexMod+2] = vImg[i] % 256;
+			}
+			indexMod += 3;
+		}
+		diffImage.getBufferedImage().getRaster().setPixels(0, 0, diffImage.getImageWidth(), diffImage.getImageHeight(), vImgMod);
+		
+		vImg = ((DataBufferInt)diffImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		vImgMod = new int[3*diffImage.getImageWidth()*diffImage.getImageHeight()];
+		indexMod = 0;
+
+		for(int i = 0; i < vImg.length; i++) {
+			if(vImg[i] == 65280) {
+				if((i%diffImage.getImageWidth() != (diffImage.getImageWidth()-1) && vImg[i+1] == 16711680) || (i%diffImage.getImageWidth() > 0 && vImg[i-1] == 16711680) || (i/diffImage.getImageWidth() > 0 && vImg[i-diffImage.getImageWidth()] == 16711680) || (i/diffImage.getImageWidth() < (diffImage.getImageHeight()-1) && vImg[i+diffImage.getImageWidth()] == 16711680)) {
+					vImgMod[indexMod+1] = 255;
+				}else {
+					vImgMod[indexMod] = vImgMod[indexMod+1] = vImgMod[indexMod+2] = (vImgOriginal[i] & 0xFF);
+				}
+			}else if(vImg[i] == 16711680) {
+				vImgMod[indexMod] = 255;
+			}else{				
+				vImgMod[indexMod] = vImgMod[indexMod+1] = vImgMod[indexMod+2] = vImg[i] % 256;
+			}
+			indexMod += 3;
+		}
+		diffImage.getBufferedImage().getRaster().setPixels(0, 0, diffImage.getImageWidth(), diffImage.getImageHeight(), vImgMod);
+		
+		vImg = ((DataBufferInt)diffImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		int[] vImgMod2 = new int[3*diffImage.getImageWidth()*diffImage.getImageHeight()];
+		indexMod = 0;
+		int maxJumps = 20;
+		
+		for(int i = 0; i < vImg.length; i++) {
+			if(vImg[i] == 65280 && !(vImgMod[i*3] == 0 && vImgMod[i*3+1] == 0 && vImgMod[i*3+2] == 255)) {
+				/*
+				int jumps = 0;
+				int[] node = new int[diffImage.getImageWidth()*diffImage.getImageHeight()];
+				int nodeCount = 0;
+				boolean hit = true;
+				for(int x=i; (x/diffImage.getImageWidth() < (diffImage.getImageHeight()-1)) && hit; x+=diffImage.getImageWidth()) {
+					hit = false;
+					for(int j=0; ((x+j)%diffImage.getImageWidth() != (diffImage.getImageWidth()-1) && (vImg[x+j] == 16711680 || vImg[x+j] == 65280)); j++) {
+						hit = true;
+						node[nodeCount] = x+j; nodeCount++;
+						if(vImg[x+j] == 16711680) { jumps++; }
+						vImgMod[(x+j)*3] = vImgMod[(x+j)*3+1] = 0; vImgMod[(x+j)*3+2] = 255;
+					}
+					for(int j=1; ((x-j)%diffImage.getImageWidth() > 0 && (vImg[x-j] == 16711680 || vImg[x-j] == 65280)); j++) {
+						hit = true;
+						node[nodeCount] = x-j; nodeCount++;
+						if(vImg[x-j] == 16711680) { jumps++; }
+						vImgMod[(x-j)*3] = vImgMod[(x-j)*3+1] = 0; vImgMod[(x-j)*3+2] = 255;
+					}
+				}
+				if(jumps < maxJumps) {
+					int f=5;
+					for(int j=0; j<nodeCount; j++) {
+						vImgMod2[node[j]*3] = vImgMod2[node[j]*3+1] = vImgMod2[node[j]*3+2] = vImgOriginal[node[j]] % 256;
+					}
+				}else {
+					for(int j=0; j<nodeCount; j++) {
+						vImgMod2[node[j]*3+1] = 255;
+					}
+				}*/
+				//A*
+				int[][] listaInicial = new int[diffImage.getImageWidth()*diffImage.getImageHeight()][2];
+				listaInicial[0][0] = 4;
+				listaInicial[0][1] = i;
+				int listaSize = 1;
+				while(listaSize != 0) {
+					vImgMod[listaInicial[0][1]*3] = vImgMod[listaInicial[0][1]*3+1] = 0; vImgMod[listaInicial[0][1]*3+2] = 255;
+					if(listaInicial[0][1]%diffImage.getImageWidth() != (diffImage.getImageWidth()-1) && (vImg[listaInicial[0][1]+1] == 16711680 || vImg[listaInicial[0][1]+1] == 65280) && listaInicial[0][0] != 1) {
+						listaInicial[listaSize][0] = 0;
+						listaInicial[listaSize][1] = listaInicial[0][1]+1;
+						listaSize++;
+					}
+					if(listaInicial[0][1]%diffImage.getImageWidth() > 0 && (vImg[listaInicial[0][1]-1] == 16711680 || vImg[listaInicial[0][1]-1] == 65280) && listaInicial[0][0] != 0) {
+						listaInicial[listaSize][0] = 1;
+						listaInicial[listaSize][1] = listaInicial[0][1]-1;
+						listaSize++;
+					}
+					if(listaInicial[0][1]/diffImage.getImageWidth() > 0 && (vImg[listaInicial[0][1]-diffImage.getImageWidth()] == 16711680 || vImg[listaInicial[0][1]-diffImage.getImageWidth()] == 65280) && listaInicial[0][0] != 3) {
+						listaInicial[listaSize][0] = 2;
+						listaInicial[listaSize][1] = listaInicial[0][1]-diffImage.getImageWidth();
+						listaSize++;
+					}
+					if(listaInicial[0][1]/diffImage.getImageWidth() < (diffImage.getImageHeight()-1) && (vImg[listaInicial[0][1]+diffImage.getImageWidth()] == 16711680 || vImg[listaInicial[0][1]+diffImage.getImageWidth()] == 65280) && listaInicial[0][0] != 2) {
+						listaInicial[listaSize][0] = 3;
+						listaInicial[listaSize][1] = listaInicial[0][1]+diffImage.getImageWidth();
+						listaSize++;
+					}
+					for(int j=1; j<listaSize; j++) {
+						listaInicial[j-1] = listaInicial[j];
+					}
+					listaSize--;
+				}
+			}else if(vImg[i] == 16711680 && vImgMod2[i*3] != vImgOriginal[i] % 256) {
+				vImgMod2[i*3] = 255; vImgMod2[i*3+1] = vImgMod2[i*3+2] = 0;
+			}else if(!(vImgMod[i*3] == 0 && vImgMod[i*3+1] == 0 && vImgMod[i*3+2] == 255)){
+				vImgMod2[i*3] = vImgMod2[i*3+1] = vImgMod2[i*3+2] = vImgOriginal[i] % 256;
+			}
+		}
+		diffImage.getBufferedImage().getRaster().setPixels(0, 0, diffImage.getImageWidth(), diffImage.getImageHeight(), vImgMod);
 	}
 
 	public void GammaCImage(int value) {
@@ -211,6 +349,11 @@ public class Image extends JPanel implements MouseMotionListener {
 	
 	public byte[] getVector() {
 		byte[] vector = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+		return vector;
+	}
+	
+	public int[] getIntVector() {
+		int[] vector = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		return vector;
 	}
 

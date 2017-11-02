@@ -135,10 +135,10 @@ public class Window {
 	    		String path = "C:\\Users\\" + username + "\\Downloads";
 	    		JFileChooser filePicker = new JFileChooser(path);
 	    		filePicker.setDialogTitle("Select a image to open");
-	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("PNG", "png"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
 	    		int result = filePicker.showOpenDialog(frame);
 	    		
 	    		if(result == JFileChooser.APPROVE_OPTION) {
@@ -191,6 +191,10 @@ public class Window {
 					});
 					tabs.addImageTab(tabName, new ImageTab(original, gray, tabs.getName(original), true), button);
 					addToSaveItem(tabName, new ImageIcon("RGBtoGray.png"), KeyEvent.VK_G);           
+					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+	                if(itemBar != null) {
+	                    itemBar.setEnabled(true);
+	                }
 				}else{
 					JOptionPane.showMessageDialog(null, "Can't convert to gray, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -215,6 +219,10 @@ public class Window {
 				});
 				tabs.addHistogramTab(tabName, new HistogramTab(original, gray, false), button);
 				addToSaveItem(tabName, new ImageIcon("histogram.png"), KeyEvent.VK_H);
+				JMenuItem itemBar = menuBar.getItem("File", "Save File");
+                if(itemBar != null) {
+                    itemBar.setEnabled(true);
+                }
 			}
 		});
 	}
@@ -235,6 +243,10 @@ public class Window {
 				});
 				tabs.addHistogramTab(tabName, new HistogramTab(original, gray, true), button);
 				addToSaveItem(tabName, new ImageIcon("histogramAccumulated.png"), KeyEvent.VK_H);
+				JMenuItem itemBar = menuBar.getItem("File", "Save File");
+                if(itemBar != null) {
+                    itemBar.setEnabled(true);
+                }
 			}
 		});
 	}
@@ -307,6 +319,10 @@ public class Window {
 							});
 							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 							addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
+							JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
 			    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -346,6 +362,10 @@ public class Window {
 								});
 								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 								addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
+								JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
 							}else{
 								JOptionPane.showMessageDialog(null, "Can't show the transformed image, try again",
 				    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -391,6 +411,10 @@ public class Window {
 							});
 							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
+							JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
 						}else{
 							JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
 			    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -416,6 +440,10 @@ public class Window {
 								});
 								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
+								JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
 							}else{
 								JOptionPane.showMessageDialog(null, "Can't show the modified image, try again",
 				    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -461,6 +489,10 @@ public class Window {
 							});
 							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+							JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
 	    				}else {
 	    					JOptionPane.showMessageDialog(null, "Can't correct the gamma with exponent 0, try again",
 			    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -486,6 +518,10 @@ public class Window {
 								});
 								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
 								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_L);
+								JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
 		    				}else {
 		    					JOptionPane.showMessageDialog(null, "Can't correct the gamma with exponent 0, try again",
 				    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -511,27 +547,43 @@ public class Window {
 	    		String path = "C:\\Users\\" + username + "\\Downloads";
 	    		JFileChooser filePicker = new JFileChooser(path);
 	    		filePicker.setDialogTitle("Select a image to open");
-	    		filePicker.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("PNG", "png"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
 	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
-	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
 	    		int result = filePicker.showOpenDialog(frame);
 	    		
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 					try {
-						JButton button = new JButton();
 						File file = filePicker.getSelectedFile();
-						String tabName = file.getName() + " - Difference Images";
+						Image original = getSelectedImage();
+						Image gray = new Image(original.RGBtoGray());
+						String tabName = tabs.getName(original) + " - Difference Images";
+						JButton button = new JButton();
 						button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								tabs.remove(tabName);
 							}
-						});
-						Image original = getSelectedImage();
-						Image gray = new Image(original.RGBtoGray());
+						});						
 						Image resultImg = gray.DiffImage(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
-						tabs.addImageTab(tabName, new ImageTab(original, resultImg.getBufferedImage(), file.getName(), true), button);
+						tabs.addImageTab(tabName, new ImageTab(original, resultImg.getBufferedImage(), file.getName(), false), button);
+						addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_D);
+						String tabName2 = tabs.getName(original) + " - Difference Images HSB";
+						JButton button2 = new JButton();
+						button2.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								tabs.remove(tabName2);
+							}
+						});
+						Image resultImgHSB = gray.DiffImageHSB(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
+						tabs.addImageTab(tabName2, new ImageTab(original, resultImgHSB.getBufferedImage(), file.getName(), false), button2);
+						addToSaveItem(tabName2, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_D);
+						JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
 					} catch (IOException e) {
 						e.printStackTrace();
 					}   			
@@ -566,7 +618,12 @@ public class Window {
 	    		
 	    		if(result == JFileChooser.APPROVE_OPTION) {
 						try {
-							boolean res = ImageIO.write(tabs.getBuffImage(tabName), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath() + "." + filePicker.getFileFilter().getDescription().toLowerCase()));
+							boolean res;
+							if(filePicker.getSelectedFile().getAbsolutePath().indexOf(".") == -1) {
+								res = ImageIO.write(tabs.getBuffImage(tabName), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath() + "." + filePicker.getFileFilter().getDescription().toLowerCase()));
+							}else {
+								res = ImageIO.write(tabs.getBuffImage(tabName), filePicker.getFileFilter().getDescription(), new File(filePicker.getSelectedFile().getAbsolutePath()));
+							}
 							if(!res) {
 								JOptionPane.showMessageDialog(null, "An error has ocurred, try to save the file again",
 				    					"Error", JOptionPane.ERROR_MESSAGE);
