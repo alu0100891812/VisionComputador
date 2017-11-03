@@ -101,7 +101,7 @@ public class Image extends JPanel implements MouseMotionListener {
         float a = ((float)contrast) / contrastPrev;
         float b = ((float)brightness) - (a * brightnessPrev);
         for(int i = 0; i < vImg.length; i++) {
-        	vResult[i] = (int)((a * (vImg[i] & 0xFF)) + b);
+        	vResult[i] = Truncate((int)((a * (vImg[i] & 0xFF)) + b));
         }
         this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
     }
@@ -367,7 +367,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		for(int i=0; i<count.length; i++) {
 			if(count[i] != 0) cont++;
 		}
-		return (float)Math.ceil(Math.log(cont) / Math.log(2));
+		return (float)(Math.log(cont) / Math.log(2));
 	}
 	
 	public float getDinamicRange() {
