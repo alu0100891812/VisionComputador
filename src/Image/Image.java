@@ -150,6 +150,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		}
 		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
 	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+	    FilterNoise(result, newImage);
 		return result;
 	}
 	
