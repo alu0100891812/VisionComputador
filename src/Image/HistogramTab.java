@@ -19,10 +19,14 @@ public class HistogramTab extends JPanel {
 	
 	private Histogram histogram;
 	private Image original;
+	private Image image;
 	private JPanel infoPanel;
+	private boolean accumulated;
 	
 	public HistogramTab(Image original, Image image, boolean accumulated) {
 		this.original = original;
+		this.image = image;
+		this.accumulated = accumulated;
 		setUpInfo();
 		this.histogram = new Histogram(image, accumulated, infoPanel);
 		this.setLayout(new BorderLayout());
@@ -71,5 +75,10 @@ public class HistogramTab extends JPanel {
 	
 	public Image getOrigin() {
 		return original;
+	}
+	
+	public HistogramTab getCopy() {
+		HistogramTab copy = new HistogramTab(this.original, this.image, this.accumulated);
+		return copy;
 	}
 }

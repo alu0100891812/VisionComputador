@@ -59,7 +59,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return new Image(CopyImage);
 	}
 	
-	private Image EcualizedImageFromImageVector(int[] vectorAcc) {
+	public Image EcualizedImageFromImageVector(int[] vectorAcc) {
 		Image EcualizedImage = new Image(new BufferedImage(image.getWidth(), image.getHeight(), image.getType()));
 		int[] lookUpTable = new int[256];
 		byte[] vectorImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
@@ -93,6 +93,10 @@ public class Image extends JPanel implements MouseMotionListener {
 		return EcualizedImageFromImageVector(vectorAcc);
 	}
 	
+	public Image EcualizedImageFromImage(Image image) {
+		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
+	}
+	
 	public void BCImage(int brightness, int contrast) { 
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[vImg.length];
@@ -109,13 +113,28 @@ public class Image extends JPanel implements MouseMotionListener {
 	public Image DiffImage(Image newImage) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+		
+		if(vImg.length == vImgNow.length) {
+			for(int i = 0; i < vImg.length; i++) {
+				vResult[i] = Truncate((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF));
+			}
+		}
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return result;
+	}
+	
+	public Image DiffImageChangesMap(Image newImage, int threshold) {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[3*vImg.length];
 		int indexResult = 0;
 		
 		if(vImg.length == vImgNow.length) {
 			for(int i = 0; i < vImg.length; i++) {
-				if(Math.abs((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF)) < 110) { 
-					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImgNow[i] & 0xFF);
+				if(Math.abs((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF)) < threshold) { 
+					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImg[i] & 0xFF);
 				} else {
 					vResult[indexResult] = 255;
 				}
@@ -128,7 +147,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return result;
 	}
 	
-	public Image DiffImageHSB(Image newImage) {
+	public Image DiffImageHSBChangesMap(Image newImage) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		byte[] vImgNow = ((DataBufferByte)newImage.getBufferedImage().getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[3*vImg.length];
@@ -141,7 +160,7 @@ public class Image extends JPanel implements MouseMotionListener {
 				float[] hsb1 = Color.RGBtoHSB(col1.getRed(), col1.getGreen(), col1.getBlue(), null);
 				float[] hsb2 = Color.RGBtoHSB(col2.getRed(), col2.getGreen(), col2.getBlue(), null);
 				if(Math.abs(hsb1[2] - hsb2[2]) < 0.45) {
-					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImgNow[i] & 0xFF);
+					vResult[indexResult] = vResult[indexResult+1] = vResult[indexResult+2] = (vImg[i] & 0xFF);
 				} else {
 					vResult[indexResult] = 255;
 				}
@@ -242,11 +261,7 @@ public class Image extends JPanel implements MouseMotionListener {
 			vResult[j] = ((int) Math.round(acc)) * 255;
 		}
 		this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
-	}
-	
-	public Image EcualizedImageFromImage(Image image) {
-		return EcualizedImageFromImageVector(new Histogram(image, false).getHistogramAccumulated());
-	}
+	}	
 	
 	public Point getMousePixel() { 
 		return MousePosition;

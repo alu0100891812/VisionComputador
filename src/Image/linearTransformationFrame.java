@@ -186,9 +186,59 @@ public class linearTransformationFrame extends JFrame {
 	}
 	
 	public int[] getNodeData() {
-		int[] nodes = new int[(nodePanel.getComponentCount()/2)+4];
-		nodes[0] = 0; nodes[1] = 0; nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
-		for(int i=1, index=2; i<nodePanel.getComponentCount(); i+=2, index++) {
+		int[] nodes;
+		int index = 0;
+		if(nodePanel.getComponentCount() >= 8) {
+			int x1Val = ((Double)((JSpinner)nodePanel.getComponent(1)).getValue()).intValue();
+			boolean hit[] = new boolean[2];
+			if(x1Val != 0) {
+				hit[0] = true;
+			}
+			int x2Val = ((Double)((JSpinner)nodePanel.getComponent(nodePanel.getComponentCount()-3)).getValue()).intValue();
+			if(x2Val != 255) {
+				hit[1] = true;
+			}
+			if(hit[0] && hit[1]) {
+				nodes = new int[(nodePanel.getComponentCount()/2)+4];
+				nodes[0] = 0; nodes[1] = 0; nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
+				index = 2;
+			}else if(hit[0] || hit[1]) {
+				nodes =	new int[(nodePanel.getComponentCount()/2)+2];
+				if(hit[0]) {
+					nodes[0] = 0; nodes[1] = 0;
+					index = 2;
+				}else {
+					nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
+				}
+			}else {
+				nodes = new int[(nodePanel.getComponentCount()/2)];
+			}
+		}else if(nodePanel.getComponentCount() >= 4) {
+			int x1Val = ((Double)((JSpinner)nodePanel.getComponent(1)).getValue()).intValue();
+			boolean hit[] = new boolean[2];
+			if(x1Val == 0) {
+				hit[0] = true;
+			}else if(x1Val == 255) {
+				hit[1] = true;
+			}
+			if(hit[0]) {
+				nodes = new int[(nodePanel.getComponentCount()/2)+2];
+				nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
+			}else if(hit[1]) {
+				nodes =	new int[(nodePanel.getComponentCount()/2)+2];
+				nodes[0] = 0; nodes[1] = 0;
+				index = 2;
+			}else {
+				nodes = new int[(nodePanel.getComponentCount()/2)+4];
+				nodes[0] = 0; nodes[1] = 0; nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
+				index = 2;
+			}
+		}else {
+			nodes = new int[(nodePanel.getComponentCount()/2)+4];
+			nodes[0] = 0; nodes[1] = 0; nodes[nodes.length-1] = 255; nodes[nodes.length-2] = 255;
+			index = 2;
+		}
+		for(int i=1; i<nodePanel.getComponentCount(); i+=2, index++) {
 			try {
 				((JSpinner)nodePanel.getComponent(i)).commitEdit();
 			} catch (ParseException e) {

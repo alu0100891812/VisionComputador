@@ -1,5 +1,10 @@
 package Image;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +23,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -96,6 +102,12 @@ public class Window {
         setUpEcualized(EcualizeItem);
         editMenu.add(EcualizeItem);
         
+        JMenuItem EcualizeExternItem = new JMenuItem("Ecualized image from external image", KeyEvent.VK_E);
+	    EcualizeExternItem.setIcon(new ImageIcon("histogramAccumulated.png"));
+        EcualizeExternItem.setEnabled(false);
+        setUpEcualizedExtern(EcualizeExternItem);
+        editMenu.add(EcualizeExternItem);
+        
         JMenuItem GammaCorrectionItem = new JMenuItem("Gamma correction", KeyEvent.VK_G);
         GammaCorrectionItem.setIcon(new ImageIcon("correctionGamma.png"));
         GammaCorrectionItem.setEnabled(false);
@@ -108,11 +120,26 @@ public class Window {
         setUpDiffImage(DiffImagesItem);
         editMenu.add(DiffImagesItem);
         
+        JMenuItem DiffImagesChangesItem = new JMenuItem("Changes Map between images", KeyEvent.VK_C);
+        DiffImagesChangesItem.setIcon(new ImageIcon("differenceImagesChanges.png"));
+        DiffImagesChangesItem.setEnabled(false);
+        setUpDiffImageChanges(DiffImagesChangesItem);
+        editMenu.add(DiffImagesChangesItem);
+        
         JMenuItem SubImageItem = new JMenuItem("SubImage", KeyEvent.VK_S);
         SubImageItem.setIcon(new ImageIcon("cutImage.png"));
         SubImageItem.setEnabled(false);
         setUpSubImage(SubImageItem);
         editMenu.add(SubImageItem);
+        
+        JMenu viewMenu = new JMenu("View");
+	    viewMenu.setMnemonic(KeyEvent.VK_V);
+	    menuBar.add(viewMenu);
+	    
+	    JMenuItem MultipleViewItem = new JMenuItem("Multiple Images", KeyEvent.VK_M);
+	    MultipleViewItem.setIcon(new ImageIcon("RGBtoGray.png"));
+	    setUpMultipleView(MultipleViewItem);
+	    viewMenu.add(MultipleViewItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -196,7 +223,7 @@ public class Window {
 							tabs.remove(tabName);
 						}
 					});
-					tabs.addImageTab(tabName, new ImageTab(original, gray, tabs.getName(original), true), button);
+					tabs.addImageTab(tabName, new ImageTab(original, gray, tabName, true), button);
 					addToSaveItem(tabName, new ImageIcon("RGBtoGray.png"), KeyEvent.VK_G);           
 					JMenuItem itemBar = menuBar.getItem("File", "Save File");
 	                if(itemBar != null) {
@@ -264,7 +291,7 @@ public class Window {
             public void actionPerformed(ActionEvent arg0) {
 				Image original = getSelectedImage();
 				Image gray = new Image(original.RGBtoGray());
-                BufferedImage image = gray.EcualizedImage().getBufferedImage(); 
+                Image result = gray.EcualizedImage(); 
                 JButton button = new JButton();
                 String tabName = tabs.getName(original) + " - Ecualized Image";
                 button.addActionListener(new ActionListener() {
@@ -273,13 +300,57 @@ public class Window {
                         tabs.remove(tabName);
                     }
                 });
-                tabs.addImageTab(tabName, new ImageTab(original, image, tabs.getName(original), true), button);
-                tabs.addHistogramTab(tabName + " Histogram", new HistogramTab(original, new Image(image), true), button);
+                tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
                 addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
                 JMenuItem itemBar = menuBar.getItem("File", "Save File");
                 if(itemBar != null) {
                     itemBar.setEnabled(true);
                 }               
+            }
+        });
+    }
+    
+    private void setUpEcualizedExtern(JMenuItem item) {
+        item.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+				String username = System.getProperty("user.name");
+	    		String path = "C:\\Users\\" + username + "\\Downloads";
+	    		JFileChooser filePicker = new JFileChooser(path);
+	    		filePicker.setDialogTitle("Select a image to open");
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
+	    		int result = filePicker.showOpenDialog(frame);
+	    		
+	    		if(result == JFileChooser.APPROVE_OPTION) {
+					try {
+						File file = filePicker.getSelectedFile();
+						Image original = getSelectedImage();
+						Image gray = new Image(original.RGBtoGray());
+						Image res = gray.EcualizedImageFromImage(new Image(ImageIO.read(file)));
+		                JButton button = new JButton();
+		                String tabName = tabs.getName(original) + " - Ecualized Image from External Image";
+		                button.addActionListener(new ActionListener() {
+		                    @Override
+		                    public void actionPerformed(ActionEvent e) {
+		                        tabs.remove(tabName);
+		                    }
+		                });
+		                tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), tabName, true), button);
+		                addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
+		                JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
+					} catch (IOException e) {
+						e.printStackTrace();
+					}   			
+	    		}else if(result == JFileChooser.ERROR_OPTION) {
+	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    		}                             
             }
         });
     }
@@ -324,7 +395,7 @@ public class Window {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 							addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
 							JMenuItem itemBar = menuBar.getItem("File", "Save File");
 			                if(itemBar != null) {
@@ -367,7 +438,7 @@ public class Window {
 										tabs.remove(tabName);
 									}
 								});
-								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 								addToSaveItem(tabName, new ImageIcon("linearTransformations.png"), KeyEvent.VK_L);
 								JMenuItem itemBar = menuBar.getItem("File", "Save File");
 				                if(itemBar != null) {
@@ -416,7 +487,7 @@ public class Window {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 							addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
 							JMenuItem itemBar = menuBar.getItem("File", "Save File");
 			                if(itemBar != null) {
@@ -445,7 +516,7 @@ public class Window {
 										tabs.remove(tabName);
 									}
 								});
-								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 								addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_B);
 								JMenuItem itemBar = menuBar.getItem("File", "Save File");
 				                if(itemBar != null) {
@@ -494,7 +565,7 @@ public class Window {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 							addToSaveItem(tabName, new ImageIcon("correctionGamma.png"), KeyEvent.VK_G);
 							JMenuItem itemBar = menuBar.getItem("File", "Save File");
 			                if(itemBar != null) {
@@ -523,7 +594,7 @@ public class Window {
 										tabs.remove(tabName);
 									}
 								});
-								tabs.addImageTab(tabName, new ImageTab(original, gray.getBufferedImage(), tabs.getName(original), true), button);
+								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
 								addToSaveItem(tabName, new ImageIcon("correctionGamma.png"), KeyEvent.VK_G);
 								JMenuItem itemBar = menuBar.getItem("File", "Save File");
 				                if(itemBar != null) {
@@ -574,26 +645,64 @@ public class Window {
 							}
 						});						
 						Image resultImg = gray.DiffImage(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
-						tabs.addImageTab(tabName, new ImageTab(original, resultImg.getBufferedImage(), file.getName(), false), button);
-						addToSaveItem(tabName, new ImageIcon("brightnessContrast.png"), KeyEvent.VK_D);
-						String tabName2 = tabs.getName(original) + " - Difference Images HSB";
-						JButton button2 = new JButton();
-						button2.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								tabs.remove(tabName2);
-							}
-						});
-						Image resultImgHSB = gray.DiffImageHSB(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
-						tabs.addImageTab(tabName2, new ImageTab(original, resultImgHSB.getBufferedImage(), file.getName(), false), button2);
-						addToSaveItem(tabName2, new ImageIcon("differenceImages.png"), KeyEvent.VK_D);
-						JMenuItem itemBar = menuBar.getItem("File", "Save File");
-		                if(itemBar != null) {
-		                    itemBar.setEnabled(true);
-		                }
+						tabs.addImageTab(tabName, new ImageTab(resultImg, resultImg.getBufferedImage(), tabName, false), button);
+						addToSaveItem(tabName, new ImageIcon("differenceImages.png"), KeyEvent.VK_D);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}   			
+	    		}else if(result == JFileChooser.ERROR_OPTION) {
+	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    		}
+	    	}
+	    });
+	}
+	
+	private void setUpDiffImageChanges(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		String username = System.getProperty("user.name");
+	    		String path = "C:\\Users\\" + username + "\\Downloads";
+	    		JFileChooser filePicker = new JFileChooser(path);
+	    		filePicker.setDialogTitle("Select a image to open");
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("PNG", "png"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("BMP", "bmp"));
+	    		filePicker.addChoosableFileFilter(new FileNameExtensionFilter("JPEG, JPG", "jpg", "jpeg"));
+	    		filePicker.setFileFilter(new FileNameExtensionFilter("TIFF, TIF", "tiff", "tif"));
+	    		int result = filePicker.showOpenDialog(frame);
+	    		
+	    		if(result == JFileChooser.APPROVE_OPTION) {
+					File file = filePicker.getSelectedFile();
+					Image original = getSelectedImage();
+					Image gray = new Image(original.RGBtoGray());
+					String tabName = tabs.getName(original) + " - Difference Images Changes Map";
+					JButton button = new JButton();
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});			
+					ThresholdFrame TFrame= new ThresholdFrame("Select the threshold to use");
+					TFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					TFrame.setLocationRelativeTo(null);
+					TFrame.setVisible(true);
+					TFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent arg0) {
+							int threshold = TFrame.getData();
+							TFrame.setVisible(false);
+					    	TFrame.dispose();
+					    	try {
+					    		Image resultImg = gray.DiffImageChangesMap(new Image(new Image(ImageIO.read(file)).RGBtoGray()), threshold);
+								tabs.addImageTab(tabName, new ImageTab(resultImg, resultImg.getBufferedImage(), tabName, false), button);
+								addToSaveItem(tabName, new ImageIcon("differenceImagesChanges.png"), KeyEvent.VK_C);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					});   			
 	    		}else if(result == JFileChooser.ERROR_OPTION) {
 	    			JOptionPane.showMessageDialog(null, "An error has ocurred, try to open the file again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -627,7 +736,7 @@ public class Window {
 									tabs.remove(tabName);
 								}
 							});
-							tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
+							tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
 							addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_C);
 							JMenuItem itemBar = menuBar.getItem("File", "Save File");
 			                if(itemBar != null) {
@@ -655,7 +764,7 @@ public class Window {
 										tabs.remove(tabName);
 									}
 								});
-								tabs.addImageTab(tabName, new ImageTab(original, result.getBufferedImage(), tabs.getName(original), true), button);
+								tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
 								addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_C);
 								JMenuItem itemBar = menuBar.getItem("File", "Save File");
 				                if(itemBar != null) {
@@ -721,5 +830,42 @@ public class Window {
 			}
 		});;
 		menu.add(exampleItem);
+	}
+	
+	private void setUpMultipleView(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {	    		
+	    		tabs.toogleVisibilityInfo();
+	    		frame.setLayout(new GridBagLayout());
+	    		
+	    		Tabs copy = tabs.getCopy();
+	    		Tabs copy2 = tabs.getCopy();
+	    		GridBagConstraints t1 = new GridBagConstraints();
+	    		t1.gridx = 0;
+	    		t1.gridy = 0;
+	    		
+	    		GridBagConstraints t2 = new GridBagConstraints();
+	    		t2.gridx = 1;
+	    		t2.gridy = 0;
+
+	    		frame.setContentPane(new JPanel() {
+					private static final long serialVersionUID = 1L;
+					
+	    			@Override
+	    			public void paintComponent(Graphics g) {
+	    				copy.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()));
+	    	    		copy2.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()));
+	    			}
+	    		});
+	    		
+	    		copy.setPreferredSize(new Dimension(frame.getWidth()/2, tabs.getHeight()));
+	    		copy2.setPreferredSize(new Dimension(frame.getWidth()/2, tabs.getHeight()));
+	    		frame.add(copy, t1);
+	    		frame.add(copy2, t2);
+	    		
+	    		frame.repaint();
+	    	}
+		});
 	}
 }
