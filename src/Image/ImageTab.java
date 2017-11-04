@@ -102,7 +102,7 @@ public class ImageTab extends JPanel {
 				if(gray) {
 					g.drawString(new RangeValue().calculateRange(image), 160, 170);
 					g.drawString(image.getDinamicRange() + "", 200, 190);
-					g.drawString(image.getEntropy() + "", 160, 210);
+					g.drawString(image.getEntropy(), 160, 210);
 					g.drawString(image.getBrightness() + "", 180, 230);
 					g.drawString(image.getContrast() + "", 180, 250);
 				}

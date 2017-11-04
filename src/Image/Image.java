@@ -8,6 +8,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -254,11 +256,11 @@ public class Image extends JPanel implements MouseMotionListener {
 		int[] vResult = new int[vImg.length];
 		double acc = 0;
 		for(int i = 0; i < vImg.length; i++) {
-			vImgNormalized[i] = (vImg[i] & 0xFF) / 255;
+			vImgNormalized[i] = (double)(vImg[i] & 0xFF) / (double)255;
 		}		
 		for(int j = 0; j < vImgNormalized.length; j++) {
 			acc = Math.pow(vImgNormalized[j], value);
-			vResult[j] = ((int) Math.round(acc)) * 255;
+			vResult[j] = (int)(acc * (double)255);
 		}
 		this.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
 	}	
@@ -372,7 +374,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return (int)desvTipica;
 	}
 	
-	public float getEntropy() {
+	public String getEntropy() {
 		byte[] pixel = getVector();
 		int[] count = new int[256];
 		float cont = 0;
@@ -382,7 +384,10 @@ public class Image extends JPanel implements MouseMotionListener {
 		for(int i=0; i<count.length; i++) {
 			if(count[i] != 0) cont++;
 		}
-		return (float)(Math.log(cont) / Math.log(2));
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.CEILING);
+		double x = (double)(Math.log(cont) / Math.log(2));
+		return df.format(x);	
 	}
 	
 	public float getDinamicRange() {
