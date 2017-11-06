@@ -58,7 +58,7 @@ public class GammaCorrectionFrame extends JFrame {
 		});
 		panel.add(spinner);
 		
-		btnAceptar = new JButton("Aceptar");
+		btnAceptar = new JButton("Accept");
 		getRootPane().setDefaultButton(btnAceptar);
 		
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();

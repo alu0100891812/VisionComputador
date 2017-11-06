@@ -59,7 +59,7 @@ public class ThresholdFrame extends JFrame {
 		gbc_spinner.gridy = 0;
 		contentPane.add(spinner, gbc_spinner);
 		
-		btnAceptar = new JButton("Aceptar");
+		btnAceptar = new JButton("Accept");
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.anchor = GridBagConstraints.LAST_LINE_END;
 		gbc_btnNewButton.gridx = 1;

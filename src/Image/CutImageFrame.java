@@ -99,7 +99,7 @@ public class CutImageFrame extends JFrame {
 		});
 		panel_1.add(spinner_3);
 		
-		btnAceptar = new JButton("Aceptar");
+		btnAceptar = new JButton("Accept");
 		contentPane.add(btnAceptar, BorderLayout.SOUTH);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -108,8 +108,6 @@ public class CutImageFrame extends JFrame {
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 0;
-		gbc_scrollPane.gridwidth = 3;
-		gbc_scrollPane.gridheight = 3;
 		scrollPane.setBorder(new EmptyBorder(0,0,0,0));
 		sourceImage.marginX = 0;
 		sourceImage.marginY = 0;

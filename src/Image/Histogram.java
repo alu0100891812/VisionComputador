@@ -158,15 +158,19 @@ public class Histogram extends JPanel implements MouseMotionListener {
 			}
 		}
 		if(!hit) {
-			MousePosition.setLocation(-1, -1);
+			if(x > (margin - 2) && x < hint[0][0]) {
+				currentValue[0] = 0; currentValue[1] = hint[0][1];
+				info.repaint();
+			}else {
+				MousePosition.setLocation(-1, -1);
+			}
 		}else {			
 			info.repaint();
 		}
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-	}
+	public void mouseDragged(MouseEvent arg0) {}
 	
 	public int[] getValues() {
 		return currentValue;

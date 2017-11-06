@@ -5,7 +5,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -134,6 +133,12 @@ public class Window {
         SubImageItem.setEnabled(false);
         setUpSubImage(SubImageItem);
         editMenu.add(SubImageItem);
+        
+        JMenuItem DigitalizeItem = new JMenuItem("Digitalize Image", KeyEvent.VK_D);
+        DigitalizeItem.setIcon(new ImageIcon("cutImage.png"));
+        DigitalizeItem.setEnabled(false);
+        setUpDigitalizeImage(DigitalizeItem);
+        editMenu.add(DigitalizeItem);
         
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
@@ -304,7 +309,7 @@ public class Window {
                     }
                 });
                 tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
-                addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
+                addToSaveItem(tabName, new ImageIcon("ecualizeImage.png"), KeyEvent.VK_E);
                 JMenuItem itemBar = menuBar.getItem("File", "Save File");
                 if(itemBar != null) {
                     itemBar.setEnabled(true);
@@ -342,7 +347,7 @@ public class Window {
 		                    }
 		                });
 		                tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), tabName, true), button);
-		                addToSaveItem(tabName, new ImageIcon("EcualizedImage.png"), KeyEvent.VK_E);
+		                addToSaveItem(tabName, new ImageIcon("ecualizeImage.png"), KeyEvent.VK_E);
 		                JMenuItem itemBar = menuBar.getItem("File", "Save File");
 		                if(itemBar != null) {
 		                    itemBar.setEnabled(true);
@@ -775,6 +780,84 @@ public class Window {
 				                }
 		    				}else {
 		    					JOptionPane.showMessageDialog(null, "Can't cut the image, try again",
+				    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	private void setUpDigitalizeImage(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image gray = new Image(original.RGBtoGray());
+				DigitalizeFrame DFrame = new DigitalizeFrame("Select values to digitalize");
+				DFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				DFrame.setLocationRelativeTo(null);
+				DFrame.setVisible(true);
+				DFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				int[] data = DFrame.getData();
+	    				if(data.length == 2) {
+	    					DFrame.setVisible(false);
+			    	    	DFrame.dispose();
+	    					JButton button = new JButton();
+	    					String tabName = tabs.getName(original) + " - Digitalized Image";
+							button.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									tabs.remove(tabName);
+								}
+							});
+							Image result = gray.digitalization(data[0], data[1]);
+							tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+							addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_D);
+							JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
+	    				}else {
+	    					JOptionPane.showMessageDialog(null, "Can't digitalize the image, try again",
+			    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+				});
+				DFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	int[] data = DFrame.getData();
+		    				if(data.length == 2) {
+		    					DFrame.setVisible(false);
+				    	    	DFrame.dispose();
+		    					JButton button = new JButton();
+		    					String tabName = tabs.getName(original) + " - Digitalized Image";
+								button.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										tabs.remove(tabName);
+									}
+								});
+								Image result = gray.digitalization(data[0], data[1]);
+								tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+								addToSaveItem(tabName, new ImageIcon("cutImage.png"), KeyEvent.VK_D);
+								JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
+		    				}else {
+		    					JOptionPane.showMessageDialog(null, "Can't digitalize the image, try again",
 				    					"Error", JOptionPane.ERROR_MESSAGE);
 		    				}
 					    }

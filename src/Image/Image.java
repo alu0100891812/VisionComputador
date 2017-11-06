@@ -326,9 +326,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		
-	}
+	public void mouseDragged(MouseEvent arg0) {}
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
@@ -418,12 +416,44 @@ public class Image extends JPanel implements MouseMotionListener {
 			}
 		}
 	}
-
+	
 	public int Truncate(int value) {
 		if(value < 0)
 			value = 0;
 		if(value > 255) 
 			value = 255;
 		return value;
+	}
+	
+	public Image digitalization(int bloque, int bits) {
+		byte[] vImg = this.getVector();
+		int[] vNewImg = new int[vImg.length];
+		int[] newColor = new int[256];
+		int numColor = (int)256/(int)Math.pow(2, bits);
+		
+		for(int i=0; i<256; i++) {
+			newColor[i] = (i%numColor == 0)?i-numColor:((i/numColor)*numColor);
+		}		
+		for(int i=0, j=0; i<vNewImg.length/(bloque*bloque); i++, j+=bloque) {
+			int avg = 0;
+			for(int x=0; x<bloque; x++) {
+				for(int y=0; y<bloque; y++) {
+					avg += vImg[j+(image.getWidth()*y)+x];
+				}
+			}
+			avg /= bloque*bloque;
+			for(int x=0; x<bloque; x++) {
+				for(int y=0; y<bloque; y++) {
+					vNewImg[j+(image.getWidth()*y)+x] = avg;
+				}
+			}
+			if(j%image.getWidth()==0&&i!=0) j+=(bloque-1)*image.getWidth();
+		}
+		for(int i=0; i<vNewImg.length; i++) {
+			vNewImg[i] = newColor[(vNewImg[i] & 0xFF)];
+		}
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+		result.getBufferedImage().getRaster().setPixels(0, 0, result.getImageWidth(), result.getImageHeight(), vNewImg);
+		return result;
 	}
 }
