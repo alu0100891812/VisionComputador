@@ -1,6 +1,7 @@
 package Image;
 
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -835,36 +838,101 @@ public class Window {
 	private void setUpMultipleView(JMenuItem item) {
 		item.addActionListener(new ActionListener() {
 	    	@Override
-	    	public void actionPerformed(ActionEvent arg0) {	    		
-	    		tabs.toogleVisibilityInfo();
-	    		frame.setLayout(new GridBagLayout());
-	    		
-	    		Tabs copy = tabs.getCopy();
-	    		Tabs copy2 = tabs.getCopy();
-	    		GridBagConstraints t1 = new GridBagConstraints();
-	    		t1.gridx = 0;
-	    		t1.gridy = 0;
-	    		
-	    		GridBagConstraints t2 = new GridBagConstraints();
-	    		t2.gridx = 1;
-	    		t2.gridy = 0;
-
-	    		frame.setContentPane(new JPanel() {
-					private static final long serialVersionUID = 1L;
-					
-	    			@Override
-	    			public void paintComponent(Graphics g) {
-	    				copy.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()));
-	    	    		copy2.setPreferredSize(new Dimension(this.getWidth()/2, this.getHeight()));
-	    			}
-	    		});
-	    		
-	    		copy.setPreferredSize(new Dimension(frame.getWidth()/2, tabs.getHeight()));
-	    		copy2.setPreferredSize(new Dimension(frame.getWidth()/2, tabs.getHeight()));
-	    		frame.add(copy, t1);
-	    		frame.add(copy2, t2);
-	    		
-	    		frame.repaint();
+	    	public void actionPerformed(ActionEvent arg0) {	    	
+	    		if(tabs.infoVisibility) {
+		    		tabs.toogleVisibilityInfo();
+		    		JMenuItem[] items = menuBar.getMenuItems("Edit");
+		    		for(JMenuItem item : items)
+						item.setEnabled(false);
+		    		frame.setLayout(new GridBagLayout());
+		    		
+		    		Tabs copy = tabs.getCopy();
+		    		Tabs copy2 = tabs.getCopy();
+		    		GridBagConstraints t1 = new GridBagConstraints();
+		    		t1.gridx = 0;
+		    		t1.gridy = 0;
+		    		
+		    		GridBagConstraints t2 = new GridBagConstraints();
+		    		t2.gridx = 1;
+		    		t2.gridy = 0;
+	
+		    		frame.setContentPane(new JPanel() {
+						private static final long serialVersionUID = 1L;
+						
+		    			@Override
+		    			public void paintComponent(Graphics g) {
+		    				super.paintComponent(g);
+		    				
+		    				copy.setPreferredSize(new Dimension(frame.getWidth()/2-30, frame.getHeight()-70));
+		    	    		copy2.setPreferredSize(new Dimension(frame.getWidth()/2-30, frame.getHeight()-70));
+							copy.repaint();
+							copy2.repaint();
+		    			}
+		    		});
+		    		
+		    		frame.addWindowStateListener(new WindowStateListener() {
+						@Override
+						public void windowStateChanged(WindowEvent e) {
+							if(((e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH && (e.getOldState() & Frame.NORMAL) == Frame.NORMAL) || ((e.getNewState() & Frame.NORMAL) == Frame.NORMAL && (e.getOldState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)) {
+								frame.getContentPane().repaint();
+							}
+						}
+					});
+		    		
+		    		frame.getContentPane().add(copy, t1);
+		    		frame.getContentPane().add(copy2, t2);
+		    		
+					copy.setPreferredSize(new Dimension(frame.getWidth()/2-30, frame.getHeight()-60));
+		    		copy2.setPreferredSize(new Dimension(frame.getWidth()/2-30, frame.getHeight()-60));
+		    		
+		    		String tabName = "Comodin";
+		    		JButton button = new JButton();
+					copy.addImageTab(tabName, new ImageTab(new Image(new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY)), new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY), tabName, true), button);
+					copy.remove(tabName);
+	    		}else {
+		    		tabs.toogleVisibilityInfo();
+		    		JMenuItem[] items = menuBar.getMenuItems("Edit");
+		    		for(JMenuItem item : items)
+						item.setEnabled(true);
+		    		frame.setLayout(new GridBagLayout());
+		    		
+		    		Tabs copy = tabs.getCopy();
+		    		GridBagConstraints t1 = new GridBagConstraints();
+		    		t1.gridx = 0;
+		    		t1.gridy = 0;
+		    		
+		    		frame.setContentPane(new JPanel() {
+						private static final long serialVersionUID = 1L;
+						
+		    			@Override
+		    			public void paintComponent(Graphics g) {
+		    				super.paintComponent(g);
+		    				
+		    				copy.setPreferredSize(new Dimension(frame.getWidth()-30, frame.getHeight()-70));
+							copy.repaint();
+		    			}
+		    		});
+		    		
+		    		frame.addWindowStateListener(new WindowStateListener() {
+						@Override
+						public void windowStateChanged(WindowEvent e) {
+							if(((e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH && (e.getOldState() & Frame.NORMAL) == Frame.NORMAL) || ((e.getNewState() & Frame.NORMAL) == Frame.NORMAL && (e.getOldState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH)) {
+								frame.getContentPane().repaint();
+							}
+						}
+					});
+		    		
+		    		frame.getContentPane().add(copy, t1);
+		    		
+		    		frame.getContentPane().getComponent(0).setPreferredSize(new Dimension(frame.getWidth()-30, frame.getHeight()-70));
+		    		frame.repaint();
+		    		
+		    		tabs = copy;
+		    		String tabName = "Comodin";
+		    		JButton button = new JButton();
+					tabs.addImageTab(tabName, new ImageTab(new Image(new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY)), new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY), tabName, true), button);
+					tabs.remove(tabName);
+	    		}
 	    	}
 		});
 	}

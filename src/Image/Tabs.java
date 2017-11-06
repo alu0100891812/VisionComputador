@@ -14,7 +14,7 @@ public class Tabs extends JTabbedPane {
 	private Vector<Pair<ImageTab, String>> images;
 	private Vector<Pair<HistogramTab, String>> histograms;
 	private Vector<String> tabNames;
-	private boolean infoVisibility = true;
+	public boolean infoVisibility = true;
 	
 	public Tabs getCopy() {
 		Tabs copy = new Tabs();
@@ -39,12 +39,13 @@ public class Tabs extends JTabbedPane {
 						copy.remove(histogram.getRight());
 					}
 				});
-				copy.addHistogramTab(histogram.getRight(), histogram.getLeft(), button);
+				copy.addHistogramTab(histogram.getRight(), histogram.getLeft().getCopy(), button);
 			}		
 		}
 		if(!infoVisibility) {
 			copy.toogleVisibilityInfo();
 		}
+		copy.setTabLayoutPolicy(this.getTabLayoutPolicy());
 		return copy;
 	}
 	
