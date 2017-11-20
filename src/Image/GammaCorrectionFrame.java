@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -19,7 +20,7 @@ public class GammaCorrectionFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	public JButton btnAceptar;
-	private int correction;
+	private double correction;
 
 	public GammaCorrectionFrame(String title) {
 		setTitle(title);
@@ -28,7 +29,7 @@ public class GammaCorrectionFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		correction = 1;
+		correction = 1.0;
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0};
@@ -49,11 +50,13 @@ public class GammaCorrectionFrame extends JFrame {
 		JLabel lblNewLabel = new JLabel("Select the gamma exponent to apply: ");
 		panel.add(lblNewLabel);
 		
-		JSpinner spinner = new JSpinner(new SpinnerNumberModel(1.0, -50.0, 50.0, 1.0));
+		JSpinner spinner = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 8.0, 0.01));
+		spinner.setPreferredSize(new Dimension(60, (int) spinner.getPreferredSize().getHeight()));
 		spinner.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				correction = ((Double)spinner.getValue()).intValue();
+				Object tmp = spinner.getValue();
+				correction = (double)tmp;
 			}
 		});
 		panel.add(spinner);
@@ -67,7 +70,7 @@ public class GammaCorrectionFrame extends JFrame {
 		contentPane.add(btnAceptar, gbc_btnNewButton);
 	}
 	
-	public int getData() {
+	public Double getData() {
 		return correction;
 	}
 }

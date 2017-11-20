@@ -560,7 +560,7 @@ public class Window {
 				GCFrame.btnAceptar.addMouseListener(new MouseAdapter() {
 	    			@Override
 	    			public void mouseClicked(MouseEvent arg0) {
-	    				int correction = GCFrame.getData();
+	    				Double correction = GCFrame.getData();
 	    				if(correction != 0) {
 	    					GCFrame.setVisible(false);
 			    	    	GCFrame.dispose();
@@ -589,7 +589,7 @@ public class Window {
 					@Override
 					public void keyPressed(KeyEvent e) {
 					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					    	int correction = GCFrame.getData();
+					    	Double correction = GCFrame.getData();
 		    				if(correction != 0) {
 		    					GCFrame.setVisible(false);
 				    	    	GCFrame.dispose();

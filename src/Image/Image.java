@@ -250,7 +250,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		diffImage.getBufferedImage().getRaster().setPixels(0, 0, diffImage.getImageWidth(), diffImage.getImageHeight(), vImgMod2);
 	}
 
-	public void GammaCImage(int value) {
+	public void GammaCImage(Double value) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		double[] vImgNormalized = new double[vImg.length];
 		int[] vResult = new int[vImg.length];
@@ -432,7 +432,12 @@ public class Image extends JPanel implements MouseMotionListener {
 		int numColor = (int)256/(int)Math.pow(2, bits);
 		
 		for(int i=0; i<256; i++) {
-			newColor[i] = (i%numColor == 0)?i-numColor:((i/numColor)*numColor);
+			if(i%numColor == numColor-1) {
+				newColor[i] = i;
+			}else {
+				newColor[i] = i-(i%numColor)-1;
+				if(i-(i%numColor)-1 < 0) newColor[i] = 0;
+			}
 		}		
 		for(int i=0, j=0; i<vNewImg.length/(bloque*bloque); i++, j+=bloque) {
 			int avg = 0;
