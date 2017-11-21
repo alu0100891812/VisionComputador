@@ -139,30 +139,35 @@ public class Window {
         DigitalizeItem.setEnabled(false);
         setUpDigitalizeImage(DigitalizeItem);
         editMenu.add(DigitalizeItem);
+
+        JMenu imageMenu = new JMenu("Image");
+	    imageMenu.setMnemonic(KeyEvent.VK_I);
+	    menuBar.add(imageMenu);
+	    
+	    JMenuItem FlipVerticalItem = new JMenuItem("Flip Vertical", KeyEvent.VK_V);
+	    FlipVerticalItem.setIcon(new ImageIcon("flipVertical.png"));
+	    setUpFlipVertical(FlipVerticalItem);
+	    imageMenu.add(FlipVerticalItem);
+	    
+	    JMenuItem FlipHorizontalItem = new JMenuItem("Flip Horizontal", KeyEvent.VK_H);
+	    FlipHorizontalItem.setIcon(new ImageIcon("flipHorizontal.png"));
+	    setUpFlipHorizontal(FlipHorizontalItem);
+	    imageMenu.add(FlipHorizontalItem);
+	    
+	    JMenuItem TransposeItem = new JMenuItem("Transpose", KeyEvent.VK_H);
+	    TransposeItem.setIcon(new ImageIcon("transpose.png"));
+	    setUpTranspose(TransposeItem);
+	    imageMenu.add(TransposeItem);
         
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
 	    menuBar.add(viewMenu);
 	    
 	    JMenuItem MultipleViewItem = new JMenuItem("Multiple Images", KeyEvent.VK_M);
-	    MultipleViewItem.setIcon(new ImageIcon("RGBtoGray.png"));
+	    MultipleViewItem.setIcon(new ImageIcon("multipleImages22.png"));
 	    setUpMultipleView(MultipleViewItem);
 	    viewMenu.add(MultipleViewItem);
 	    
-        JMenu imageMenu = new JMenu("Image");
-	    imageMenu.setMnemonic(KeyEvent.VK_I);
-	    menuBar.add(imageMenu);
-	    
-	    JMenuItem FlipVerticalItem = new JMenuItem("Flip Vertical", KeyEvent.VK_V);
-	    FlipVerticalItem.setIcon(new ImageIcon("RGBtoGray.png"));
-	    setUpFlipVertical(FlipVerticalItem);
-	    imageMenu.add(FlipVerticalItem);
-	    
-	    JMenuItem FlipHorizontalItem = new JMenuItem("Flip Horizontal", KeyEvent.VK_H);
-	    FlipHorizontalItem.setIcon(new ImageIcon("RGBtoGray.png"));
-	    setUpFlipHorizontal(FlipHorizontalItem);
-	    imageMenu.add(FlipHorizontalItem);
-
 	    frame.setJMenuBar(menuBar);
 	    
 	    tabs = new Tabs();
@@ -214,7 +219,11 @@ public class Window {
 							}
 						});
 						Image res = new Image(ImageIO.read(file));
-						tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), file.getName(), false), button);
+						if(res.getBufferedImage().getType() >= 10) {
+							tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), file.getName(), true), button);
+						}else {
+							tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), file.getName(), false), button);
+						}
 						JMenuItem[] items = menuBar.getMenuItems("Edit");
 						for(JMenuItem item : items)
 							item.setEnabled(true);
@@ -245,7 +254,7 @@ public class Window {
 							tabs.remove(tabName);
 						}
 					});
-					tabs.addImageTab(tabName, new ImageTab(original, gray, tabName, true), button);
+					tabs.addImageTab(tabName, new ImageTab(new Image(gray), gray, tabName, true), button);
 					addToSaveItem(tabName, new ImageIcon("RGBtoGray.png"), KeyEvent.VK_G);           
 					JMenuItem itemBar = menuBar.getItem("File", "Save File");
 	                if(itemBar != null) {
@@ -941,6 +950,12 @@ public class Window {
 		    		JMenuItem[] items = menuBar.getMenuItems("Edit");
 		    		for(JMenuItem item : items)
 						item.setEnabled(false);
+		    		items = menuBar.getMenuItems("Image");
+		    		for(JMenuItem item : items)
+						item.setEnabled(false);
+		    		items = menuBar.getMenuItems("View");
+		    		items[0].setIcon(new ImageIcon("singleImage.png"));
+		    		items[0].setText("Single Image");
 		    		frame.setLayout(new GridBagLayout());
 		    		
 		    		Tabs copy = tabs.getCopy();
@@ -991,6 +1006,12 @@ public class Window {
 		    		JMenuItem[] items = menuBar.getMenuItems("Edit");
 		    		for(JMenuItem item : items)
 						item.setEnabled(true);
+		    		items = menuBar.getMenuItems("Image");
+		    		for(JMenuItem item : items)
+						item.setEnabled(true);
+		    		items = menuBar.getMenuItems("View");
+		    		items[0].setIcon(new ImageIcon("multipleImages.png"));
+		    		items[0].setText("Multiple Images");
 		    		frame.setLayout(new GridBagLayout());
 		    		
 		    		Tabs copy = tabs.getCopy();
@@ -1039,7 +1060,12 @@ public class Window {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image original = getSelectedImage();
-	    		Image result = original.flipVerticalGray();
+	    		Image result;
+	    		if(original.getBufferedImage().getType() >= 10) {
+	    			result = original.flipVerticalGray();
+	    		}else {
+	    			result = original.flipVerticalColor();
+	    		}
 	    		if(result != null) {
 		    		JButton button = new JButton();
 					String tabName = tabs.getName(original) + " - Vertical Flipped Image";
@@ -1049,10 +1075,14 @@ public class Window {
 							tabs.remove(tabName);
 						}
 					});
-		    		tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
-					addToSaveItem(tabName, new ImageIcon("differenceImages.png"), KeyEvent.VK_V);
+					if(result.getBufferedImage().getType() >= 10) {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+					}else {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					}
+					addToSaveItem(tabName, new ImageIcon("flipVertical.png"), KeyEvent.VK_V);
 	    		}else {
-					JOptionPane.showMessageDialog(null, "Can't flip vartical the image, try again",
+					JOptionPane.showMessageDialog(null, "Can't flip vertical the image, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 				}
 	    	}
@@ -1063,7 +1093,66 @@ public class Window {
 		item.addActionListener(new ActionListener() {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
-	    		
+	    		Image original = getSelectedImage();
+	    		Image result;
+	    		if(original.getBufferedImage().getType() >= 10) {
+	    			result = original.flipHorizontalGray();
+	    		}else {
+	    			result = original.flipHorizontalColor();
+	    		}
+	    		if(result != null) {
+		    		JButton button = new JButton();
+					String tabName = tabs.getName(original) + " - Horizontal Flipped Image";
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});
+					if(result.getBufferedImage().getType() >= 10) {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+					}else {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					}
+					addToSaveItem(tabName, new ImageIcon("flipHorizontal.png"), KeyEvent.VK_V);
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't flip horizontal the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+	    	}
+		});
+	}
+	
+	private void setUpTranspose(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		Image result;
+	    		if(original.getBufferedImage().getType() >= 10) {
+	    			result = original.transposeGray();
+	    		}else {
+	    			result = original.transposeColor();
+	    		}
+	    		if(result != null) {
+		    		JButton button = new JButton();
+					String tabName = tabs.getName(original) + " - Transpposed Image";
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});
+					if(result.getBufferedImage().getType() >= 10) {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+					}else {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					}
+					addToSaveItem(tabName, new ImageIcon("transpose.png"), KeyEvent.VK_V);
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't transpose the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
 	    	}
 		});
 	}

@@ -463,20 +463,15 @@ public class Image extends JPanel implements MouseMotionListener {
 	}
 	
 	public Image flipVerticalColor() {
-		int[] vImg = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		int[] vResult = new int[3*vImg.length];
-		
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+		BufferedImage buffer = result.getBufferedImage();
+				
 		for(int i=0; i<image.getHeight(); i++) {
 			for(int j=0; j<image.getWidth(); j++) {
-				vResult[((image.getHeight()-i-1)*image.getWidth()*3)+j] = vImg[(i*image.getWidth())+j] & 0xFF;
-				vResult[((image.getHeight()-i-1)*image.getWidth()*3)+j+1] = (vImg[(i*image.getWidth())+j]>>8) & 0xFF;
-				vResult[((image.getHeight()-i-1)*image.getWidth()*3)+j+2] = (vImg[(i*image.getWidth())+j]>>16) & 0xFF;
+				buffer.setRGB(j, (image.getHeight()-i-1), image.getRGB(j, i));
 			}
-		}
-		
-		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
-	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
-		return null;		
+		}		
+		return result;		
 	}
 	
 	public Image flipVerticalGray() {
@@ -486,6 +481,98 @@ public class Image extends JPanel implements MouseMotionListener {
 		for(int i=0; i<image.getHeight(); i++) {
 			for(int j=0; j<image.getWidth(); j++) {
 				vResult[(image.getHeight()-i-1)*image.getWidth()+j] = vImg[(i*image.getWidth())+j] & 0xFF;
+			}
+		}
+		
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return result;		
+	}
+	
+	public Image flipHorizontalColor() {
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+		BufferedImage buffer = result.getBufferedImage();
+				
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				buffer.setRGB((image.getWidth()-i-1), j, image.getRGB(i, j));
+			}
+		}		
+		return result;		
+	}
+	
+	public Image flipHorizontalGray() {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+		
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				vResult[(image.getWidth()-i-1)+(image.getWidth()*j)] = vImg[i+(image.getWidth()*j)] & 0xFF;
+			}
+		}
+		
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return result;		
+	}
+	
+	public Image transposeColor() {
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+		BufferedImage buffer = result.getBufferedImage();
+				
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				buffer.setRGB(i, j, image.getRGB(j, i));
+			}
+		}		
+		return result;		
+	}
+	
+	public Image transposeGray() {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+		
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				vResult[(i*image.getWidth())+j] = vImg[(j*image.getWidth())+i] & 0xFF;
+			}
+		}
+		
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
+	    result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
+		return result;		
+	}
+	
+	public Image rotateColor(int degres) {
+		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+		BufferedImage buffer = result.getBufferedImage();
+				
+		switch(degres) {
+		case 90:
+			
+		break;
+		case 180:
+			
+		break;
+		case 270:
+			
+		break;
+		}
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				buffer.setRGB(i, j, image.getRGB(j, i));
+			}
+		}		
+		return result;		
+	}
+	
+	public Image rotateGray(int degres) {
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vResult = new int[vImg.length];
+		
+		for(int i=0; i<image.getWidth(); i++) {
+			for(int j=0; j<image.getHeight(); j++) {
+				vResult[(i*image.getWidth())+j] = vImg[(j*image.getWidth())+i] & 0xFF;
 			}
 		}
 		
