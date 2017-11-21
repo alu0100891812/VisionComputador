@@ -148,6 +148,20 @@ public class Window {
 	    MultipleViewItem.setIcon(new ImageIcon("RGBtoGray.png"));
 	    setUpMultipleView(MultipleViewItem);
 	    viewMenu.add(MultipleViewItem);
+	    
+        JMenu imageMenu = new JMenu("Image");
+	    imageMenu.setMnemonic(KeyEvent.VK_I);
+	    menuBar.add(imageMenu);
+	    
+	    JMenuItem FlipVerticalItem = new JMenuItem("Flip Vertical", KeyEvent.VK_V);
+	    FlipVerticalItem.setIcon(new ImageIcon("RGBtoGray.png"));
+	    setUpFlipVertical(FlipVerticalItem);
+	    imageMenu.add(FlipVerticalItem);
+	    
+	    JMenuItem FlipHorizontalItem = new JMenuItem("Flip Horizontal", KeyEvent.VK_H);
+	    FlipHorizontalItem.setIcon(new ImageIcon("RGBtoGray.png"));
+	    setUpFlipHorizontal(FlipHorizontalItem);
+	    imageMenu.add(FlipHorizontalItem);
 
 	    frame.setJMenuBar(menuBar);
 	    
@@ -1016,6 +1030,40 @@ public class Window {
 					tabs.addImageTab(tabName, new ImageTab(new Image(new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY)), new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY), tabName, true), button);
 					tabs.remove(tabName);
 	    		}
+	    	}
+		});
+	}
+	
+	private void setUpFlipVertical(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		Image result = original.flipVerticalGray();
+	    		if(result != null) {
+		    		JButton button = new JButton();
+					String tabName = tabs.getName(original) + " - Vertical Flipped Image";
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});
+		    		tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					addToSaveItem(tabName, new ImageIcon("differenceImages.png"), KeyEvent.VK_V);
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't flip vartical the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+	    	}
+		});
+	}
+	
+	private void setUpFlipHorizontal(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		
 	    	}
 		});
 	}
