@@ -158,6 +158,11 @@ public class Window {
 	    TransposeItem.setIcon(new ImageIcon("transpose.png"));
 	    setUpTranspose(TransposeItem);
 	    imageMenu.add(TransposeItem);
+	    
+	    JMenuItem rotateItem = new JMenuItem("Rotate", KeyEvent.VK_H);
+	    rotateItem.setIcon(new ImageIcon("rotate.png"));
+	    setUpRotate(rotateItem);
+	    imageMenu.add(rotateItem);
         
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
@@ -1114,7 +1119,7 @@ public class Window {
 					}else {
 						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
 					}
-					addToSaveItem(tabName, new ImageIcon("flipHorizontal.png"), KeyEvent.VK_V);
+					addToSaveItem(tabName, new ImageIcon("flipHorizontal.png"), KeyEvent.VK_H);
 	    		}else {
 					JOptionPane.showMessageDialog(null, "Can't flip horizontal the image, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -1148,9 +1153,43 @@ public class Window {
 					}else {
 						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
 					}
-					addToSaveItem(tabName, new ImageIcon("transpose.png"), KeyEvent.VK_V);
+					addToSaveItem(tabName, new ImageIcon("transpose.png"), KeyEvent.VK_T);
 	    		}else {
 					JOptionPane.showMessageDialog(null, "Can't transpose the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+	    	}
+		});
+	}
+	
+	private void setUpRotate(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		Image result;
+	    		if(original.getBufferedImage().getType() >= 10) {
+	    			result = original.rotateColor(270);
+	    		}else {
+	    			result = original.rotateGray(270);
+	    		}
+	    		if(result != null) {
+		    		JButton button = new JButton();
+					String tabName = tabs.getName(original) + " - Rotated Image";
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});
+					if(result.getBufferedImage().getType() >= 10) {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+					}else {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					}
+					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 				}
 	    	}

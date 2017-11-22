@@ -94,8 +94,8 @@ public class ImageTab extends JPanel {
 					g.drawString("Image Brightness:", 40, 230);
 					g.drawString("Image Contrast:", 40, 250);
 				}
-				g.drawString(name.substring(0, name.lastIndexOf('.')) + name.substring(name.indexOf(" ", name.lastIndexOf('.')-1)<0?name.length():name.indexOf(" ")), 180, 40);
-				g.drawString(name.substring(name.lastIndexOf('.')+1, name.indexOf(" ", name.lastIndexOf('.')-1)<0?name.length():name.indexOf(" ")), 180, 60);
+				g.drawString(name.substring(0, name.lastIndexOf('.')) + name.substring(name.indexOf(" ", name.lastIndexOf('.')-1)<0?name.length():name.indexOf(" ", name.lastIndexOf('.'))), 180, 40);
+				g.drawString(name.substring(name.lastIndexOf('.')+1, name.indexOf(" ", name.lastIndexOf('.')-1)<0?name.length():name.indexOf(" ", name.lastIndexOf('.'))), 180, 60);
 				g.drawString(image.getImageWidth() + "px", 180, 80);
 				g.drawString(image.getImageHeight() + "px", 180, 100);
 				g.setFont(font);
