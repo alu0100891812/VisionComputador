@@ -169,16 +169,11 @@ public class Window {
 	    imageMenu.add(RotateItem);
 	    
 	    JMenuItem ScaleItem = new JMenuItem("Scale", KeyEvent.VK_S);
-	    ScaleItem.setIcon(new ImageIcon("rotate.png"));
+	    ScaleItem.setIcon(new ImageIcon("scale.png"));
 	    setUpScale(ScaleItem);
 	    ScaleItem.setEnabled(false);
 	    imageMenu.add(ScaleItem);
-	    
-	    JMenuItem scaleItem = new JMenuItem("Scale", KeyEvent.VK_S);
-	    scaleItem.setIcon(new ImageIcon("rotate.png"));
-	    setUpScale(scaleItem);
-	    imageMenu.add(scaleItem);
-        
+	            
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
 	    menuBar.add(viewMenu);
@@ -279,6 +274,7 @@ public class Window {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							tabs.remove(tabName);
+							menuBar.removeFromSave(tabName);
 						}
 					});
 					tabs.addImageTab(tabName, new ImageTab(new Image(gray), gray, tabName, true), button);
@@ -307,6 +303,7 @@ public class Window {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						tabs.remove(tabName);
+						menuBar.removeFromSave(tabName);
 					}
 				});
 				tabs.addHistogramTab(tabName, new HistogramTab(original, gray, false), button);
@@ -331,6 +328,7 @@ public class Window {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						tabs.remove(tabName);
+						menuBar.removeFromSave(tabName);
 					}
 				});
 				tabs.addHistogramTab(tabName, new HistogramTab(original, gray, true), button);
@@ -356,6 +354,7 @@ public class Window {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         tabs.remove(tabName);
+						menuBar.removeFromSave(tabName);
                     }
                 });
                 tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
@@ -394,6 +393,7 @@ public class Window {
 		                    @Override
 		                    public void actionPerformed(ActionEvent e) {
 		                        tabs.remove(tabName);
+								menuBar.removeFromSave(tabName);
 		                    }
 		                });
 		                tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), tabName, true), button);
@@ -451,6 +451,7 @@ public class Window {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -494,6 +495,7 @@ public class Window {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 									}
 								});
 								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -543,6 +545,7 @@ public class Window {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -572,6 +575,7 @@ public class Window {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 									}
 								});
 								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -621,6 +625,7 @@ public class Window {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -650,6 +655,7 @@ public class Window {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 									}
 								});
 								tabs.addImageTab(tabName, new ImageTab(gray, gray.getBufferedImage(), tabName, true), button);
@@ -700,6 +706,7 @@ public class Window {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								tabs.remove(tabName);
+								menuBar.removeFromSave(tabName);
 							}
 						});						
 						Image resultImg = gray.DiffImage(new Image(new Image(ImageIO.read(file)).RGBtoGray()));
@@ -740,6 +747,7 @@ public class Window {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							tabs.remove(tabName);
+							menuBar.removeFromSave(tabName);
 						}
 					});			
 					ThresholdFrame TFrame= new ThresholdFrame("Select the threshold to use");
@@ -792,6 +800,7 @@ public class Window {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 								}
 							});
 							tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
@@ -820,6 +829,7 @@ public class Window {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 									}
 								});
 								tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
@@ -868,6 +878,7 @@ public class Window {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 								}
 							});
 							Image result = gray.digitalization(data[0], data[1]);
@@ -897,6 +908,7 @@ public class Window {
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 									}
 								});
 								Image result = gray.digitalization(data[0], data[1]);
@@ -1103,6 +1115,7 @@ public class Window {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							tabs.remove(tabName);
+							menuBar.removeFromSave(tabName);
 						}
 					});
 					if(result.getBufferedImage().getType() >= 10) {
@@ -1137,6 +1150,7 @@ public class Window {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							tabs.remove(tabName);
+							menuBar.removeFromSave(tabName);
 						}
 					});
 					if(result.getBufferedImage().getType() >= 10) {
@@ -1171,6 +1185,7 @@ public class Window {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							tabs.remove(tabName);
+							menuBar.removeFromSave(tabName);
 						}
 					});
 					if(result.getBufferedImage().getType() >= 10) {
@@ -1215,6 +1230,7 @@ public class Window {
 	    						@Override
 	    						public void actionPerformed(ActionEvent e) {
 	    							tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 	    						}
 	    					});
 	    					if(result.getBufferedImage().getType() >= 10) {
@@ -1249,6 +1265,7 @@ public class Window {
 		    						@Override
 		    						public void actionPerformed(ActionEvent e) {
 		    							tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 		    						}
 		    					});
 		    					if(result.getBufferedImage().getType() >= 10) {
@@ -1290,7 +1307,11 @@ public class Window {
 	    				SFrame.setVisible(false);
 		    	    	SFrame.dispose();
 	    				int[] scale = SFrame.getData();
-	    				result = original.ScaleImage((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+	    				if(original.getBufferedImage().getType() >= 10) {
+	    					result = original.scaleVMPGray((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+	    				}else {	    					
+	    					result = original.scaleVMPColor((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+	    				}
 	    	    		if(result != null) {
 	    		    		JButton button = new JButton();
 	    					String tabName = tabs.getName(original) + " - Scaled Image";
@@ -1298,6 +1319,7 @@ public class Window {
 	    						@Override
 	    						public void actionPerformed(ActionEvent e) {
 	    							tabs.remove(tabName);
+									menuBar.removeFromSave(tabName);
 	    						}
 	    					});
 	    					if(result.getBufferedImage().getType() >= 10) {
@@ -1305,9 +1327,9 @@ public class Window {
 	    					}else {
 	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
 	    					}
-	    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+	    					addToSaveItem(tabName, new ImageIcon("scale.png"), KeyEvent.VK_R);
 	    	    		}else {
-	    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+	    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 	    	    					"Error", JOptionPane.ERROR_MESSAGE);
 	    				}
 	    			}
@@ -1320,7 +1342,11 @@ public class Window {
 		    				SFrame.setVisible(false);
 			    	    	SFrame.dispose();
 		    				int[] scale = SFrame.getData();
-		    				result = original.ScaleImage(scale[0]/100, scale[1]/100);
+		    				if(original.getBufferedImage().getType() >= 10) {
+		    					result = original.scaleVMPGray((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+		    				}else {	    					
+		    					result = original.scaleVMPColor((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+		    				}
 		    	    		if(result != null) {
 		    		    		JButton button = new JButton();
 		    					String tabName = tabs.getName(original) + " - Scaled Image";
@@ -1328,6 +1354,7 @@ public class Window {
 		    						@Override
 		    						public void actionPerformed(ActionEvent e) {
 		    							tabs.remove(tabName);
+										menuBar.removeFromSave(tabName);
 		    						}
 		    					});
 		    					if(result.getBufferedImage().getType() >= 10) {
@@ -1335,9 +1362,9 @@ public class Window {
 		    					}else {
 		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
 		    					}
-		    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+		    					addToSaveItem(tabName, new ImageIcon("scale.png"), KeyEvent.VK_R);
 		    	    		}else {
-		    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+		    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 		    	    					"Error", JOptionPane.ERROR_MESSAGE);
 		    				}
 					    }

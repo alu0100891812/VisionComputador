@@ -49,4 +49,18 @@ public class MenuBar extends JMenuBar {
 		}		
 		return result;
 	}
+	
+	public void removeFromSave(String item) {
+		JMenu saveMenu = ((JMenu)this.getMenu("File").getItem(1));
+		
+		for(int i=0; i<saveMenu.getItemCount(); i++) {
+			if(saveMenu.getItem(i).getText().equalsIgnoreCase(item)) {
+				saveMenu.remove(i);
+				break;
+			}
+		}
+		if(saveMenu.getItemCount() == 0) {
+			saveMenu.setEnabled(false);
+		}
+	}
 }

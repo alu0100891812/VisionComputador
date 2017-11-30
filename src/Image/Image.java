@@ -53,14 +53,6 @@ public class Image extends JPanel implements MouseMotionListener {
 		return GrayImage;
 	}
 	
-	public Image ScaleImage(float sX, float sY) {
-		BufferedImage ScaledImage = new BufferedImage(image.getWidth()*sX, image.getHeight()*sY, image.getType());  
-		Graphics g = ScaledImage.getGraphics();  
-		g.drawImage(image, 0, 0, image.getWidth()*sX, image.getHeight()*sY, 0, 0, image.getWidth(), image.getHeight(), null);  
-		g.dispose();
-		return new Image(ScaledImage);
-	}
-	
 	public Image getCopy() {
 		BufferedImage CopyImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());  
 		Graphics g = CopyImage.getGraphics();  
