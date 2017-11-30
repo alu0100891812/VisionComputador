@@ -53,6 +53,14 @@ public class Image extends JPanel implements MouseMotionListener {
 		return GrayImage;
 	}
 	
+	public Image ScaleImage(float sX, float sY) {
+		BufferedImage ScaledImage = new BufferedImage(image.getWidth()*sX, image.getHeight()*sY, image.getType());  
+		Graphics g = ScaledImage.getGraphics();  
+		g.drawImage(image, 0, 0, image.getWidth()*sX, image.getHeight()*sY, 0, 0, image.getWidth(), image.getHeight(), null);  
+		g.dispose();
+		return new Image(ScaledImage);
+	}
+	
 	public Image getCopy() {
 		BufferedImage CopyImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());  
 		Graphics g = CopyImage.getGraphics();  
@@ -543,8 +551,8 @@ public class Image extends JPanel implements MouseMotionListener {
 		return result;		
 	}
 	
-	public Image rotateColor(int degres) {				
-		switch(degres) {
+	public Image rotateColor(int degrees) {				
+		switch(degrees) {
 		case 90:
 			Image result = new Image(new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_INT_RGB));
 			BufferedImage buffer = result.getBufferedImage();
@@ -576,34 +584,33 @@ public class Image extends JPanel implements MouseMotionListener {
 		return null;
 	}
 	
-	public Image rotateGray(int degres) {
+	public Image rotateGray(int degrees) {
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		int[] vResult = new int[vImg.length];
-		switch(degres) {
+		switch(degrees) {
 		case 90:
-			Image result = new Image(new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_INT_RGB));
+			Image result = new Image(new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_BYTE_GRAY));
 			for(int i=0; i<image.getHeight(); i++) {
 				for(int j=0; j<image.getWidth(); j++) {
-					buffer.setRGB(i, image.getWidth()-j-1, image.getRGB(j, i));
-					vResult[(image.getWidth()-j-1)] = vImg[(i*image.getWidth())+j];
+					vResult[i+((image.getWidth()-j-1)*image.getHeight())] = vImg[(i*image.getWidth())+j];
 				}
 			}
 			result.getBufferedImage().getRaster().setPixels(0, 0, image.getHeight(), image.getWidth(), vResult);
 			return result;
 		case 180:
-			result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB));
+			result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
 			for(int i=0; i<image.getHeight(); i++) {
 				for(int j=0; j<image.getWidth(); j++) {
-					buffer.setRGB((image.getWidth()-j-1), (image.getHeight()-i-1), image.getRGB(j, i));
+					vResult[((image.getHeight()-i)*image.getWidth())-j-1] = vImg[(i*image.getWidth())+j];
 				}
 			}				
-			result.getBufferedImage().getRaster().setPixels(0, 0, image.getHeight(), image.getWidth(), vResult);
+			result.getBufferedImage().getRaster().setPixels(0, 0, image.getWidth(), image.getHeight(), vResult);
 			return result;
 		case 270:
-			result = new Image(new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_INT_RGB));
+			result = new Image(new BufferedImage(image.getHeight(), image.getWidth(), BufferedImage.TYPE_BYTE_GRAY));
 			for(int i=0; i<image.getHeight(); i++) {
 				for(int j=0; j<image.getWidth(); j++) {
-					buffer.setRGB((image.getHeight()-i-1), j, image.getRGB(j, i));
+					vResult[(image.getHeight()-i-1)+(j*image.getHeight())] = vImg[(i*image.getWidth())+j];
 				}
 			}
 			result.getBufferedImage().getRaster().setPixels(0, 0, image.getHeight(), image.getWidth(), vResult);

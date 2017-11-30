@@ -147,22 +147,32 @@ public class Window {
 	    JMenuItem FlipVerticalItem = new JMenuItem("Flip Vertical", KeyEvent.VK_V);
 	    FlipVerticalItem.setIcon(new ImageIcon("flipVertical.png"));
 	    setUpFlipVertical(FlipVerticalItem);
+	    FlipVerticalItem.setEnabled(false);
 	    imageMenu.add(FlipVerticalItem);
 	    
 	    JMenuItem FlipHorizontalItem = new JMenuItem("Flip Horizontal", KeyEvent.VK_H);
 	    FlipHorizontalItem.setIcon(new ImageIcon("flipHorizontal.png"));
 	    setUpFlipHorizontal(FlipHorizontalItem);
+	    FlipHorizontalItem.setEnabled(false);
 	    imageMenu.add(FlipHorizontalItem);
 	    
-	    JMenuItem TransposeItem = new JMenuItem("Transpose", KeyEvent.VK_H);
+	    JMenuItem TransposeItem = new JMenuItem("Transpose", KeyEvent.VK_T);
 	    TransposeItem.setIcon(new ImageIcon("transpose.png"));
 	    setUpTranspose(TransposeItem);
+	    TransposeItem.setEnabled(false);
 	    imageMenu.add(TransposeItem);
 	    
-	    JMenuItem rotateItem = new JMenuItem("Rotate", KeyEvent.VK_H);
-	    rotateItem.setIcon(new ImageIcon("rotate.png"));
-	    setUpRotate(rotateItem);
-	    imageMenu.add(rotateItem);
+	    JMenuItem RotateItem = new JMenuItem("Rotate", KeyEvent.VK_R);
+	    RotateItem.setIcon(new ImageIcon("rotate.png"));
+	    setUpRotate(RotateItem);
+	    RotateItem.setEnabled(false);
+	    imageMenu.add(RotateItem);
+	    
+	    JMenuItem ScaleItem = new JMenuItem("Scale", KeyEvent.VK_S);
+	    ScaleItem.setIcon(new ImageIcon("rotate.png"));
+	    setUpScale(ScaleItem);
+	    ScaleItem.setEnabled(false);
+	    imageMenu.add(ScaleItem);
 	    
 	    JMenuItem scaleItem = new JMenuItem("Scale", KeyEvent.VK_S);
 	    scaleItem.setIcon(new ImageIcon("rotate.png"));
@@ -174,8 +184,9 @@ public class Window {
 	    menuBar.add(viewMenu);
 	    
 	    JMenuItem MultipleViewItem = new JMenuItem("Multiple Images", KeyEvent.VK_M);
-	    MultipleViewItem.setIcon(new ImageIcon("multipleImages22.png"));
+	    MultipleViewItem.setIcon(new ImageIcon("multipleImages.png"));
 	    setUpMultipleView(MultipleViewItem);
+	    MultipleViewItem.setEnabled(false);
 	    viewMenu.add(MultipleViewItem);
 	    
 	    frame.setJMenuBar(menuBar);
@@ -235,6 +246,12 @@ public class Window {
 							tabs.addImageTab(tabName, new ImageTab(res, res.getBufferedImage(), file.getName(), false), button);
 						}
 						JMenuItem[] items = menuBar.getMenuItems("Edit");
+						for(JMenuItem item : items)
+							item.setEnabled(true);
+						items = menuBar.getMenuItems("View");
+						for(JMenuItem item : items)
+							item.setEnabled(true);
+						items = menuBar.getMenuItems("Image");
 						for(JMenuItem item : items)
 							item.setEnabled(true);
 					} catch (IOException e) {
@@ -965,6 +982,7 @@ public class Window {
 						item.setEnabled(false);
 		    		items = menuBar.getMenuItems("View");
 		    		items[0].setIcon(new ImageIcon("singleImage.png"));
+		    		items[0].setMnemonic(KeyEvent.VK_S);
 		    		items[0].setText("Single Image");
 		    		frame.setLayout(new GridBagLayout());
 		    		
@@ -1011,6 +1029,7 @@ public class Window {
 		    		JButton button = new JButton();
 					copy.addImageTab(tabName, new ImageTab(new Image(new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY)), new BufferedImage(2,2,BufferedImage.TYPE_BYTE_GRAY), tabName, true), button);
 					copy.remove(tabName);
+					copy.repaint();
 	    		}else {
 		    		tabs.toogleVisibilityInfo();
 		    		JMenuItem[] items = menuBar.getMenuItems("Edit");
@@ -1021,6 +1040,7 @@ public class Window {
 						item.setEnabled(true);
 		    		items = menuBar.getMenuItems("View");
 		    		items[0].setIcon(new ImageIcon("multipleImages.png"));
+		    		items[0].setMnemonic(KeyEvent.VK_M);
 		    		items[0].setText("Multiple Images");
 		    		frame.setLayout(new GridBagLayout());
 		    		
@@ -1172,31 +1192,84 @@ public class Window {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image original = getSelectedImage();
-	    		Image result;
-	    		if(original.getBufferedImage().getType() >= 10) {
-	    			result = original.rotateColor(270);
-	    		}else {
-	    			result = original.rotateGray(270);
-	    		}
-	    		if(result != null) {
-		    		JButton button = new JButton();
-					String tabName = tabs.getName(original) + " - Rotated Image";
-					button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
-						}
-					});
-					if(result.getBufferedImage().getType() >= 10) {
-						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
-					}else {
-						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+	    		RotationFrame RFrame = new RotationFrame("Select the degrees to rotate");
+				RFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				RFrame.setLocationRelativeTo(null);
+				RFrame.setVisible(true);
+				RFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image result;
+	    				RFrame.setVisible(false);
+		    	    	RFrame.dispose();
+	    				int degrees = RFrame.getData();
+	    				if(original.getBufferedImage().getType() >= 10) {
+	    	    			result = original.rotateGray(degrees);
+	    	    		}else {
+	    	    			result = original.rotateColor(degrees);
+	    	    		}
+	    	    		if(result != null) {
+	    		    		JButton button = new JButton();
+	    					String tabName = tabs.getName(original) + " - Rotated Image";
+	    					button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							tabs.remove(tabName);
+	    						}
+	    					});
+	    					if(result.getBufferedImage().getType() >= 10) {
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    					}else {
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+	    					}
+	    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				RFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image result;
+					    	RFrame.setVisible(false);
+			    	    	RFrame.dispose();
+					    	int degrees = RFrame.getData();
+		    				if(original.getBufferedImage().getType() >= 10) {
+		    	    			result = original.rotateGray(degrees);
+		    	    		}else {
+		    	    			result = original.rotateColor(degrees);
+		    	    		}
+		    	    		if(result != null) {
+		    		    		JButton button = new JButton();
+		    					String tabName = tabs.getName(original) + " - Rotated Image";
+		    					button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							tabs.remove(tabName);
+		    						}
+		    					});
+		    					if(result.getBufferedImage().getType() >= 10) {
+		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    					}else {
+		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+		    					}
+		    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    	    		}
+					    }
 					}
-					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
-	    		}else {
-					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
-	    					"Error", JOptionPane.ERROR_MESSAGE);
-				}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
 	    	}
 		});
 	}
@@ -1206,31 +1279,76 @@ public class Window {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image original = getSelectedImage();
-	    		Image result;
-	    		if(original.getBufferedImage().getType() >= 10) {
-	    			result = original.scaleVMPGray((float)1.0,(float)2.0);
-	    		}else {
-	    			result = original.scaleVMPColor((float)1.5, (float)1.0);;
-	    		}
-	    		if(result != null) {
-		    		JButton button = new JButton();
-					String tabName = tabs.getName(original) + " - Scaled Image";
-					button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
-						}
-					});
-					if(result.getBufferedImage().getType() >= 10) {
-						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
-					}else {
-						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+	    		ScaleFrame SFrame = new ScaleFrame("Select the percentages to scale");
+				SFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				SFrame.setLocationRelativeTo(null);
+				SFrame.setVisible(true);
+				SFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image result;
+	    				SFrame.setVisible(false);
+		    	    	SFrame.dispose();
+	    				int[] scale = SFrame.getData();
+	    				result = original.ScaleImage((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+	    	    		if(result != null) {
+	    		    		JButton button = new JButton();
+	    					String tabName = tabs.getName(original) + " - Scaled Image";
+	    					button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							tabs.remove(tabName);
+	    						}
+	    					});
+	    					if(result.getBufferedImage().getType() >= 10) {
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    					}else {
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+	    					}
+	    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				SFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image result;
+		    				SFrame.setVisible(false);
+			    	    	SFrame.dispose();
+		    				int[] scale = SFrame.getData();
+		    				result = original.ScaleImage(scale[0]/100, scale[1]/100);
+		    	    		if(result != null) {
+		    		    		JButton button = new JButton();
+		    					String tabName = tabs.getName(original) + " - Scaled Image";
+		    					button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							tabs.remove(tabName);
+		    						}
+		    					});
+		    					if(result.getBufferedImage().getType() >= 10) {
+		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    					}else {
+		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+		    					}
+		    					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+					    }
 					}
-					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
-	    		}else {
-					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
-	    					"Error", JOptionPane.ERROR_MESSAGE);
-				}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
 	    	}
 		});
 	}
