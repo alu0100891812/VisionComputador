@@ -611,4 +611,40 @@ public class Image extends JPanel implements MouseMotionListener {
 		}				
 		return null;	
 	}
+	
+	public Image scaleVMPColor(float factorX, float factorY) {
+		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+		for(int i=0;i<scaledImg.getHeight();i++) {
+			for(int j=0;j<scaledImg.getWidth();j++) {
+				scaledImg.setRGB(j,i,image.getRGB((int)(j/factorX), (int)(i/factorY)));
+			}
+		}
+		return new Image(scaledImg);
+	}
+	
+	public Image scaleVMPGray(float factorX, float factorY) {
+		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), BufferedImage.TYPE_BYTE_GRAY);
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vScaledImg = new int[scaledImg.getWidth()*scaledImg.getHeight()];
+		for(int i=0;i<scaledImg.getHeight();i++) {
+			for(int j=0;j<scaledImg.getWidth();j++) {
+				int index1 = i*scaledImg.getWidth() + j;
+				int index2 = (int)(i/factorY)*image.getWidth() + (int)(j/factorX);
+				int col = vImg[index2] & 0xFF;
+				vScaledImg[index1] = col;
+			}
+		}
+		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
+		return new Image(scaledImg);
+	}
+	
+	public Image scaleBilinearColor(float factorX, float factorY) {
+		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+		for(int i=0;i<scaledImg.getHeight();i++) {
+			for(int j=0;j<scaledImg.getWidth();j++) {
+				
+			}
+		}
+		return new Image(scaledImg);
+	}
 }

@@ -163,6 +163,11 @@ public class Window {
 	    rotateItem.setIcon(new ImageIcon("rotate.png"));
 	    setUpRotate(rotateItem);
 	    imageMenu.add(rotateItem);
+	    
+	    JMenuItem scaleItem = new JMenuItem("Scale", KeyEvent.VK_S);
+	    scaleItem.setIcon(new ImageIcon("rotate.png"));
+	    setUpScale(scaleItem);
+	    imageMenu.add(scaleItem);
         
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
@@ -1190,6 +1195,40 @@ public class Window {
 					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
 	    		}else {
 					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+	    	}
+		});
+	}
+	
+	private void setUpScale(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		Image result;
+	    		if(original.getBufferedImage().getType() >= 10) {
+	    			result = original.scaleVMPGray((float)1.0,(float)2.0);
+	    		}else {
+	    			result = original.scaleVMPColor((float)1.5, (float)1.0);;
+	    		}
+	    		if(result != null) {
+		    		JButton button = new JButton();
+					String tabName = tabs.getName(original) + " - Scaled Image";
+					button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							tabs.remove(tabName);
+						}
+					});
+					if(result.getBufferedImage().getType() >= 10) {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+					}else {
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+					}
+					addToSaveItem(tabName, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 	    					"Error", JOptionPane.ERROR_MESSAGE);
 				}
 	    	}
