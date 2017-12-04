@@ -611,39 +611,114 @@ public class Image extends JPanel implements MouseMotionListener {
 		return null;	
 	}
 	
-	public Image scaleVMPColor(float factorX, float factorY) {
-		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+	public Image scaleVMPColor(float fcX, float fcY, int percen) {
+		float factorX, factorY;
+		BufferedImage scaledImg;
+		if(percen == 0) {
+			factorX = fcX/((float)100);
+			factorY = fcY/((float)100);
+			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+		}else {
+			factorX = fcX/((float)image.getWidth());
+			factorY = fcY/((float)image.getHeight());
+			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), image.getType());
+		}		
 		for(int i=0;i<scaledImg.getHeight();i++) {
 			for(int j=0;j<scaledImg.getWidth();j++) {
-				scaledImg.setRGB(j,i,image.getRGB((int)(j/factorX), (int)(i/factorY)));
+				scaledImg.setRGB(j,i,image.getRGB((int)((j+0.5)/factorX), (int)((i+0.5)/factorY)));
 			}
 		}
 		return new Image(scaledImg);
 	}
 	
-	public Image scaleVMPGray(float factorX, float factorY) {
-		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), BufferedImage.TYPE_BYTE_GRAY);
+	public Image scaleVMPGray(float fcX, float fcY, int percen) {
+		float factorX, factorY;
+		BufferedImage scaledImg;
+		if(percen == 0) {
+			factorX = fcX/((float)100);
+			factorY = fcY/((float)100);
+			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), BufferedImage.TYPE_BYTE_GRAY);
+		}else {
+			factorX = fcX/((float)image.getWidth());
+			factorY = fcY/((float)image.getHeight());
+			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), BufferedImage.TYPE_BYTE_GRAY);
+		}
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		int[] vScaledImg = new int[scaledImg.getWidth()*scaledImg.getHeight()];
 		for(int i=0;i<scaledImg.getHeight();i++) {
 			for(int j=0;j<scaledImg.getWidth();j++) {
-				int index1 = i*scaledImg.getWidth() + j;
-				int index2 = (int)(i/factorY)*image.getWidth() + (int)(j/factorX);
-				int col = vImg[index2] & 0xFF;
-				vScaledImg[index1] = col;
+				vScaledImg[i*scaledImg.getWidth() + j] = vImg[(int)((i+0.5)/factorY)*image.getWidth() + (int)((j+0.5)/factorX)] & 0xFF;
 			}
 		}
 		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
 		return new Image(scaledImg);
 	}
 	
-	public Image scaleBilinearColor(float factorX, float factorY) {
-		BufferedImage scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+	public Image scaleBilinearColor(float fcX, float fcY, int percen) {
+		float factorX, factorY;
+		BufferedImage scaledImg;
+		if(percen == 0) {
+			factorX = fcX/((float)100);
+			factorY = fcY/((float)100);
+			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
+		}else {
+			factorX = fcX/((float)image.getWidth());
+			factorY = fcY/((float)image.getHeight());
+			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), image.getType());
+		}
 		for(int i=0;i<scaledImg.getHeight();i++) {
 			for(int j=0;j<scaledImg.getWidth();j++) {
-				
+				int x = (int)((j+0.5)/factorX);
+				int y = (int)((i+0.5)/factorY);
+				float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
+				float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
+				int A = image.getRGB(x==0?x:x-1, y==0?y:y-1);
+				int Ar = (A>>16) & 0xFF, Ag = (A>>8) & 0xFF, Ab = A & 0xFF;
+				int B = image.getRGB(x, y==0?y:y-1);
+				int Br = (B>>16) & 0xFF, Bg = (B>>8) & 0xFF, Bb = B & 0xFF;
+				int C = image.getRGB(x==0?x:x-1, y);
+				int Cr = (C>>16) & 0xFF, Cg = (C>>8) & 0xFF, Cb = C & 0xFF;
+				int D = image.getRGB(x, y);
+				int Dr = (D>>16) & 0xFF, Dg = (D>>8) & 0xFF, Db = D & 0xFF;
+				int resColR = (int)(Cr+((Dr-Cr)*p)+((Ar-Cr)*q)+((Br+Cr-Ar-Dr)*p*q));
+				int resColG = (int)(Cg+((Dg-Cg)*p)+((Ag-Cg)*q)+((Bg+Cg-Ag-Dg)*p*q));
+				int resColB = (int)(Cb+((Db-Cb)*p)+((Ab-Cb)*q)+((Bb+Cb-Ab-Db)*p*q));
+				int rgb = resColR; rgb = (rgb << 8) + resColG;	rgb = (rgb << 8) + resColB;
+				scaledImg.setRGB(j,i,rgb);
 			}
 		}
+		return new Image(scaledImg);
+	}
+	
+	public Image scaleBilinearGray(float fcX, float fcY, int percen) {
+		float factorX, factorY;
+		BufferedImage scaledImg;
+		if(percen == 0) {
+			factorX = fcX/((float)100);
+			factorY = fcY/((float)100);
+			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), BufferedImage.TYPE_BYTE_GRAY);
+		}else {
+			factorX = fcX/((float)image.getWidth());
+			factorY = fcY/((float)image.getHeight());
+			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), BufferedImage.TYPE_BYTE_GRAY);
+		}
+		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
+		int[] vScaledImg = new int[scaledImg.getWidth()*scaledImg.getHeight()];
+		for(int i=0;i<scaledImg.getHeight();i++) {
+			for(int j=0;j<scaledImg.getWidth();j++) {
+				int x = (int)((j+0.5)/factorX);
+				int y = (int)((i+0.5)/factorY);
+				float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
+				float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
+				int A = vImg[(y==0?y:y-1)*image.getWidth() + (x==0?x:x-1)] & 0xFF;
+				int B = vImg[(y==0?y:y-1)*image.getWidth() + x] & 0xFF;
+				int C = vImg[y*image.getWidth() + (x==0?x:x-1)] & 0xFF;
+				int D = vImg[y*image.getWidth() + x] & 0xFF;
+				int resCol = (int)(C+((D-C)*p)+((A-C)*q)+((B+C-A-D)*p*q));
+				vScaledImg[i*scaledImg.getWidth() + j] = resCol;
+			}
+		}
+		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
 		return new Image(scaledImg);
 	}
 }

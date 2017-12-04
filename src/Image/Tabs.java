@@ -49,36 +49,43 @@ public class Tabs extends JTabbedPane {
 		return copy;
 	}
 	
-	public void remove(String name) {
+	public boolean remove(String name) {
+		if(this.getTabCount() > 0) {
+			if(tabNames != null) {
+				for(String tab : tabNames) {
+					if(tab.equalsIgnoreCase(name)) {
+						tabNames.remove(tabNames.indexOf(tab));
+						break;
+					}
+				}
+			}
+			if(images != null) {
+				for(Pair<ImageTab, String> image : images) {
+					if(image.getRight().equalsIgnoreCase(name)) {
+						images.remove(images.indexOf(image));
+						break;
+					}
+				}
+			}
+			if(histograms != null) {
+				for(Pair<HistogramTab, String> histogram : histograms) {
+					if(histogram.getRight().equalsIgnoreCase(name)) {
+						histograms.remove(histograms.indexOf(histogram));
+						break;
+					}
+				}		
+			}
+		}
 		for(int i=0; i<this.getTabCount(); i++) {
 			if(this.getTitleAt(i).equalsIgnoreCase(name)) {
 				this.remove(i);
 				break;
 			}
 		}
-		if(tabNames != null) {
-			for(String tab : tabNames) {
-				if(tab.equalsIgnoreCase(name)) {
-					tabNames.remove(tabNames.indexOf(tab));
-					break;
-				}
-			}
-		}
-		if(images != null) {
-			for(Pair<ImageTab, String> image : images) {
-				if(image.getRight().equalsIgnoreCase(name)) {
-					images.remove(images.indexOf(image));
-					break;
-				}
-			}
-		}
-		if(histograms != null) {
-			for(Pair<HistogramTab, String> histogram : histograms) {
-				if(histogram.getRight().equalsIgnoreCase(name)) {
-					histograms.remove(histograms.indexOf(histogram));
-					break;
-				}
-			}		
+		if(this.getTabCount() == 0) {
+			return false;
+		}else {
+			return true;
 		}
 	}
 	

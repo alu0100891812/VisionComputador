@@ -225,13 +225,17 @@ public class Window {
 						button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								JMenuItem[] items = menuBar.getMenuItems("Edit");
-								tabs.removeTabs(tabName);
-								if(!tabs.contains("Original Image")) {
+								if(!tabs.remove(tabName)) {
+									JMenuItem[] items = menuBar.getMenuItems("Edit");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("Image");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("View");
 									for(JMenuItem item : items)
 										item.setEnabled(false);
 								}
-								tabs.remove(tabName);
 							}
 						});
 						Image res = new Image(ImageIO.read(file));
@@ -273,7 +277,17 @@ public class Window {
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+							}
 							menuBar.removeFromSave(tabName);
 						}
 					});
@@ -302,7 +316,17 @@ public class Window {
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						tabs.remove(tabName);
+						if(!tabs.remove(tabName)) {
+							JMenuItem[] items = menuBar.getMenuItems("Edit");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("Image");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("View");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+						}
 						menuBar.removeFromSave(tabName);
 					}
 				});
@@ -327,7 +351,17 @@ public class Window {
 				button.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						tabs.remove(tabName);
+						if(!tabs.remove(tabName)) {
+							JMenuItem[] items = menuBar.getMenuItems("Edit");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("Image");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("View");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+						}
 						menuBar.removeFromSave(tabName);
 					}
 				});
@@ -353,7 +387,17 @@ public class Window {
                 button.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        tabs.remove(tabName);
+                    	if(!tabs.remove(tabName)) {
+							JMenuItem[] items = menuBar.getMenuItems("Edit");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("Image");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("View");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+						}
 						menuBar.removeFromSave(tabName);
                     }
                 });
@@ -392,7 +436,17 @@ public class Window {
 		                button.addActionListener(new ActionListener() {
 		                    @Override
 		                    public void actionPerformed(ActionEvent e) {
-		                        tabs.remove(tabName);
+		                    	if(!tabs.remove(tabName)) {
+									JMenuItem[] items = menuBar.getMenuItems("Edit");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("Image");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("View");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
 								menuBar.removeFromSave(tabName);
 		                    }
 		                });
@@ -450,7 +504,17 @@ public class Window {
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									tabs.remove(tabName);
+									if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 								}
 							});
@@ -494,7 +558,17 @@ public class Window {
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										tabs.remove(tabName);
+										if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 									}
 								});
@@ -544,7 +618,17 @@ public class Window {
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									tabs.remove(tabName);
+									if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 								}
 							});
@@ -574,7 +658,17 @@ public class Window {
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										tabs.remove(tabName);
+										if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 									}
 								});
@@ -624,7 +718,17 @@ public class Window {
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									tabs.remove(tabName);
+									if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 								}
 							});
@@ -654,7 +758,17 @@ public class Window {
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										tabs.remove(tabName);
+										if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 									}
 								});
@@ -705,7 +819,17 @@ public class Window {
 						button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								tabs.remove(tabName);
+								if(!tabs.remove(tabName)) {
+									JMenuItem[] items = menuBar.getMenuItems("Edit");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("Image");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("View");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
 								menuBar.removeFromSave(tabName);
 							}
 						});						
@@ -746,7 +870,17 @@ public class Window {
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+							}
 							menuBar.removeFromSave(tabName);
 						}
 					});			
@@ -799,7 +933,17 @@ public class Window {
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									tabs.remove(tabName);
+									if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 								}
 							});
@@ -828,7 +972,17 @@ public class Window {
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										tabs.remove(tabName);
+										if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 									}
 								});
@@ -877,7 +1031,17 @@ public class Window {
 							button.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									tabs.remove(tabName);
+									if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 								}
 							});
@@ -907,7 +1071,17 @@ public class Window {
 								button.addActionListener(new ActionListener() {
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										tabs.remove(tabName);
+										if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 									}
 								});
@@ -1114,7 +1288,17 @@ public class Window {
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+							}
 							menuBar.removeFromSave(tabName);
 						}
 					});
@@ -1149,7 +1333,17 @@ public class Window {
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+							}
 							menuBar.removeFromSave(tabName);
 						}
 					});
@@ -1184,7 +1378,17 @@ public class Window {
 					button.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							tabs.remove(tabName);
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+							}
 							menuBar.removeFromSave(tabName);
 						}
 					});
@@ -1229,7 +1433,17 @@ public class Window {
 	    					button.addActionListener(new ActionListener() {
 	    						@Override
 	    						public void actionPerformed(ActionEvent e) {
-	    							tabs.remove(tabName);
+	    							if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
 									menuBar.removeFromSave(tabName);
 	    						}
 	    					});
@@ -1264,7 +1478,17 @@ public class Window {
 		    					button.addActionListener(new ActionListener() {
 		    						@Override
 		    						public void actionPerformed(ActionEvent e) {
-		    							tabs.remove(tabName);
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
 										menuBar.removeFromSave(tabName);
 		    						}
 		    					});
@@ -1296,38 +1520,80 @@ public class Window {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image original = getSelectedImage();
-	    		ScaleFrame SFrame = new ScaleFrame("Select the percentages to scale");
+	    		ScaleFrame SFrame = new ScaleFrame("Select the percentages to scale", original.getImageWidth(), original.getImageHeight());
 				SFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				SFrame.setLocationRelativeTo(null);
 				SFrame.setVisible(true);
 				SFrame.btnAceptar.addMouseListener(new MouseAdapter() {
 	    			@Override
 	    			public void mouseClicked(MouseEvent arg0) {
-	    				Image result;
+	    				Image result = null;
 	    				SFrame.setVisible(false);
 		    	    	SFrame.dispose();
 	    				int[] scale = SFrame.getData();
-	    				if(original.getBufferedImage().getType() >= 10) {
-	    					result = original.scaleVMPGray((float)scale[0]/(float)100, (float)scale[1]/(float)100);
-	    				}else {	    					
-	    					result = original.scaleVMPColor((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+	    				if(scale[2] == 0) {
+		    				if(original.getBufferedImage().getType() >= 10) {
+		    					result = original.scaleVMPGray(scale[0], scale[1], scale[3]);
+		    				}else {	    					
+		    					result = original.scaleVMPColor(scale[0], scale[1], scale[3]);
+		    				}
+	    				}else if(scale[2] == 1){
+	    					if(original.getBufferedImage().getType() >= 10) {
+		    					result = original.scaleBilinearGray(scale[0], scale[1], scale[3]);
+		    				}else {	    					
+		    					result = original.scaleBilinearColor(scale[0], scale[1], scale[3]);
+		    				}
 	    				}
 	    	    		if(result != null) {
 	    		    		JButton button = new JButton();
-	    					String tabName = tabs.getName(original) + " - Scaled Image";
-	    					button.addActionListener(new ActionListener() {
-	    						@Override
-	    						public void actionPerformed(ActionEvent e) {
-	    							tabs.remove(tabName);
-									menuBar.removeFromSave(tabName);
-	    						}
-	    					});
+	    		    		String tabNameOut = tabs.getName(original) + " - Scaled Image";
+	    		    		if(scale[2] == 0) {
+	    		    			String tabName = tabs.getName(original) + " - VMP Scaled Image";
+	    		    			tabNameOut = tabs.getName(original) + " - VMP Scaled Image";
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+		    					});
+	    		    		}else if(scale[2] == 1) {
+	    		    			String tabName = tabs.getName(original) + " - Bilineal Scaled Image";
+	    		    			tabNameOut = tabs.getName(original) + " - Bilineal Scaled Image";
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+		    					});
+	    		    		}
 	    					if(result.getBufferedImage().getType() >= 10) {
-	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, true), button);
 	    					}else {
-	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
 	    					}
-	    					addToSaveItem(tabName, new ImageIcon("scale.png"), KeyEvent.VK_R);
+	    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
 	    	    		}else {
 	    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 	    	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -1338,31 +1604,73 @@ public class Window {
 					@Override
 					public void keyPressed(KeyEvent e) {
 					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					    	Image result;
+					    	Image result = null;
 		    				SFrame.setVisible(false);
 			    	    	SFrame.dispose();
 		    				int[] scale = SFrame.getData();
-		    				if(original.getBufferedImage().getType() >= 10) {
-		    					result = original.scaleVMPGray((float)scale[0]/(float)100, (float)scale[1]/(float)100);
-		    				}else {	    					
-		    					result = original.scaleVMPColor((float)scale[0]/(float)100, (float)scale[1]/(float)100);
+		    				if(scale[2] == 0) {
+			    				if(original.getBufferedImage().getType() >= 10) {
+			    					result = original.scaleVMPGray(scale[0], scale[1], scale[3]);
+			    				}else {	    					
+			    					result = original.scaleVMPColor(scale[0], scale[1], scale[3]);
+			    				}
+		    				}else if(scale[2] == 1){
+		    					if(original.getBufferedImage().getType() >= 10) {
+			    					result = original.scaleBilinearGray(scale[0], scale[1], scale[3]);
+			    				}else {	    					
+			    					result = original.scaleBilinearColor(scale[0], scale[1], scale[3]);
+			    				}
 		    				}
 		    	    		if(result != null) {
 		    		    		JButton button = new JButton();
-		    					String tabName = tabs.getName(original) + " - Scaled Image";
-		    					button.addActionListener(new ActionListener() {
-		    						@Override
-		    						public void actionPerformed(ActionEvent e) {
-		    							tabs.remove(tabName);
-										menuBar.removeFromSave(tabName);
-		    						}
-		    					});
+		    		    		String tabNameOut = tabs.getName(original) + " - Scaled Image";
+		    		    		if(scale[2] == 0) {
+		    		    			String tabName = tabs.getName(original) + " - VMP Scaled Image";
+		    		    			tabNameOut = tabs.getName(original) + " - VMP Scaled Image";
+		    		    			button.addActionListener(new ActionListener() {
+			    						@Override
+			    						public void actionPerformed(ActionEvent e) {
+			    							if(!tabs.remove(tabName)) {
+												JMenuItem[] items = menuBar.getMenuItems("Edit");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("Image");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("View");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+											}
+											menuBar.removeFromSave(tabName);
+			    						}
+			    					});
+		    		    		}else if(scale[2] == 1) {
+		    		    			String tabName = tabs.getName(original) + " - Bilineal Scaled Image";
+		    		    			tabNameOut = tabs.getName(original) + " - Bilineal Scaled Image";
+		    		    			button.addActionListener(new ActionListener() {
+			    						@Override
+			    						public void actionPerformed(ActionEvent e) {
+			    							if(!tabs.remove(tabName)) {
+												JMenuItem[] items = menuBar.getMenuItems("Edit");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("Image");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("View");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+											}
+											menuBar.removeFromSave(tabName);
+			    						}
+			    					});
+		    		    		}
 		    					if(result.getBufferedImage().getType() >= 10) {
-		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, true), button);
 		    					}else {
-		    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, false), button);
+		    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
 		    					}
-		    					addToSaveItem(tabName, new ImageIcon("scale.png"), KeyEvent.VK_R);
+		    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
 		    	    		}else {
 		    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 		    	    					"Error", JOptionPane.ERROR_MESSAGE);
