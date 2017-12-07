@@ -1,6 +1,5 @@
 package Image;
 
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,6 +11,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JSlider;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.Font;

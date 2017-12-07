@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
+import java.text.ParseException;
 
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
@@ -74,6 +75,11 @@ public class CutImageFrame extends JFrame {
 		spinner_2.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner_2.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				double prev = ((Double)((JSpinner)panel_1.getComponent(1)).getValue()).doubleValue();
 				if(((Double)((JSpinner)panel_1.getComponent(5)).getValue()).doubleValue() < prev) {	
 					spinner_2.setModel(new SpinnerNumberModel(prev, prev, image.getImageWidth(), 1.0));
@@ -90,6 +96,11 @@ public class CutImageFrame extends JFrame {
 		spinner_3.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner_3.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				double prev = ((Double)((JSpinner)panel_1.getComponent(3)).getValue()).doubleValue();
 				if(((Double)((JSpinner)panel_1.getComponent(7)).getValue()).doubleValue() < prev) {		
 					spinner_3.setModel(new SpinnerNumberModel(prev, prev, image.getImageHeight(), 1.0));
@@ -120,6 +131,14 @@ public class CutImageFrame extends JFrame {
 	}
 	
 	public Image getCuttedImage() {
+		try {
+			spinner.commitEdit();
+			spinner_1.commitEdit();
+			spinner_2.commitEdit();
+			spinner_3.commitEdit();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		BufferedImage cutted = new BufferedImage(((Double)spinner_2.getValue()).intValue() - ((Double)spinner.getValue()).intValue(), ((Double)spinner_3.getValue()).intValue() - ((Double)spinner_1.getValue()).intValue(), BufferedImage.TYPE_BYTE_GRAY);
 		Graphics g = cutted.getGraphics();  
 		g.drawImage(sourceImage.getBufferedImage(), 0, 0, cutted.getWidth(), cutted.getHeight(), ((Double)spinner.getValue()).intValue(), ((Double)spinner_1.getValue()).intValue(), ((Double)spinner_2.getValue()).intValue(), ((Double)spinner_3.getValue()).intValue(), null); 

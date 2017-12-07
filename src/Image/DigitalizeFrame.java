@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.text.ParseException;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.JButton;
@@ -57,6 +59,11 @@ public class DigitalizeFrame extends JFrame {
 		spinner.addChangeListener(new ChangeListener() {			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				pps = ((Double)spinner.getValue()).intValue();
 			}
 		});
@@ -72,6 +79,11 @@ public class DigitalizeFrame extends JFrame {
 		spinner_1.addChangeListener(new ChangeListener() {			
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner_1.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				bits = ((Double)spinner_1.getValue()).intValue();
 			}
 		});

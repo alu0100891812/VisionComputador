@@ -14,6 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.ParseException;
 
 public class ThresholdFrame extends JFrame {
 
@@ -49,6 +50,11 @@ public class ThresholdFrame extends JFrame {
 		spinner.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				threshold = ((Double)spinner.getValue()).intValue();
 			}
 		});

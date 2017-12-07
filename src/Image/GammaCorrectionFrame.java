@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.text.ParseException;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -55,6 +56,11 @@ public class GammaCorrectionFrame extends JFrame {
 		spinner.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				try {
+					spinner.commitEdit();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				Object tmp = spinner.getValue();
 				correction = (double)tmp;
 			}

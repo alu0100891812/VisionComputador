@@ -173,7 +173,13 @@ public class Window {
 	    setUpScale(ScaleItem);
 	    ScaleItem.setEnabled(false);
 	    imageMenu.add(ScaleItem);
-	            
+	    
+	    JMenuItem RotationItem = new JMenuItem("Free rotation", KeyEvent.VK_F);
+	    RotationItem.setIcon(new ImageIcon("rotate.png"));
+	    setUpRotation(RotationItem);
+	    RotationItem.setEnabled(false);
+	    imageMenu.add(RotationItem);
+	    
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
 	    menuBar.add(viewMenu);
@@ -1675,6 +1681,79 @@ public class Window {
 		    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 		    	    					"Error", JOptionPane.ERROR_MESSAGE);
 		    				}
+					    }
+					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	private void setUpRotation(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		FreeRotationFrame FRFrame = new FreeRotationFrame("Select the degrees to rotate");
+				FRFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				FRFrame.setLocationRelativeTo(null);
+				FRFrame.setVisible(true);
+				FRFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image result = null;
+	    				FRFrame.setVisible(false);
+		    	    	FRFrame.dispose();
+	    				int degrees = FRFrame.getData();
+	    				if(original.getBufferedImage().getType() >= 10) {
+	    					result = original.rotationColor(degrees);
+	    				}else {	    					
+	    					result = original.rotationColor(degrees);
+	    				}	    				
+	    	    		if(result != null) {
+	    		    		JButton button = new JButton();
+	    		    		String tabNameOut = tabs.getName(original) + " - Scaled Image";
+    		    			String tabName = tabs.getName(original) + " - VMP Scaled Image";
+    		    			tabNameOut = tabs.getName(original) + " - VMP Scaled Image";
+    		    			button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
+									menuBar.removeFromSave(tabName);
+	    						}
+	    					});
+	    					if(result.getBufferedImage().getType() >= 10) {
+	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, true), button);
+	    					}else {
+	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
+	    					}
+	    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				FRFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	
 					    }
 					}
 

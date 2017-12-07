@@ -721,4 +721,45 @@ public class Image extends JPanel implements MouseMotionListener {
 		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
 		return new Image(scaledImg);
 	}
+	
+	public Image rotationColor(int degrees) {
+		double rad = Math.toRadians(degrees);
+		double cos = Math.cos(rad);
+		double sin = Math.sin(rad);
+		double m_cos = Math.cos(-rad);
+		double m_sin = Math.sin(-rad);
+		int[] n_x = new int[4];
+		int[] n_y = new int[4];
+		n_x[0] = 0; n_y[0] = 0;
+		n_x[1] = (int) (((double)(image.getWidth()-1))*cos); 
+		n_y[1] = (int) (((double)(image.getWidth()-1))*sin);
+		n_x[3] = (int) (-((double)(image.getHeight()-1))*sin); 
+		n_y[3] = (int) (((double)(image.getHeight()-1))*cos);
+		n_x[2] = (int) ((((double)(image.getWidth()-1))*cos) - (((double)(image.getHeight()-1))*sin)); 
+		n_y[2] = (int) ((((double)(image.getWidth()-1))*sin) + (((double)(image.getHeight()-1))*cos));
+		int maxX = Integer.MIN_VALUE, minX = Integer.MAX_VALUE;
+		int maxY = Integer.MIN_VALUE, minY = Integer.MAX_VALUE;
+		for(int i=0; i<4; i++) {
+			if(n_x[i] < minX) { minX = n_x[i]; }
+			if(n_y[i] < minY) { minY = n_y[i]; }
+			if(n_x[i] > maxX) { maxX = n_x[i]; }
+			if(n_y[i] > maxY) { maxY = n_y[i]; }
+		}
+		BufferedImage scaledImg = new BufferedImage(maxX-minX+1,maxY-minY+1, image.getType());
+		for(int i=0; i<scaledImg.getWidth(); i++) {
+			for(int j=0; j<scaledImg.getHeight(); j++) {
+				scaledImg.setRGB(i, j, 16777215);
+			}
+		}
+		for(int i=0; i<4; i++) {
+			int x = n_x[i]-minX;
+			int y = n_y[i]-minY;
+			int xn = n_x[(i+1)%4]-minX;
+			int yn = n_y[(i+1)%4]-minY;
+			Graphics g = scaledImg.getGraphics();
+			g.setColor(Color.BLACK);
+			g.drawLine(x, y, xn, yn);
+		}
+		return new Image(scaledImg);
+	}
 }
