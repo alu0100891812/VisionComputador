@@ -611,7 +611,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return null;	
 	}
 	
-	public Image scaleVMPColor(float fcX, float fcY, int percen) {
+	public Image scaleColor(float fcX, float fcY, int percen, int method) {
 		float factorX, factorY;
 		BufferedImage scaledImg;
 		if(percen == 0) {
@@ -623,15 +623,39 @@ public class Image extends JPanel implements MouseMotionListener {
 			factorY = fcY/((float)image.getHeight());
 			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), image.getType());
 		}		
-		for(int i=0;i<scaledImg.getHeight();i++) {
-			for(int j=0;j<scaledImg.getWidth();j++) {
-				scaledImg.setRGB(j,i,image.getRGB((int)((j+0.5)/factorX), (int)((i+0.5)/factorY)));
+		if(method == 0) {
+			for(int i=0;i<scaledImg.getHeight();i++) {
+				for(int j=0;j<scaledImg.getWidth();j++) {
+					scaledImg.setRGB(j,i,image.getRGB((int)((j+0.5)/factorX), (int)((i+0.5)/factorY)));
+				}
+			}
+		}else if(method == 1) {
+			for(int i=0;i<scaledImg.getHeight();i++) {
+				for(int j=0;j<scaledImg.getWidth();j++) {
+					int x = (int)((j+0.5)/factorX);
+					int y = (int)((i+0.5)/factorY);
+					float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
+					float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
+					int A = image.getRGB(x==0?x:x-1, y==0?y:y-1);
+					int Ar = (A>>16) & 0xFF, Ag = (A>>8) & 0xFF, Ab = A & 0xFF;
+					int B = image.getRGB(x, y==0?y:y-1);
+					int Br = (B>>16) & 0xFF, Bg = (B>>8) & 0xFF, Bb = B & 0xFF;
+					int C = image.getRGB(x==0?x:x-1, y);
+					int Cr = (C>>16) & 0xFF, Cg = (C>>8) & 0xFF, Cb = C & 0xFF;
+					int D = image.getRGB(x, y);
+					int Dr = (D>>16) & 0xFF, Dg = (D>>8) & 0xFF, Db = D & 0xFF;
+					int resColR = (int)(Cr+((Dr-Cr)*p)+((Ar-Cr)*q)+((Br+Cr-Ar-Dr)*p*q));
+					int resColG = (int)(Cg+((Dg-Cg)*p)+((Ag-Cg)*q)+((Bg+Cg-Ag-Dg)*p*q));
+					int resColB = (int)(Cb+((Db-Cb)*p)+((Ab-Cb)*q)+((Bb+Cb-Ab-Db)*p*q));
+					int rgb = resColR; rgb = (rgb << 8) + resColG;	rgb = (rgb << 8) + resColB;
+					scaledImg.setRGB(j,i,rgb);
+				}
 			}
 		}
 		return new Image(scaledImg);
 	}
-	
-	public Image scaleVMPGray(float fcX, float fcY, int percen) {
+
+	public Image scaleGray(float fcX, float fcY, int percen, int method) {
 		float factorX, factorY;
 		BufferedImage scaledImg;
 		if(percen == 0) {
@@ -645,84 +669,33 @@ public class Image extends JPanel implements MouseMotionListener {
 		}
 		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
 		int[] vScaledImg = new int[scaledImg.getWidth()*scaledImg.getHeight()];
-		for(int i=0;i<scaledImg.getHeight();i++) {
-			for(int j=0;j<scaledImg.getWidth();j++) {
-				vScaledImg[i*scaledImg.getWidth() + j] = vImg[(int)((i+0.5)/factorY)*image.getWidth() + (int)((j+0.5)/factorX)] & 0xFF;
+		if(method == 0) {
+			for(int i=0;i<scaledImg.getHeight();i++) {
+				for(int j=0;j<scaledImg.getWidth();j++) {
+					vScaledImg[i*scaledImg.getWidth() + j] = vImg[(int)((i+0.5)/factorY)*image.getWidth() + (int)((j+0.5)/factorX)] & 0xFF;
+				}
+			}
+		}else if(method == 1) {
+			for(int i=0;i<scaledImg.getHeight();i++) {
+				for(int j=0;j<scaledImg.getWidth();j++) {
+					int x = (int)((j+0.5)/factorX);
+					int y = (int)((i+0.5)/factorY);
+					float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
+					float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
+					int A = vImg[(y==0?y:y-1)*image.getWidth() + (x==0?x:x-1)] & 0xFF;
+					int B = vImg[(y==0?y:y-1)*image.getWidth() + x] & 0xFF;
+					int C = vImg[y*image.getWidth() + (x==0?x:x-1)] & 0xFF;
+					int D = vImg[y*image.getWidth() + x] & 0xFF;
+					int resCol = (int)(C+((D-C)*p)+((A-C)*q)+((B+C-A-D)*p*q));
+					vScaledImg[i*scaledImg.getWidth() + j] = resCol;
+				}
 			}
 		}
 		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
 		return new Image(scaledImg);
 	}
 	
-	public Image scaleBilinearColor(float fcX, float fcY, int percen) {
-		float factorX, factorY;
-		BufferedImage scaledImg;
-		if(percen == 0) {
-			factorX = fcX/((float)100);
-			factorY = fcY/((float)100);
-			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), image.getType());
-		}else {
-			factorX = fcX/((float)image.getWidth());
-			factorY = fcY/((float)image.getHeight());
-			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), image.getType());
-		}
-		for(int i=0;i<scaledImg.getHeight();i++) {
-			for(int j=0;j<scaledImg.getWidth();j++) {
-				int x = (int)((j+0.5)/factorX);
-				int y = (int)((i+0.5)/factorY);
-				float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
-				float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
-				int A = image.getRGB(x==0?x:x-1, y==0?y:y-1);
-				int Ar = (A>>16) & 0xFF, Ag = (A>>8) & 0xFF, Ab = A & 0xFF;
-				int B = image.getRGB(x, y==0?y:y-1);
-				int Br = (B>>16) & 0xFF, Bg = (B>>8) & 0xFF, Bb = B & 0xFF;
-				int C = image.getRGB(x==0?x:x-1, y);
-				int Cr = (C>>16) & 0xFF, Cg = (C>>8) & 0xFF, Cb = C & 0xFF;
-				int D = image.getRGB(x, y);
-				int Dr = (D>>16) & 0xFF, Dg = (D>>8) & 0xFF, Db = D & 0xFF;
-				int resColR = (int)(Cr+((Dr-Cr)*p)+((Ar-Cr)*q)+((Br+Cr-Ar-Dr)*p*q));
-				int resColG = (int)(Cg+((Dg-Cg)*p)+((Ag-Cg)*q)+((Bg+Cg-Ag-Dg)*p*q));
-				int resColB = (int)(Cb+((Db-Cb)*p)+((Ab-Cb)*q)+((Bb+Cb-Ab-Db)*p*q));
-				int rgb = resColR; rgb = (rgb << 8) + resColG;	rgb = (rgb << 8) + resColB;
-				scaledImg.setRGB(j,i,rgb);
-			}
-		}
-		return new Image(scaledImg);
-	}
-	
-	public Image scaleBilinearGray(float fcX, float fcY, int percen) {
-		float factorX, factorY;
-		BufferedImage scaledImg;
-		if(percen == 0) {
-			factorX = fcX/((float)100);
-			factorY = fcY/((float)100);
-			scaledImg = new BufferedImage((int)(image.getWidth()*factorX),(int)(image.getHeight()*factorY), BufferedImage.TYPE_BYTE_GRAY);
-		}else {
-			factorX = fcX/((float)image.getWidth());
-			factorY = fcY/((float)image.getHeight());
-			scaledImg = new BufferedImage((int)(fcX),(int)(fcY), BufferedImage.TYPE_BYTE_GRAY);
-		}
-		byte[] vImg = ((DataBufferByte)image.getRaster().getDataBuffer()).getData();
-		int[] vScaledImg = new int[scaledImg.getWidth()*scaledImg.getHeight()];
-		for(int i=0;i<scaledImg.getHeight();i++) {
-			for(int j=0;j<scaledImg.getWidth();j++) {
-				int x = (int)((j+0.5)/factorX);
-				int y = (int)((i+0.5)/factorY);
-				float p = (float)(((j+0.5)/factorX) - (int)((j+0.5)/factorX));
-				float q = (float)(((i+0.5)/factorY) - (int)((i+0.5)/factorY));
-				int A = vImg[(y==0?y:y-1)*image.getWidth() + (x==0?x:x-1)] & 0xFF;
-				int B = vImg[(y==0?y:y-1)*image.getWidth() + x] & 0xFF;
-				int C = vImg[y*image.getWidth() + (x==0?x:x-1)] & 0xFF;
-				int D = vImg[y*image.getWidth() + x] & 0xFF;
-				int resCol = (int)(C+((D-C)*p)+((A-C)*q)+((B+C-A-D)*p*q));
-				vScaledImg[i*scaledImg.getWidth() + j] = resCol;
-			}
-		}
-		scaledImg.getRaster().setPixels(0, 0, scaledImg.getWidth(), scaledImg.getHeight(), vScaledImg);
-		return new Image(scaledImg);
-	}
-	
-	public Image rotationColor(int degrees) {
+	public Image rotationColor(int degrees, int method) {
 		double rad = Math.toRadians(degrees);
 		double cos = Math.cos(rad);
 		double sin = Math.sin(rad);
@@ -737,6 +710,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		n_y[3] = (int) (((double)(image.getHeight()-1))*cos);
 		n_x[2] = (int) ((((double)(image.getWidth()-1))*cos) - (((double)(image.getHeight()-1))*sin)); 
 		n_y[2] = (int) ((((double)(image.getWidth()-1))*sin) + (((double)(image.getHeight()-1))*cos));
+		
 		int maxX = Integer.MIN_VALUE, minX = Integer.MAX_VALUE;
 		int maxY = Integer.MIN_VALUE, minY = Integer.MAX_VALUE;
 		for(int i=0; i<4; i++) {
@@ -745,21 +719,86 @@ public class Image extends JPanel implements MouseMotionListener {
 			if(n_x[i] > maxX) { maxX = n_x[i]; }
 			if(n_y[i] > maxY) { maxY = n_y[i]; }
 		}
-		BufferedImage scaledImg = new BufferedImage(maxX-minX+1,maxY-minY+1, image.getType());
-		for(int i=0; i<scaledImg.getWidth(); i++) {
-			for(int j=0; j<scaledImg.getHeight(); j++) {
-				scaledImg.setRGB(i, j, 16777215);
+		BufferedImage rotatedImg = new BufferedImage(maxX-minX+1,maxY-minY+1, image.getType());
+		for(int i=0; i<rotatedImg.getWidth(); i++) {
+			for(int j=0; j<rotatedImg.getHeight(); j++) {
+				rotatedImg.setRGB(i, j, 16777215);
 			}
 		}
-		for(int i=0; i<4; i++) {
-			int x = n_x[i]-minX;
-			int y = n_y[i]-minY;
-			int xn = n_x[(i+1)%4]-minX;
-			int yn = n_y[(i+1)%4]-minY;
-			Graphics g = scaledImg.getGraphics();
-			g.setColor(Color.BLACK);
-			g.drawLine(x, y, xn, yn);
+		if(method == 0) {			
+			for(double i=0; i<image.getWidth(); i++) {
+				for(double j=0; j<image.getHeight(); j++) {
+					int x = (int)(i*cos - j*sin);
+					int y = (int)(i*sin + j*cos);
+					rotatedImg.setRGB(x-minX, y-minY, image.getRGB((int)i,(int)j));
+				}
+			}
+		}else if(method == 1) {
+			for(double i=0; i<rotatedImg.getWidth(); i++) {
+				for(double j=0; j<rotatedImg.getHeight(); j++) {
+					int x = (int)((i+minX)*m_cos - (j+minY)*m_sin);
+					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
+					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
+						rotatedImg.setRGB((int)i, (int)j, image.getRGB(x,y));
+					}
+				}
+			}
 		}
-		return new Image(scaledImg);
+		return new Image(rotatedImg);
+	}
+	
+	public Image rotationGray(int degrees, int method) {
+		double rad = Math.toRadians(degrees);
+		double cos = Math.cos(rad);
+		double sin = Math.sin(rad);
+		double m_cos = Math.cos(-rad);
+		double m_sin = Math.sin(-rad);
+		int[] n_x = new int[4];
+		int[] n_y = new int[4];
+		n_x[0] = 0; n_y[0] = 0;
+		n_x[1] = (int) (((double)(image.getWidth()-1))*cos); 
+		n_y[1] = (int) (((double)(image.getWidth()-1))*sin);
+		n_x[3] = (int) (-((double)(image.getHeight()-1))*sin); 
+		n_y[3] = (int) (((double)(image.getHeight()-1))*cos);
+		n_x[2] = (int) ((((double)(image.getWidth()-1))*cos) - (((double)(image.getHeight()-1))*sin)); 
+		n_y[2] = (int) ((((double)(image.getWidth()-1))*sin) + (((double)(image.getHeight()-1))*cos));
+		
+		int maxX = Integer.MIN_VALUE, minX = Integer.MAX_VALUE;
+		int maxY = Integer.MIN_VALUE, minY = Integer.MAX_VALUE;
+		for(int i=0; i<4; i++) {
+			if(n_x[i] < minX) { minX = n_x[i]; }
+			if(n_y[i] < minY) { minY = n_y[i]; }
+			if(n_x[i] > maxX) { maxX = n_x[i]; }
+			if(n_y[i] > maxY) { maxY = n_y[i]; }
+		}
+		BufferedImage rotatedImg = new BufferedImage(maxX-minX+1,maxY-minY+1, BufferedImage.TYPE_BYTE_GRAY);
+		byte[] vImg = getVector();
+		int[] vResult = new int[rotatedImg.getWidth()*rotatedImg.getHeight()];
+		for(int i=0; i<rotatedImg.getWidth(); i++) {
+			for(int j=0; j<rotatedImg.getHeight(); j++) {
+				vResult[j*rotatedImg.getWidth()+i] = 255;
+			}
+		}
+		if(method == 0) {
+			for(double i=0; i<image.getWidth(); i++) {
+				for(double j=0; j<image.getHeight(); j++) {
+					int x = (int)(i*cos - j*sin);
+					int y = (int)(i*sin + j*cos);
+					vResult[(y-minY)*rotatedImg.getWidth() + (x-minX)] = vImg[(int)(j*image.getWidth()+i)] & 0xFF;
+				}
+			}
+		}else if(method == 1) {
+			for(double i=0; i<rotatedImg.getWidth(); i++) {
+				for(double j=0; j<rotatedImg.getHeight(); j++) {
+					int x = (int)((i+minX)*m_cos - (j+minY)*m_sin);
+					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
+					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
+						vResult[(int)(j*rotatedImg.getWidth() + i)] = vImg[y*image.getWidth()+x] & 0xFF;
+					}
+				}
+			}
+		}
+		rotatedImg.getRaster().setPixels(0, 0, rotatedImg.getWidth(), rotatedImg.getHeight(), vResult);
+		return new Image(rotatedImg);
 	}
 }

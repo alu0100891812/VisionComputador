@@ -1537,18 +1537,10 @@ public class Window {
 	    				SFrame.setVisible(false);
 		    	    	SFrame.dispose();
 	    				int[] scale = SFrame.getData();
-	    				if(scale[2] == 0) {
-		    				if(original.getBufferedImage().getType() >= 10) {
-		    					result = original.scaleVMPGray(scale[0], scale[1], scale[3]);
-		    				}else {	    					
-		    					result = original.scaleVMPColor(scale[0], scale[1], scale[3]);
-		    				}
-	    				}else if(scale[2] == 1){
-	    					if(original.getBufferedImage().getType() >= 10) {
-		    					result = original.scaleBilinearGray(scale[0], scale[1], scale[3]);
-		    				}else {	    					
-		    					result = original.scaleBilinearColor(scale[0], scale[1], scale[3]);
-		    				}
+	    				if(original.getBufferedImage().getType() >= 10) {
+	    					result = original.scaleGray(scale[0], scale[1], scale[3], scale[2]);
+	    				}else {	    					
+	    					result = original.scaleColor(scale[0], scale[1], scale[3], scale[2]);
 	    				}
 	    	    		if(result != null) {
 	    		    		JButton button = new JButton();
@@ -1599,7 +1591,7 @@ public class Window {
 	    					}else {
 	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
 	    					}
-	    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
+	    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_S);
 	    	    		}else {
 	    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 	    	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -1614,18 +1606,10 @@ public class Window {
 		    				SFrame.setVisible(false);
 			    	    	SFrame.dispose();
 		    				int[] scale = SFrame.getData();
-		    				if(scale[2] == 0) {
-			    				if(original.getBufferedImage().getType() >= 10) {
-			    					result = original.scaleVMPGray(scale[0], scale[1], scale[3]);
-			    				}else {	    					
-			    					result = original.scaleVMPColor(scale[0], scale[1], scale[3]);
-			    				}
-		    				}else if(scale[2] == 1){
-		    					if(original.getBufferedImage().getType() >= 10) {
-			    					result = original.scaleBilinearGray(scale[0], scale[1], scale[3]);
-			    				}else {	    					
-			    					result = original.scaleBilinearColor(scale[0], scale[1], scale[3]);
-			    				}
+		    				if(original.getBufferedImage().getType() >= 10) {
+		    					result = original.scaleGray(scale[0], scale[1], scale[3], scale[2]);
+		    				}else {	    					
+		    					result = original.scaleColor(scale[0], scale[1], scale[3], scale[2]);
 		    				}
 		    	    		if(result != null) {
 		    		    		JButton button = new JButton();
@@ -1676,7 +1660,7 @@ public class Window {
 		    					}else {
 		    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
 		    					}
-		    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
+		    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_S);
 		    	    		}else {
 		    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
 		    	    					"Error", JOptionPane.ERROR_MESSAGE);
@@ -1699,7 +1683,7 @@ public class Window {
 	    	@Override
 	    	public void actionPerformed(ActionEvent arg0) {
 	    		Image original = getSelectedImage();
-	    		FreeRotationFrame FRFrame = new FreeRotationFrame("Select the degrees to rotate");
+	    		FreeRotationFrame FRFrame = new FreeRotationFrame("Select the degrees to rotate clockwise");
 				FRFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				FRFrame.setLocationRelativeTo(null);
 				FRFrame.setVisible(true);
@@ -1709,42 +1693,64 @@ public class Window {
 	    				Image result = null;
 	    				FRFrame.setVisible(false);
 		    	    	FRFrame.dispose();
-	    				int degrees = FRFrame.getData();
+	    				int[] data = FRFrame.getData();
 	    				if(original.getBufferedImage().getType() >= 10) {
-	    					result = original.rotationColor(degrees);
+	    					result = original.rotationGray(data[0], data[1]);
 	    				}else {	    					
-	    					result = original.rotationColor(degrees);
+	    					result = original.rotationColor(data[0], data[1]);
 	    				}	    				
 	    	    		if(result != null) {
-	    		    		JButton button = new JButton();
-	    		    		String tabNameOut = tabs.getName(original) + " - Scaled Image";
-    		    			String tabName = tabs.getName(original) + " - VMP Scaled Image";
-    		    			tabNameOut = tabs.getName(original) + " - VMP Scaled Image";
-    		    			button.addActionListener(new ActionListener() {
-	    						@Override
-	    						public void actionPerformed(ActionEvent e) {
-	    							if(!tabs.remove(tabName)) {
-										JMenuItem[] items = menuBar.getMenuItems("Edit");
-										for(JMenuItem item : items)
-											item.setEnabled(false);
-										items = menuBar.getMenuItems("Image");
-										for(JMenuItem item : items)
-											item.setEnabled(false);
-										items = menuBar.getMenuItems("View");
-										for(JMenuItem item : items)
-											item.setEnabled(false);
-									}
-									menuBar.removeFromSave(tabName);
-	    						}
-	    					});
+	    	    			JButton button = new JButton();
+	    		    		String tabNameOut = tabs.getName(original) + " - Rotated Image";
+	    		    		if(data[1] == 0) {
+	    		    			String tabName = tabs.getName(original) + " - TD Rotated Image";
+	    		    			tabNameOut = tabs.getName(original) + " - TD Rotated Image";
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+		    					});
+	    		    		}else if(data[1] == 1) {
+	    		    			String tabName = tabs.getName(original) + " - TI Rotated Image";
+	    		    			tabNameOut = tabs.getName(original) + " - TI Rotated Image";
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+		    					});
+	    		    		}
 	    					if(result.getBufferedImage().getType() >= 10) {
 	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, true), button);
 	    					}else {
 	    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
 	    					}
-	    					addToSaveItem(tabNameOut, new ImageIcon("scale.png"), KeyEvent.VK_R);
+	    					addToSaveItem(tabNameOut, new ImageIcon("rotate.png"), KeyEvent.VK_R);
 	    	    		}else {
-	    					JOptionPane.showMessageDialog(null, "Can't scale the image, try again",
+	    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
 	    	    					"Error", JOptionPane.ERROR_MESSAGE);
 	    				}
 	    			}
@@ -1753,7 +1759,69 @@ public class Window {
 					@Override
 					public void keyPressed(KeyEvent e) {
 					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					    	
+					    	Image result = null;
+		    				FRFrame.setVisible(false);
+			    	    	FRFrame.dispose();
+		    				int[] data = FRFrame.getData();
+		    				if(original.getBufferedImage().getType() >= 10) {
+		    					result = original.rotationGray(data[0], data[1]);
+		    				}else {	    					
+		    					result = original.rotationColor(data[0], data[1]);
+		    				}	    				
+		    	    		if(result != null) {
+		    	    			JButton button = new JButton();
+		    		    		String tabNameOut = tabs.getName(original) + " - Rotated Image";
+		    		    		if(data[1] == 0) {
+		    		    			String tabName = tabs.getName(original) + " - TD Rotated Image";
+		    		    			tabNameOut = tabs.getName(original) + " - TD Rotated Image";
+		    		    			button.addActionListener(new ActionListener() {
+			    						@Override
+			    						public void actionPerformed(ActionEvent e) {
+			    							if(!tabs.remove(tabName)) {
+												JMenuItem[] items = menuBar.getMenuItems("Edit");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("Image");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("View");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+											}
+											menuBar.removeFromSave(tabName);
+			    						}
+			    					});
+		    		    		}else if(data[1] == 1) {
+		    		    			String tabName = tabs.getName(original) + " - TI Rotated Image";
+		    		    			tabNameOut = tabs.getName(original) + " - TI Rotated Image";
+		    		    			button.addActionListener(new ActionListener() {
+			    						@Override
+			    						public void actionPerformed(ActionEvent e) {
+			    							if(!tabs.remove(tabName)) {
+												JMenuItem[] items = menuBar.getMenuItems("Edit");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("Image");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("View");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+											}
+											menuBar.removeFromSave(tabName);
+			    						}
+			    					});
+		    		    		}
+		    					if(result.getBufferedImage().getType() >= 10) {
+		    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, true), button);
+		    					}else {
+		    						tabs.addImageTab(tabNameOut, new ImageTab(result, result.getBufferedImage(), tabNameOut, false), button);
+		    					}
+		    					addToSaveItem(tabNameOut, new ImageIcon("rotate.png"), KeyEvent.VK_R);
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't rotate the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
 					    }
 					}
 
