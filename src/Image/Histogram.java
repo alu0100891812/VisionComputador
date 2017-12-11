@@ -41,6 +41,7 @@ public class Histogram extends JPanel implements MouseMotionListener {
 		super.paintComponent(g);
 		
 		int[] count = accumulated ? getHistogramAccumulated() : getHistogram();
+		count[255] -= image.backgroundPixels;
 		
 		final int height = this.getSize().height;
 		final int width = this.getSize().width;

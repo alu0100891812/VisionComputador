@@ -317,6 +317,7 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				Image original = getSelectedImage();
 				Image gray = new Image(original.RGBtoGray());
+				gray.backgroundPixels = original.backgroundPixels;
 				JButton button = new JButton();
 				String tabName = tabs.getName(original) + " - Histogram";
 				button.addActionListener(new ActionListener() {
@@ -352,6 +353,7 @@ public class Window {
 			public void actionPerformed(ActionEvent arg0) {
 				Image original = getSelectedImage();
 				Image gray = new Image(original.RGBtoGray());
+				gray.backgroundPixels = original.backgroundPixels;
 				JButton button = new JButton();
 				String tabName = tabs.getName(original) + " - Histogram Accumulated";
 				button.addActionListener(new ActionListener() {

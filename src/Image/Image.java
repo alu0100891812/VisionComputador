@@ -24,6 +24,7 @@ public class Image extends JPanel implements MouseMotionListener {
 	private JPanel infoPanel;
 	public int marginY, marginX;
 	public final double id;
+	public int backgroundPixels;
 	
 	public Image(BufferedImage buffImage) {
 		this(buffImage, new JPanel());
@@ -703,6 +704,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		double m_sin = Math.sin(-rad);
 		int[] n_x = new int[4];
 		int[] n_y = new int[4];
+		int bgPixels = 0;
 		n_x[0] = 0; n_y[0] = 0;
 		n_x[1] = (int) (((double)(image.getWidth()-1))*cos); 
 		n_y[1] = (int) (((double)(image.getWidth()-1))*sin);
@@ -740,11 +742,15 @@ public class Image extends JPanel implements MouseMotionListener {
 					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
 					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
 						rotatedImg.setRGB((int)i, (int)j, image.getRGB(x,y));
+					}else {
+						bgPixels++;
 					}
 				}
 			}
 		}
-		return new Image(rotatedImg);
+		Image rtImg = new Image(rotatedImg);
+		rtImg.backgroundPixels = bgPixels;
+		return rtImg;
 	}
 	
 	public Image rotationGray(int degrees, int method) {
@@ -755,6 +761,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		double m_sin = Math.sin(-rad);
 		int[] n_x = new int[4];
 		int[] n_y = new int[4];
+		int bgPixels = 0;
 		n_x[0] = 0; n_y[0] = 0;
 		n_x[1] = (int) (((double)(image.getWidth()-1))*cos); 
 		n_y[1] = (int) (((double)(image.getWidth()-1))*sin);
@@ -794,11 +801,15 @@ public class Image extends JPanel implements MouseMotionListener {
 					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
 					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
 						vResult[(int)(j*rotatedImg.getWidth() + i)] = vImg[y*image.getWidth()+x] & 0xFF;
+					}else {
+						bgPixels++;
 					}
 				}
 			}
 		}
 		rotatedImg.getRaster().setPixels(0, 0, rotatedImg.getWidth(), rotatedImg.getHeight(), vResult);
-		return new Image(rotatedImg);
+		Image rtImg = new Image(rotatedImg);
+		rtImg.backgroundPixels = bgPixels;
+		return rtImg;
 	}
 }
