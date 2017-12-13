@@ -696,7 +696,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return new Image(scaledImg);
 	}
 	
-	public Image rotationColor(int degrees, int method) {
+	public Image rotationColor(int degrees, int method, int inverse) {
 		double rad = Math.toRadians(degrees);
 		double cos = Math.cos(rad);
 		double sin = Math.sin(rad);
@@ -738,10 +738,30 @@ public class Image extends JPanel implements MouseMotionListener {
 		}else if(method == 1) {
 			for(double i=0; i<rotatedImg.getWidth(); i++) {
 				for(double j=0; j<rotatedImg.getHeight(); j++) {
-					int x = (int)((i+minX)*m_cos - (j+minY)*m_sin);
-					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
-					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
-						rotatedImg.setRGB((int)i, (int)j, image.getRGB(x,y));
+					double x = (i+minX)*m_cos - (j+minY)*m_sin;
+					double y = (i+minX)*m_sin + (j+minY)*m_cos;
+					int ym = (int)(y+0.5);
+					int xm = (int)(x+0.5);
+					if(xm>0 && ym>0 && xm<image.getWidth() && ym<image.getHeight()) {
+						if(inverse == 0) {
+							rotatedImg.setRGB((int)i, (int)j, image.getRGB(xm,ym));
+						}else if(inverse == 1) {
+							float p = (float)((x+0.5) - xm);
+							float q = (float)((y+0.5) - ym);
+							int A = image.getRGB((int)(x==0?x:x-1), (int)(y==0?y:y-1));
+							int Ar = (A>>16) & 0xFF, Ag = (A>>8) & 0xFF, Ab = A & 0xFF;
+							int B = image.getRGB((int)(x), (int)(y==0?y:y-1));
+							int Br = (B>>16) & 0xFF, Bg = (B>>8) & 0xFF, Bb = B & 0xFF;
+							int C = image.getRGB((int)(x==0?x:x-1), (int)(y));
+							int Cr = (C>>16) & 0xFF, Cg = (C>>8) & 0xFF, Cb = C & 0xFF;
+							int D = image.getRGB((int)(x), (int)(y));
+							int Dr = (D>>16) & 0xFF, Dg = (D>>8) & 0xFF, Db = D & 0xFF;
+							int resColR = (int)(Cr+((Dr-Cr)*p)+((Ar-Cr)*q)+((Br+Cr-Ar-Dr)*p*q));
+							int resColG = (int)(Cg+((Dg-Cg)*p)+((Ag-Cg)*q)+((Bg+Cg-Ag-Dg)*p*q));
+							int resColB = (int)(Cb+((Db-Cb)*p)+((Ab-Cb)*q)+((Bb+Cb-Ab-Db)*p*q));
+							int rgb = resColR; rgb = (rgb << 8) + resColG;	rgb = (rgb << 8) + resColB;
+							rotatedImg.setRGB((int)(i),(int)(j),rgb);
+						}
 					}else {
 						bgPixels++;
 					}
@@ -753,7 +773,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		return rtImg;
 	}
 	
-	public Image rotationGray(int degrees, int method) {
+	public Image rotationGray(int degrees, int method, int inverse) {
 		double rad = Math.toRadians(degrees);
 		double cos = Math.cos(rad);
 		double sin = Math.sin(rad);
@@ -799,8 +819,21 @@ public class Image extends JPanel implements MouseMotionListener {
 				for(double j=0; j<rotatedImg.getHeight(); j++) {
 					int x = (int)((i+minX)*m_cos - (j+minY)*m_sin);
 					int y = (int)((i+minX)*m_sin + (j+minY)*m_cos);
-					if(x>0 && y>0 && x<image.getWidth() && y<image.getHeight()) {
-						vResult[(int)(j*rotatedImg.getWidth() + i)] = vImg[y*image.getWidth()+x] & 0xFF;
+					int ym = (int)(y+0.5);
+					int xm = (int)(x+0.5);
+					if(xm>0 && ym>0 && xm<image.getWidth() && ym<image.getHeight()) {
+						if(inverse == 0) {
+							vResult[(int)(j*rotatedImg.getWidth() + i)] = vImg[ym*image.getWidth()+xm] & 0xFF;
+						}else if(inverse == 1) {
+							float p = (float)((x+0.5) - xm);
+							float q = (float)((y+0.5) - ym);
+							int A = vImg[((int)y==0?y:y-1)*image.getWidth() + ((int)x==0?x:x-1)] & 0xFF;
+							int B = vImg[((int)y==0?y:y-1)*image.getWidth() + ((int)x)] & 0xFF;
+							int C = vImg[((int)y)*image.getWidth() + ((int)x==0?x:x-1)] & 0xFF;
+							int D = vImg[((int)y)*image.getWidth() + ((int)x)] & 0xFF;
+							int resCol = (int)(C+((D-C)*p)+((A-C)*q)+((B+C-A-D)*p*q));
+							vResult[((int)j)*rotatedImg.getWidth() + ((int)i)] = resCol;
+						}
 					}else {
 						bgPixels++;
 					}

@@ -1697,9 +1697,9 @@ public class Window {
 		    	    	FRFrame.dispose();
 	    				int[] data = FRFrame.getData();
 	    				if(original.getBufferedImage().getType() >= 10) {
-	    					result = original.rotationGray(data[0], data[1]);
+	    					result = original.rotationGray(data[0], data[1], data[2]);
 	    				}else {	    					
-	    					result = original.rotationColor(data[0], data[1]);
+	    					result = original.rotationColor(data[0], data[1], data[2]);
 	    				}	    				
 	    	    		if(result != null) {
 	    	    			JButton button = new JButton();
@@ -1766,9 +1766,9 @@ public class Window {
 			    	    	FRFrame.dispose();
 		    				int[] data = FRFrame.getData();
 		    				if(original.getBufferedImage().getType() >= 10) {
-		    					result = original.rotationGray(data[0], data[1]);
+		    					result = original.rotationGray(data[0], data[1], data[2]);
 		    				}else {	    					
-		    					result = original.rotationColor(data[0], data[1]);
+		    					result = original.rotationColor(data[0], data[1], data[2]);
 		    				}	    				
 		    	    		if(result != null) {
 		    	    			JButton button = new JButton();

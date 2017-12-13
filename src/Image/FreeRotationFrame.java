@@ -24,20 +24,20 @@ public class FreeRotationFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	public JButton btnAceptar;
-	private int degrees, method;
+	private int degrees, method, minv;
 
 	public FreeRotationFrame(String title) {
 		setTitle(title);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 418, 145);
+		setBounds(100, 100, 418, 172);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{82, 0, 0};
-		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0};
 		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		JLabel lblDegrees = new JLabel("Degrees:");
@@ -112,19 +112,63 @@ public class FreeRotationFrame extends JFrame {
 			}
 		});
 		
+		JRadioButton rdbtnVmp = new JRadioButton("VMP");
+		rdbtnVmp.setSelected(true);
+		GridBagConstraints gbc_rdbtnVmp = new GridBagConstraints();
+		gbc_rdbtnVmp.anchor = GridBagConstraints.EAST;
+		gbc_rdbtnVmp.insets = new Insets(0, 0, 5, 5);
+		gbc_rdbtnVmp.gridx = 0;
+		gbc_rdbtnVmp.gridy = 2;
+		contentPane.add(rdbtnVmp, gbc_rdbtnVmp);
+		
+		JRadioButton rdbtnBilineal = new JRadioButton("Bilineal");
+		GridBagConstraints gbc_rdbtnBilineal = new GridBagConstraints();
+		gbc_rdbtnBilineal.anchor = GridBagConstraints.WEST;
+		gbc_rdbtnBilineal.insets = new Insets(0, 0, 5, 0);
+		gbc_rdbtnBilineal.gridx = 1;
+		gbc_rdbtnBilineal.gridy = 2;
+		contentPane.add(rdbtnBilineal, gbc_rdbtnBilineal);
+		
+		rdbtnVmp.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(rdbtnBilineal.isSelected()) {
+					rdbtnBilineal.setSelected(false);
+					minv = 0;
+				}else {
+					rdbtnBilineal.setSelected(true);
+					minv = 1;
+				}
+			}
+		});
+		
+		rdbtnBilineal.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(rdbtnVmp.isSelected()) {
+					rdbtnVmp.setSelected(false);
+					minv = 1;
+				}else {
+					rdbtnVmp.setSelected(true);
+					minv = 0;
+				}
+			}
+		});
+		
 		btnAceptar = new JButton("Accept");
 		GridBagConstraints gbc_btnAcept = new GridBagConstraints();
 		gbc_btnAcept.anchor = GridBagConstraints.LINE_END;
 		gbc_btnAcept.gridx = 1;
-		gbc_btnAcept.gridy = 2;
+		gbc_btnAcept.gridy = 3;
 		contentPane.add(btnAceptar, gbc_btnAcept);
 	}
 	
 	public int[] getData() {
-		int[] data = new int[2];
+		int[] data = new int[3];
 		data[0] = degrees;
 		data[1] = method;
-		return data;
+		data[2] = minv;
+ 		return data;
 	}
 
 }
