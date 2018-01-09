@@ -16,6 +16,7 @@ import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -180,6 +181,52 @@ public class Window {
 	    RotationItem.setEnabled(false);
 	    imageMenu.add(RotationItem);
 	    
+	    JMenu filterMenu = new JMenu("Filters");
+	    filterMenu.setMnemonic(KeyEvent.VK_F);
+	    menuBar.add(filterMenu);
+	    
+	    JMenuItem BoxFilterItem = new JMenuItem("Media Filter", KeyEvent.VK_F);
+	    BoxFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpBoxFilter(BoxFilterItem);
+	    BoxFilterItem.setEnabled(false);
+	    filterMenu.add(BoxFilterItem);
+	    
+	    JMenuItem GaussFilterItem = new JMenuItem("Gaussian Filter", KeyEvent.VK_G);
+	    GaussFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpGaussFilter(GaussFilterItem);
+	    GaussFilterItem.setEnabled(false);
+	    filterMenu.add(GaussFilterItem);
+	    
+	    JMenuItem OGVFilterItem = new JMenuItem("Vertical Gradient Filter", KeyEvent.VK_G);
+	    OGVFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpOGVFilter(OGVFilterItem);
+	    OGVFilterItem.setEnabled(false);
+	    filterMenu.add(OGVFilterItem);
+	    
+	    JMenuItem OGHFilterItem = new JMenuItem("Horizontal Gradient Filter", KeyEvent.VK_G);
+	    OGHFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpOGHFilter(OGHFilterItem);
+	    OGHFilterItem.setEnabled(false);
+	    filterMenu.add(OGHFilterItem);
+	    
+	    JMenuItem OSVFilterItem = new JMenuItem("Vertical Sobel Filter", KeyEvent.VK_G);
+	    OSVFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpOSVFilter(OSVFilterItem);
+	    OSVFilterItem.setEnabled(false);
+	    filterMenu.add(OSVFilterItem);
+	    
+	    JMenuItem OSHFilterItem = new JMenuItem("Horizontal Sobel Filter", KeyEvent.VK_G);
+	    OSHFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpOSHFilter(OSHFilterItem);
+	    OSHFilterItem.setEnabled(false);
+	    filterMenu.add(OSHFilterItem);   
+	   
+	    JMenuItem GFilterItem = new JMenuItem("Generic Filter", KeyEvent.VK_G);
+	    GFilterItem.setIcon(new ImageIcon("filter.png"));
+	    setUpGenericFilter(GFilterItem);
+	    GFilterItem.setEnabled(false);
+	    filterMenu.add(GFilterItem);
+
         JMenu viewMenu = new JMenu("View");
 	    viewMenu.setMnemonic(KeyEvent.VK_V);
 	    menuBar.add(viewMenu);
@@ -238,9 +285,12 @@ public class Window {
 									items = menuBar.getMenuItems("Image");
 									for(JMenuItem item : items)
 										item.setEnabled(false);
-									items = menuBar.getMenuItems("View");
+									items = menuBar.getMenuItems("Filters");
 									for(JMenuItem item : items)
 										item.setEnabled(false);
+									items = menuBar.getMenuItems("View");
+									for(JMenuItem item : items)
+										item.setEnabled(false);	
 								}
 							}
 						});
@@ -257,6 +307,9 @@ public class Window {
 						for(JMenuItem item : items)
 							item.setEnabled(true);
 						items = menuBar.getMenuItems("Image");
+						for(JMenuItem item : items)
+							item.setEnabled(true);
+						items = menuBar.getMenuItems("Filters");
 						for(JMenuItem item : items)
 							item.setEnabled(true);
 					} catch (IOException e) {
@@ -291,6 +344,9 @@ public class Window {
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 							}
@@ -333,6 +389,9 @@ public class Window {
 							items = menuBar.getMenuItems("View");
 							for(JMenuItem item : items)
 								item.setEnabled(false);
+							items = menuBar.getMenuItems("Filters");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
 						}
 						menuBar.removeFromSave(tabName);
 					}
@@ -369,6 +428,9 @@ public class Window {
 							items = menuBar.getMenuItems("View");
 							for(JMenuItem item : items)
 								item.setEnabled(false);
+							items = menuBar.getMenuItems("Filters");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
 						}
 						menuBar.removeFromSave(tabName);
 					}
@@ -403,6 +465,9 @@ public class Window {
 							for(JMenuItem item : items)
 								item.setEnabled(false);
 							items = menuBar.getMenuItems("View");
+							for(JMenuItem item : items)
+								item.setEnabled(false);
+							items = menuBar.getMenuItems("Filters");
 							for(JMenuItem item : items)
 								item.setEnabled(false);
 						}
@@ -452,6 +517,9 @@ public class Window {
 									for(JMenuItem item : items)
 										item.setEnabled(false);
 									items = menuBar.getMenuItems("View");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+									items = menuBar.getMenuItems("Filters");
 									for(JMenuItem item : items)
 										item.setEnabled(false);
 								}
@@ -522,6 +590,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 								}
@@ -574,6 +645,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -636,6 +710,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 								}
@@ -674,6 +751,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -736,6 +816,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 								}
@@ -774,6 +857,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -837,6 +923,9 @@ public class Window {
 									items = menuBar.getMenuItems("View");
 									for(JMenuItem item : items)
 										item.setEnabled(false);
+									items = menuBar.getMenuItems("Filters");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
 								}
 								menuBar.removeFromSave(tabName);
 							}
@@ -886,6 +975,9 @@ public class Window {
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 							}
@@ -951,6 +1043,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 								}
@@ -988,6 +1083,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -1049,6 +1147,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 								}
@@ -1087,6 +1188,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -1306,6 +1410,9 @@ public class Window {
 								items = menuBar.getMenuItems("View");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
 							}
 							menuBar.removeFromSave(tabName);
 						}
@@ -1351,6 +1458,9 @@ public class Window {
 								items = menuBar.getMenuItems("View");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
 							}
 							menuBar.removeFromSave(tabName);
 						}
@@ -1394,6 +1504,9 @@ public class Window {
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
 								for(JMenuItem item : items)
 									item.setEnabled(false);
 							}
@@ -1451,6 +1564,9 @@ public class Window {
 										items = menuBar.getMenuItems("View");
 										for(JMenuItem item : items)
 											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
 									}
 									menuBar.removeFromSave(tabName);
 	    						}
@@ -1494,6 +1610,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -1563,6 +1682,9 @@ public class Window {
 											items = menuBar.getMenuItems("View");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
 										}
 										menuBar.removeFromSave(tabName);
 		    						}
@@ -1581,6 +1703,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -1632,6 +1757,9 @@ public class Window {
 												items = menuBar.getMenuItems("View");
 												for(JMenuItem item : items)
 													item.setEnabled(false);
+												items = menuBar.getMenuItems("Filters");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
 											}
 											menuBar.removeFromSave(tabName);
 			    						}
@@ -1650,6 +1778,9 @@ public class Window {
 												for(JMenuItem item : items)
 													item.setEnabled(false);
 												items = menuBar.getMenuItems("View");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
+												items = menuBar.getMenuItems("Filters");
 												for(JMenuItem item : items)
 													item.setEnabled(false);
 											}
@@ -1720,6 +1851,9 @@ public class Window {
 											items = menuBar.getMenuItems("View");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
 										}
 										menuBar.removeFromSave(tabName);
 		    						}
@@ -1738,6 +1872,9 @@ public class Window {
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
 											for(JMenuItem item : items)
 												item.setEnabled(false);
 										}
@@ -1789,6 +1926,9 @@ public class Window {
 												items = menuBar.getMenuItems("View");
 												for(JMenuItem item : items)
 													item.setEnabled(false);
+												items = menuBar.getMenuItems("Filters");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
 											}
 											menuBar.removeFromSave(tabName);
 			    						}
@@ -1809,6 +1949,9 @@ public class Window {
 												items = menuBar.getMenuItems("View");
 												for(JMenuItem item : items)
 													item.setEnabled(false);
+												items = menuBar.getMenuItems("Filters");
+												for(JMenuItem item : items)
+													item.setEnabled(false);
 											}
 											menuBar.removeFromSave(tabName);
 			    						}
@@ -1826,6 +1969,671 @@ public class Window {
 		    				}
 					    }
 					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	
+	private void setUpBoxFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		BoxFilterFrame BFFrame = new BoxFilterFrame("Select a filter size");
+				BFFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				BFFrame.setLocationRelativeTo(null);
+				BFFrame.setVisible(true);
+				BFFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image grayImage = null;
+	    				Image result = null;
+	    				BFFrame.setVisible(false);
+		    	    	BFFrame.dispose();
+	    				String data = BFFrame.getData();
+	    				
+	    				grayImage = new Image (original.RGBtoGray());
+	    				result = grayImage.BoxFilter(data);
+	    				
+	    	    		if(result != null) {
+	    	    			JButton button = new JButton();
+	    		    		String tabName = tabs.getName(original) + " - MediaFilter";
+	    		 
+    		    			button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
+									menuBar.removeFromSave(tabName);
+	    						}
+    		    			});
+	   
+    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				BFFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image grayImage = null;
+		    				Image result = null;
+		    				BFFrame.setVisible(false);
+			    	    	BFFrame.dispose();
+		    				String data = BFFrame.getData();
+		    				
+		    				grayImage = new Image (original.RGBtoGray());
+		    				result = grayImage.BoxFilter(data);
+		    				
+		    	    		if(result != null) {
+		    	    			JButton button = new JButton();
+		    		    		String tabName = tabs.getName(original) +  "- MediaFilter";
+		    		 
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+	    		    			});
+		   
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+		    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+		    			}					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	private void setUpGaussFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		GaussFilterFrame GFrame = new GaussFilterFrame("Introduce sigma value");
+				GFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				GFrame.setLocationRelativeTo(null);
+				GFrame.setVisible(true);
+				GFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image grayImage = null;
+	    				Image result = null;
+	    				GFrame.setVisible(false);
+		    	    	GFrame.dispose();
+	    				float data = GFrame.getData();
+	    				
+	    				grayImage = new Image (original.RGBtoGray());
+	    				int op = 1;
+	    				int x = 0;
+	    				Vector<Integer> a = new Vector<Integer>();
+	    				Vector<Integer> g = new Vector<Integer>();
+	    				while(op >= 1) {
+	    					op =(int) (Math.round(1000 * Math.exp((double)(-((x*x)/(2*(data*data)))))));		
+	    					if(op >= 1) {
+	    						a.add(op);
+	    						x++;
+	    					}
+	    				}
+	    				for(int i = a.size()-1; i >= 0; i--) {
+	    					g.add(a.elementAt(i));
+	    				}
+	    				for(int i = 1; i < a.size(); i ++) {
+	    					g.add(a.elementAt(i));
+	    				} 				
+	    				int[] kernel = new int[g.size()];
+	    				for(int i = 0; i < g.size(); i++) {
+	    					kernel[i] = g.elementAt(i).intValue();
+	    				}
+	    				result = grayImage.HKernelFilter(kernel);
+	    				result = result.VKernelFilter(kernel);
+	    				
+	    	    		if(result != null) {
+	    	    			JButton button = new JButton();
+	    		    		String tabName = tabs.getName(original) +  " - GaussFilter";
+	    		 
+    		    			button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
+									menuBar.removeFromSave(tabName);
+	    						}
+    		    			});
+	   
+    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_G);
+	    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+			                if(itemBar != null) {
+			                    itemBar.setEnabled(true);
+			                }
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				GFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image grayImage = null;
+		    				Image result = null;
+		    				GFrame.setVisible(false);
+			    	    	GFrame.dispose();
+		    				float data = GFrame.getData();
+		    				
+		    				grayImage = new Image (original.RGBtoGray());
+		    				int op = 1;
+		    				int x = 0;
+		    				Vector<Integer> a = new Vector<Integer>();
+		    				Vector<Integer> g = new Vector<Integer>();
+		    				while(op >= 1) {
+		    					op = (int)(1000 * Math.exp((double)(-((x*x)/(2*(data*data))))));		
+		    					if(op >= 1) {
+		    						a.add(op);
+		    						x++;
+		    					}
+		    				}
+		    				for(int i = a.size(); i > 0; i--) {
+		    					g.add(a.elementAt(i));
+		    				}	
+		    				for(int i = 1; i < a.size(); i ++) {
+		    					g.add(a.elementAt(i));
+		    				}
+		    				int[] kernel = new int[g.size()];
+		    				for(int i = 0; i < g.size(); i++) {
+		    					kernel[i] = g.elementAt(i).intValue();
+		    				}
+		    				result = grayImage.HKernelFilter(kernel);
+		    				result = result.VKernelFilter(kernel);
+		    				
+		    	    		if(result != null) {
+		    	    			JButton button = new JButton();
+		    		    		String tabName = tabs.getName(original) +  " - GaussFilter";
+		    		 
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+	    		    			});
+		   
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+		    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+		    			}					}
+
+					@Override
+					public void keyTyped(KeyEvent e) {}
+
+					@Override
+					public void keyReleased(KeyEvent e) {}
+				});
+	    	}
+		});
+	}
+	
+	private void setUpOGVFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image grayImage = null;
+				Image result = null;
+				
+				grayImage = new Image (original.RGBtoGray());
+				int[] kernel = { -1, 0, 1 };
+				result = grayImage.VKernelFilter(kernel);
+				
+	    		if(result != null) {
+	    			JButton button = new JButton();
+		    		String tabName = tabs.getName(original) +  " - OGVFilter";
+		 
+	    			button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
+								menuBar.removeFromSave(tabName);
+    						}
+		    			});
+   
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
+	
+	private void setUpOGHFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image grayImage = null;
+				Image result = null;
+				
+				grayImage = new Image (original.RGBtoGray());
+				int[] kernel = { -1, 0, 1 };
+				result = grayImage.HKernelFilter(kernel);
+				
+	    		if(result != null) {
+	    			JButton button = new JButton();
+		    		String tabName = tabs.getName(original)  +  " - OGHFilter";
+		 
+	    			button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
+								menuBar.removeFromSave(tabName);
+    						}
+		    			});
+   
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
+	
+	private void setUpOSVFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image grayImage = null;
+				Image result = null;
+				
+				grayImage = new Image (original.RGBtoGray());
+				int[] kernel = { -1, -2, -1, 0, 0, 0, 1, 2, 1 };
+				int w = 3;
+				int h = 3;
+				result = grayImage.GKernelFilter(kernel, w, h);
+				
+	    		if(result != null) {
+	    			JButton button = new JButton();
+		    		String tabName = tabs.getName(original) +  " - OSVFilter";
+		 
+	    			button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
+								menuBar.removeFromSave(tabName);
+    						}
+		    			});
+   
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_S);
+    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
+	
+	private void setUpOSHFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+				Image grayImage = null;
+				Image result = null;
+				
+				grayImage = new Image (original.RGBtoGray());
+				int[] kernel = { -1, 0, 1, -2, 0, 2, -1, 0, 1 };
+				int w = 3;
+				int h = 3;
+				result = grayImage.GKernelFilter(kernel, w, h);
+				
+	    		if(result != null) {
+	    			JButton button = new JButton();
+		    		String tabName = tabs.getName(original) +  " - OSHFilter";
+		 
+	    			button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							if(!tabs.remove(tabName)) {
+								JMenuItem[] items = menuBar.getMenuItems("Edit");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Image");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("View");
+								for(JMenuItem item : items)
+									item.setEnabled(false);
+								items = menuBar.getMenuItems("Filters");
+									for(JMenuItem item : items)
+										item.setEnabled(false);
+								}
+								menuBar.removeFromSave(tabName);
+    						}
+		    			});
+   
+						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_S);
+    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+		                if(itemBar != null) {
+		                    itemBar.setEnabled(true);
+		                }
+	    		}else {
+					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    					"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+	}
+	
+	private void setUpGenericFilter(JMenuItem item) {
+		item.addActionListener(new ActionListener() {
+	    	@Override
+	    	public void actionPerformed(ActionEvent arg0) {
+	    		Image original = getSelectedImage();
+	    		GenericFilterFrame GFFrame = new GenericFilterFrame("Introduce a kernel:");
+				GFFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				GFFrame.setLocationRelativeTo(null);
+				GFFrame.setVisible(true);
+				GFFrame.btnAceptar.addMouseListener(new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0) {
+	    				Image grayImage = null;
+	    				Image result = null;
+	    				GFFrame.setVisible(false);
+		    	    	GFFrame.dispose();
+	    				String data = GFFrame.getData();
+	    				String sAux = "";
+		    	    	int w = 0;
+	    				int wAux = 0;
+	    				int h = 1;
+	    				Vector<Integer> aux = new Vector<Integer>();
+	    				
+	    				for(int i = 0; i < data.length();) {
+	    					if((data.charAt(i) != '\n')) {
+	    						while((i < data.length()) && (data.charAt(i) != ' ') && (data.charAt(i) != '\n')) {
+	    							sAux += data.charAt(i);
+	    							i++;
+	    						}
+	    						if((i < data.length()) && (data.charAt(i) == ' ')) {
+	    							i++;
+	    						}
+	    						aux.add(Integer.parseInt(sAux));
+	    						wAux++;
+	    						if(h == 1) {
+	    							w++;
+	    						}
+	    						sAux = "";
+	    					} else {
+	    						h++;
+	    						i++;
+	    						if(w == wAux) {
+	    							wAux = 0;
+	    						} else {
+	    							JOptionPane.showMessageDialog(null, "Invalid kernel.",
+	    			    					"Error", JOptionPane.ERROR_MESSAGE);		
+	    						}
+	    					}
+	    				}	    	    
+
+	    				int[] kernel = new int[aux.size()];
+	    				for(int i = 0; i < aux.size(); i++) {
+	    					kernel[i] = aux.elementAt(i).intValue();
+	    				}
+	    				grayImage = new Image (original.RGBtoGray());
+	    				result = grayImage.GKernelFilter(kernel, w, h);
+	    	    		if(result != null) {
+	    	    			JButton button = new JButton();
+	    		    		String tabName = tabs.getName(original) + " - GenericFilter";
+	    		 
+    		    			button.addActionListener(new ActionListener() {
+	    						@Override
+	    						public void actionPerformed(ActionEvent e) {
+	    							if(!tabs.remove(tabName)) {
+										JMenuItem[] items = menuBar.getMenuItems("Edit");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Image");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("View");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+										items = menuBar.getMenuItems("Filters");
+										for(JMenuItem item : items)
+											item.setEnabled(false);
+									}
+									menuBar.removeFromSave(tabName);
+	    						}
+    		    			});
+	   
+    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+	    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+	    	    		}else {
+	    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+	    	    					"Error", JOptionPane.ERROR_MESSAGE);
+	    				}
+	    			}
+	    		});	    	
+				GFFrame.btnAceptar.addKeyListener(new KeyListener() {					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					    if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					    	Image grayImage = null;
+		    				Image result = null;
+		    				GFFrame.setVisible(false);
+			    	    	GFFrame.dispose();
+		    				//String data = GFFrame.getData();
+			    	    	String data = "-1 -2 -1\n0 0 0\n1 2 1";
+		    				String sAux = "";
+			    	    	int w = 0;
+		    				int wAux = 0;
+		    				int h = 1;
+		    				Vector<Integer> aux = new Vector<Integer>();
+		    				
+		    				for(int i = 0; i < data.length(); i++) {
+		    					if((data.charAt(i) != '\n')) {
+		    						while(data.charAt(i) != ' ') {
+		    							sAux += data.charAt(i);
+		    						}
+		    						aux.add(Integer.parseInt(sAux));
+		    						if(i == 0) {
+		    							w++;
+		    						}
+		    						wAux++;
+		    					} else {
+		    						h++;
+		    						if(w == wAux) {
+		    							wAux = 0;
+		    						} else {
+		    							JOptionPane.showMessageDialog(null, "Invalid kernel.",
+		    			    					"Error", JOptionPane.ERROR_MESSAGE);		
+		    						}
+		    					}
+		    				}	    
+
+		    				int[] kernel = new int[aux.size()];
+		    				for(int i = 0; i < aux.size(); i++) {
+		    					kernel[i] = aux.elementAt(i).intValue();
+		    				}
+		    				grayImage = new Image (original.RGBtoGray());
+		    				result = grayImage.GKernelFilter(kernel, w, h);
+		    				
+		    	    		if(result != null) {
+		    	    			JButton button = new JButton();
+		    		    		String tabName = tabs.getName(original) +  "- GenericFilter";
+		    		 
+	    		    			button.addActionListener(new ActionListener() {
+		    						@Override
+		    						public void actionPerformed(ActionEvent e) {
+		    							if(!tabs.remove(tabName)) {
+											JMenuItem[] items = menuBar.getMenuItems("Edit");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Image");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("View");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+											items = menuBar.getMenuItems("Filters");
+											for(JMenuItem item : items)
+												item.setEnabled(false);
+										}
+										menuBar.removeFromSave(tabName);
+		    						}
+	    		    			});
+		   
+	    						tabs.addImageTab(tabName, new ImageTab(result, result.getBufferedImage(), tabName, true), button);
+		    					addToSaveItem(tabName, new ImageIcon("filter.png"), KeyEvent.VK_R);
+		    					JMenuItem itemBar = menuBar.getItem("File", "Save File");
+				                if(itemBar != null) {
+				                    itemBar.setEnabled(true);
+				                }
+		    	    		}else {
+		    					JOptionPane.showMessageDialog(null, "Can't filter the image, try again",
+		    	    					"Error", JOptionPane.ERROR_MESSAGE);
+		    				}
+		    			}					}
 
 					@Override
 					public void keyTyped(KeyEvent e) {}

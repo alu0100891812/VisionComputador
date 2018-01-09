@@ -845,4 +845,189 @@ public class Image extends JPanel implements MouseMotionListener {
 		rtImg.backgroundPixels = bgPixels;
 		return rtImg;
 	}
+	
+	public Image BoxFilter(String size) {
+		int filterSize = 0;
+		byte[] vImg = getVector();
+		int[] vResult = new int[vImg.length];
+		char[] s = size.toCharArray();
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int filterSizeAd = 0;
+		if(s[0] == '3') {
+			filterSize = 3;			
+		} else if(s[0] == '5') {
+			filterSize = 5;
+		} else {
+			filterSize = 7;
+		}
+		
+		filterSizeAd = filterSize/2;
+		for(int i = 0; i <= filterSizeAd; i++) {
+			for(int j = 0; j < w; j++) {
+				vResult[i*w + j] = vImg[i*w + j];
+				vResult[(h-i-1)*w + j] = vImg[(h-i-1)*w + j];
+			}
+		}
+		
+		for(int i = 0; i <= filterSizeAd; i++) {
+			for(int j = 0; j < h; j++) {
+				vResult[j*w + i] = vImg[j*w + i];
+				vResult[j*w + (w-i-1)] = vImg[j*w + (w-i-1)];
+			}
+		}
+		
+		for(int v = filterSizeAd; v < (h-filterSizeAd-1); v++) {
+			for(int u = filterSizeAd; u < (w-filterSizeAd-1); u++) {
+				int sum = 0;
+				for(int j = -filterSizeAd; j <= filterSizeAd; j++) {
+					for(int i = -filterSizeAd; i <= filterSizeAd; i++) {
+						byte p = vImg[((v+j)*w)+u+i];
+						sum += p &0xFF;
+					}
+				}
+				int q = (int) Math.round(sum/(filterSize*filterSize));
+				vResult[(v*image.getWidth()) + u] = q;
+			}
+		}
+		BufferedImage boxImg= new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		boxImg.getRaster().setPixels(0, 0, boxImg.getWidth(), boxImg.getHeight(), vResult);
+		return new Image(boxImg);
+	}
+	
+	public Image HKernelFilter(int[] vector) {
+		byte[] vImg = getVector();
+		int[] vResult = new int[vImg.length];
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int vecM = vector.length / 2;
+		int vSum = 0;
+		int q = 0;
+		
+		for(int i = 0; i <= vecM; i++) {
+			for(int j = 0; j < h; j++) {
+				vResult[j*w + i] = vImg[j*w + i];
+				vResult[j*w + (w-i-1)] = vImg[j*w + (w-i-1)];
+			}
+		}
+		
+		for (int i = 0; i < vector.length; i ++) {
+			vSum += vector[i];
+		}
+		
+		for(int v = 0; v < h; v++) {
+			for(int u = vecM; u < (w-vecM-1); u++) {
+				int sum = 0;
+			    for(int i = -vecM; i <= vecM; i++) {
+						byte p = vImg[(v*w)+u+i];
+						sum += (p &0xFF) * vector[vecM + i];
+				}   
+			    if(vSum != 0) {
+			    	q = (int) Math.round(sum/vSum);
+			    } else {
+			    	q = sum;
+			    }
+				vResult[(v*image.getWidth()) + u] = Truncate(q);
+			}
+		}
+		
+		BufferedImage HKernelImg= new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		HKernelImg.getRaster().setPixels(0, 0, HKernelImg.getWidth(), HKernelImg.getHeight(), vResult);
+		return new Image(HKernelImg);
+	}
+	
+	public Image VKernelFilter(int[] vector) {
+		byte[] vImg = getVector();
+		int[] vResult = new int[vImg.length];
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int vecM = vector.length / 2;
+		int vSum = 0;
+		int q = 0;
+		
+		for(int i = 0; i <= vecM; i++) {
+			for(int j = 0; j < w; j++) {
+				vResult[i*w + j] = vImg[i*w + j];
+				vResult[(h-i-1)*w + j] = vImg[(h-i-1)*w + j];
+			}
+		}
+		
+		for (int i = 0; i < vector.length; i ++) {
+			vSum += vector[i];
+		}
+		
+		for(int v = vecM; v < (h-vecM-1); v++) {
+			for(int u = 0; u < w; u++) {
+				int sum = 0;
+			    for(int i = -vecM; i <= vecM; i++) {
+						byte p = vImg[((v+i)*w)+u];
+						sum += (p &0xFF) * vector[vecM + i];
+				}   
+			    if(vSum != 0) {
+			    	q = (int) Math.round(sum/vSum);
+			    } else {
+			    	q = sum;
+			    }
+				vResult[(v*image.getWidth()) + u] = Truncate(q);
+			}
+		}
+		
+		BufferedImage VKernelImg= new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		VKernelImg.getRaster().setPixels(0, 0, VKernelImg.getWidth(), VKernelImg.getHeight(), vResult);
+		return new Image(VKernelImg);
+	}
+	
+	public Image GKernelFilter(int[] vector, int kW, int kH) {
+		byte[] vImg = getVector();
+		int[] vResult = new int[vImg.length];
+		int w = image.getWidth();
+		int h = image.getHeight();
+		int vecW = kW / 2;
+		int vecH = kH / 2;
+		int vSum = 0;
+		int q = 0;
+		
+		for (int i = 0; i < vector.length; i ++) {
+			vSum += vector[i];
+		}
+		
+		for(int i = 0; i <= vecH; i++) {
+			for(int j = 0; j < w; j++) {
+				vResult[i*w + j] = vImg[i*w + j];
+				vResult[(h-i-1)*w + j] = vImg[(h-i-1)*w + j];
+			}
+		}
+		
+		for(int i = 0; i <= vecW; i++) {
+			for(int j = 0; j < h; j++) {
+				vResult[j*w + i] = vImg[j*w + i];
+				vResult[j*w + (w-i-1)] = vImg[j*w + (w-i-1)];
+			}
+		}
+		int vectormier;
+		for(int v = vecH; v < (h-vecH-1); v++) {
+			for(int u = vecW; u < (w-vecW-1); u++) {
+				int sum = 0;
+				for(int j = -vecH; j <= vecH; j++) {
+					for(int i = -vecW; i <= vecW; i++) {
+						byte p = vImg[((v+j)*w)+u+i];
+						vectormier = vector[(kW*(j+vecH)) + i + vecW];
+						sum += (p &0xFF) * vectormier;
+					}
+				}
+				
+				if(vSum != 0) {
+					q = (int) Math.round(sum/(vSum*vSum));
+				} else {
+					q = sum;
+				}
+				vResult[(v*image.getWidth()) + u] = Truncate(q);
+			}
+		}
+		
+		BufferedImage VKernelImg= new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		VKernelImg.getRaster().setPixels(0, 0, VKernelImg.getWidth(), VKernelImg.getHeight(), vResult);
+		return new Image(VKernelImg);
+	}
+	
 }
