@@ -2489,8 +2489,8 @@ public class Window {
 	    				Vector<Integer> aux = new Vector<Integer>();
 	    				
 	    				for(int i = 0; i < data.length();) {
-	    					if((data.charAt(i) != '\n')) {
-	    						while((i < data.length()) && (data.charAt(i) != ' ') && (data.charAt(i) != '\n')) {
+	    					if((data.charAt(i) != '\n') && (data.charAt(i) != '\r')) {
+	    						while((i < data.length()) && (data.charAt(i) != ' ') && (data.charAt(i) != '\n') && (data.charAt(i) != '\r')) {
 	    							sAux += data.charAt(i);
 	    							i++;
 	    						}
@@ -2505,7 +2505,9 @@ public class Window {
 	    						sAux = "";
 	    					} else {
 	    						h++;
-	    						i++;
+	    						while((data.charAt(i) == '\n') || (data.charAt(i) == '\r')) {	    							
+	    							i++;
+	    						}
 	    						if(w == wAux) {
 	    							wAux = 0;
 	    						} else {
