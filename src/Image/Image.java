@@ -120,7 +120,7 @@ public class Image extends JPanel implements MouseMotionListener {
 		
 		if(vImg.length == vImgNow.length) {
 			for(int i = 0; i < vImg.length; i++) {
-				vResult[i] = Truncate((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF));
+				vResult[i] = Truncate(Math.abs((vImg[i] & 0xFF) - (vImgNow[i] & 0xFF)));
 			}
 		}
 		Image result = new Image(new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY));
